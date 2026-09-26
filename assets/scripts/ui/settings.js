@@ -175,6 +175,9 @@
         function renderSettingControls() {
             appearanceFonts.innerHTML = '';
             appearanceSizes.innerHTML = '';
+            // v3.0.0: cinema section was never cleared — every locale switch
+            // appended 8 more backdrop rows (duplicate-block bug)
+            appearanceCinema.innerHTML = '';
             lyricsControls.innerHTML = '';
             generalControls.innerHTML = '';
             SETTING_DEFS.forEach(function (def) {

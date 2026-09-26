@@ -5,35 +5,40 @@
       "artist": "CRYCHIC",
       "file": "examples/CRYCHIC - 春日影-lyrics-package.zip",
       "source": "示例歌词包（BanG Dream! 乐队企划）",
-      "copyright": "词曲版权归原作者及版权方所有"
+      "copyright": "词曲版权归原作者及版权方所有",
+      "links": [{ "label": "来源页", "url": "#", "icon": "fa-globe" }]
     },
     {
       "title": "エガクミライ",
       "artist": "MyGO!!!!!",
       "file": "examples/MyGO!!!!! - エガクミライ-lyrics-package.zip",
       "source": "示例歌词包（BanG Dream! 乐队企划）",
-      "copyright": "词曲版权归原作者及版权方所有"
+      "copyright": "词曲版权归原作者及版权方所有",
+      "links": [{ "label": "来源页", "url": "#", "icon": "fa-globe" }]
     },
     {
       "title": "キリトリセン",
       "artist": "結束バンド",
       "file": "examples/キリトリセン-lyrics-package.zip",
       "source": "示例歌词包（动画《孤独摇滚！》剧中乐队）",
-      "copyright": "词曲版权归原作者及版权方所有"
+      "copyright": "词曲版权归原作者及版权方所有",
+      "links": [{ "label": "来源页", "url": "#", "icon": "fa-globe" }]
     },
     {
       "title": "私の心はチョココロネ",
       "artist": "Poppin'Party",
       "file": "examples/私の心はチョココロネ - Poppin'Party-lyrics-package.zip",
       "source": "示例歌词包（BanG Dream! 乐队企划）",
-      "copyright": "词曲版权归原作者及版权方所有"
+      "copyright": "词曲版权归原作者及版权方所有",
+      "links": [{ "label": "来源页", "url": "#", "icon": "fa-globe" }]
     },
     {
       "title": "星座になれたら",
       "artist": "結束バンド",
       "file": "examples/結束バンド - 星座になれたら-lyrics-package.zip",
       "source": "示例歌词包（动画《孤独摇滚！》剧中乐队）",
-      "copyright": "词曲版权归原作者及版权方所有"
+      "copyright": "词曲版权归原作者及版权方所有",
+      "links": [{ "label": "来源页", "url": "#", "icon": "fa-globe" }]
     }
   ],
   "notice": "本歌曲库为 LyricEx 自带的示例资源，仅供功能演示与学习交流使用；所有歌曲的著作权归原作者及版权方所有，请在欣赏后支持正版。"

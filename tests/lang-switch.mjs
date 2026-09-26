@@ -226,7 +226,7 @@ function dump(label) {
     keys.forEach(k => { if (statics[k] !== undefined) out[k] = statics[k]; });
     console.log('static i18n:', JSON.stringify(out));
     // dynamic settings controls
-    for (const id of ['generalControls', 'sidebarControls', 'lyricsControls', 'appearanceFonts', 'shortcutControls']) {
+    for (const id of ['generalControls', 'sidebarControls', 'lyricsControls', 'appearanceFonts', 'appearanceCinema', 'shortcutControls']) {
         const el = byId.get(id);
         console.log(id + ': children=' + (el ? el._children.length : 'null') + ' text=' + JSON.stringify(el ? el.textContent.slice(0, 100) : ''));
     }
@@ -253,6 +253,9 @@ function check(name, cond) {
 }
 
 i18n.setLocale('zh');
+// v3.0.0 regression: the cinema section must be CLEARED on re-render, not
+// appended — locale switches must not multiply the backdrop rows
+check('cinema rows stable across locale switches', byId.get('appearanceCinema')._children.length <= 8);
 byId.get('settingsOverlay').classList.remove('open');
 i18n.setLocale('en');
 check('general controls re-render when closed (en)', byId.get('generalControls').textContent.includes('Default view'));

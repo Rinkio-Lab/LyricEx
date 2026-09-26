@@ -190,6 +190,24 @@
 .changelog-modal {
     max-width: 640px;
 }
+.changelog-title {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 30px 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+.changelog-title .cl-only-zh {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 0 6px;
+}
 .changelog-body {
     flex: 1;
     overflow-y: auto;
@@ -675,7 +693,34 @@
 }
 .setting-row input[type="range"] {
     flex: 1.4;
-    accent-color: var(--accent);
+    min-width: 0;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--progress-bg);
+    outline: none;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+.setting-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+}
+.setting-row input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+}
+.setting-row input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: transparent;
 }
 .setting-row input[type="checkbox"] {
     width: 16px;
@@ -1298,6 +1343,7 @@
 .library-footer {
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
 }
 .library-footer .close-btn {
     border: 1px solid var(--border-color);
@@ -1314,6 +1360,11 @@
     color: var(--text-primary);
     border-color: var(--accent);
 }
+
+.library-item-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.library-item-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--accent);text-decoration:none;border:1px solid var(--border-color);padding:2px 8px;transition:border-color var(--transition),background var(--transition);}
+.library-item-link:hover{border-color:var(--accent);background:var(--accent-bg);}
+.library-item-link i{font-size:11px;}
 
 /* v2.9.3: multi-source chooser overlays the modal */
 .library-source-pop {

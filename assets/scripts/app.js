@@ -2331,9 +2331,20 @@
             let meta = s.artist ? esc(s.artist) : '';
             if (s.source) meta += (meta ? ' · ' : '') + esc(s.source);
             if (s.copyright) meta += (meta ? ' · ' : '') + esc(s.copyright);
+            // v3.0.0: manifest songs[].links[] — optional author/source page
+            // links (icon = Font Awesome class); a placeholder "#" is fine
+            var links = Array.isArray(s.links) ? s.links : [];
+            var linksHTML = links.map(function (lk) {
+                var url = lk.url || '#';
+                var label = lk.label || url;
+                var icon = lk.icon || 'fa-globe';
+                return '<a class="library-item-link" href="' + esc(url) + '" target="_blank" rel="noopener">' +
+                    '<i class="fas ' + esc(icon) + '"></i> ' + esc(label) + '</a>';
+            }).join('');
             row.innerHTML =
                 '<div class="library-item-info"><div class="library-item-title">' + esc(s.title || '') + '</div>' +
                 (meta ? '<div class="library-item-meta">' + meta + '</div>' : '') +
+                (linksHTML ? '<div class="library-item-links">' + linksHTML + '</div>' : '') +
                 '</div><button class="library-item-btn">' + t('librarySource') + '</button>';
             row.querySelector('.library-item-btn').addEventListener('click', function () { openLibrarySong(s); });
             libraryList.appendChild(row);

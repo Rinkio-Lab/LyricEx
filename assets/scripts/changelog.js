@@ -10,9 +10,17 @@
 
     root.__lyricexChangelog = [
         {
-            version: '3.0.0-alpha',
-            date: '待发布',
+            version: '3.0.0',
+            date: '2026-09-27',
             changes: [
+                { type: 'fixed', text: '设置 → 外观 → 影院：切换语言后背景效果设置重复追加（renderSettingControls 从未清空 appearanceCinema，每次切语言多 8 行）——补清空，语言切换后稳定 8 行' },
+                { type: 'fixed', text: '设置滑块（input range）此前仅 accent-color，Firefox/旧内核显示原生灰滑块——补全自定义轨道与滑块（::-webkit-slider-thumb / ::-moz-range-thumb/track）' },
+                { type: 'fixed', text: '编辑歌曲信息弹窗按钮无间隙：.library-footer 缺 gap，保存/取消按钮紧贴——补 gap 10px（示例包弹窗同修）' },
+                { type: 'added', text: '示例包 manifest 歌曲支持 links[]（来源页：label/url/icon 图标），弹窗内渲染链接行；示例数据先占位 #，维护者自行填写' },
+                { type: 'added', text: '更新日志弹窗补标题与「仅中文」徽标（正文保持开发者中文、不 i18n，标注多语说明）' },
+                { type: 'changed', text: '关于页全量多语化：口号/构建者/使用技术五项/许可证/免责声明并入三语字典；GitHub 链接移至邮箱下方' },
+                { type: 'changed', text: '清空曲库确认文案说明只删除浏览器内曲库记录、不删除电脑源文件（数据存 IndexedDB，浏览器策略不允许访问源文件）' },
+                { type: 'fixed', text: 'release-check 版本比较不支持预发布后缀（v3.0.0-alpha 匹配失败）——正则支持 -suffix，与 CHANGELOG 锁步校验可过' },
                 { type: 'added', text: '本地歌曲库独立视图（侧边栏「我的曲库」）：IndexedDB 持久化（songs / playlists / meta），浏览器选文件夹递归导入 zip 歌词包与 mp3/flac/m4a/ogg/wav 音频' },
                 { type: 'added', text: '导入自动读元数据：zip 包走 manifest / 旧 song.json / LRC，裸音频解析 ID3v2 标签（歌名/歌手/专辑/流派/年份/曲目/内嵌封面）+ MP3 CBR 时长估算；按「路径+大小」与「歌名+歌手」双重去重' },
                 { type: 'added', text: '浏览与查找：歌名/歌手/专辑/歌词全文搜索；歌手/专辑/流派/年份/标签 5 个筛选；歌名/歌手/时长/添加时间/播放次数排序；滚动加载分页' },

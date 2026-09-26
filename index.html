@@ -146,16 +146,19 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v3.0.0-alpha · 2026</div>
-                        <div class="slogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
+                        <div class="version">v3.0.0 · 2026</div>
+                        <div class="slogan" data-i18n="aboutSlogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
                         <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
                         <h3 data-i18n="developer">开发者</h3>
+                        <p data-i18n-html="aboutBuiltBy">由 <a href="#" target="_blank">Rinkio</a> 构建</p>
                         <p>
-                            由 <a href="#" target="_blank">Rinkio</a> 构建<br>
                             <span style="font-size:13px;color:var(--text-muted);">
                                 <i class="fas fa-envelope" style="margin-right:4px;"></i>
                                 <a href="mailto:limebow2@gmail.com">limebow2@gmail.com</a>
                             </span>
+                        </p>
+                        <p>
+                            <i class="fab fa-github"></i> <a href="https://github.com/Rinkio-Lab/LyricEx" target="_blank" rel="noopener">Rinkio-Lab/LyricEx</a> <span data-i18n="aboutGitHub">· 源码与 Release</span>
                         </p>
                     </section>
                     <section class="about-section" data-nav="quickStart">
@@ -171,11 +174,11 @@
                     <section class="about-section" data-nav="techUsed">
                         <h4 data-i18n="techUsed">使用技术</h4>
                         <ul class="tech-list">
-                            <li><span class="tech-icon"><i class="fas fa-file-code"></i></span> Font Awesome 5 · 图标库</li>
-                            <li><span class="tech-icon"><i class="fas fa-archive"></i></span> JSZip · 解压 / 打包 ZIP</li>
-                            <li><span class="tech-icon"><i class="fas fa-wave-square"></i></span> Web Audio API · 频谱 / 变调</li>
-                            <li><span class="tech-icon"><i class="fas fa-paint-brush"></i></span> 原生 CSS · 无第三方框架</li>
-                            <li><span class="tech-icon"><i class="fab fa-js"></i></span> 原生 JavaScript · 无第三方框架</li>
+                            <li><span class="tech-icon"><i class="fas fa-file-code"></i></span> <span data-i18n="aboutTechFa">Font Awesome 5 · 图标库</span></li>
+                            <li><span class="tech-icon"><i class="fas fa-archive"></i></span> <span data-i18n="aboutTechJszip">JSZip · 解压 / 打包 ZIP</span></li>
+                            <li><span class="tech-icon"><i class="fas fa-wave-square"></i></span> <span data-i18n="aboutTechWebaudio">Web Audio API · 频谱 / 变调</span></li>
+                            <li><span class="tech-icon"><i class="fas fa-paint-brush"></i></span> <span data-i18n="aboutTechCss">原生 CSS · 无第三方框架</span></li>
+                            <li><span class="tech-icon"><i class="fab fa-js"></i></span> <span data-i18n="aboutTechJs">原生 JavaScript · 无第三方框架</span></li>
                         </ul>
                     </section>
                     <section class="about-section" data-nav="shortcuts">
@@ -185,11 +188,10 @@
                     </section>
                     <section class="about-section disclaimer" data-nav="openSource">
                         <h4 data-i18n="openSource">开源与声明</h4>
-                        <p>本项目基于<a href="https://opensource.org/licenses/MIT" target="_blank"> MIT 协议</a>开源。</p>
-                        <p><i class="fab fa-github"></i> <a href="https://github.com/Rinkio-Lab/LyricEx" target="_blank" rel="noopener">Rinkio-Lab/LyricEx</a> · 源码与 Release</p>
-                        <p class="small-text">
-                            免责声明：本工具仅为前端音频播放工具，不存储、不提供任何音频文件。
-                            所有播放内容均来自用户本地设备或用户自行提供的合法文件。
+                        <p data-i18n-html="aboutLicense">本项目基于<a href="https://opensource.org/licenses/MIT" target="_blank"> MIT 协议</a>开源。</p>
+                        <p class="small-text" data-i18n-html="aboutDisclaimer">
+                            免责声明：本工具仅为前端音频播放工具，不存储、不提供任何音频文件。<br>
+                            所有播放内容均来自用户本地设备或用户自行提供的合法文件。<br>
                             请支持正版音乐。
                         </p>
                     </section>
@@ -206,6 +208,7 @@
     <!-- CHANGELOG MODAL (v2.0.0) – rendered from assets/scripts/changelog.js -->
     <div class="about-overlay" id="changelogOverlay" role="dialog" aria-modal="true" data-i18n-title="viewChangelog">
         <div class="about-modal changelog-modal">
+            <div class="changelog-title"><i class="fas fa-scroll"></i> <span data-i18n="viewChangelog">更新日志</span><span class="cl-only-zh" data-i18n="clOnlyZh">仅中文</span></div>
             <div class="changelog-body" id="changelogBody"></div>
             <div class="about-footer">
                 <button class="close-btn" id="changelogCloseBtn" data-i18n="close">关闭</button>

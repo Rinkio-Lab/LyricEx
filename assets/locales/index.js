@@ -92,6 +92,12 @@ window.__i18n = window.__i18n || {};
         });
         // update title attributes (v2.2.0: same label is exposed as aria-label
         // so icon-only buttons are announced to screen readers)
+        // v3.0.0: keys containing HTML (links, <br>) render via innerHTML —
+        // the plain data-i18n path uses textContent and would strip them
+        document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+            const htmlKey = el.getAttribute('data-i18n-html');
+            if (htmlKey) el.innerHTML = i18n.t(htmlKey);
+        });
         document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
             const label = i18n.t(el.getAttribute('data-i18n-title'));
             el.title = label;
