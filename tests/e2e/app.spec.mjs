@@ -20,9 +20,21 @@ function watchErrors(page) {
 
 /** boot the app with a clean context; pre-mark the first-visit guide as seen
     so the onboarding modal never intercepts clicks in smoke tests */
+// e2e targets UI behaviour, not caching: page.route cannot intercept fetches
+// issued from the service-worker scope, so SW caching would make manifest stubs
+// unreliable. Disable the SW for every test.
+test.beforeEach(async ({ page }) => {
+    await page.route('**/sw.js', (route) => route.abort());
+});
+
 async function openApp(page, url = '/') {
     await page.addInitScript(() => {
         try { localStorage.setItem('lyricex-guide-seen', '1'); } catch (_) { /* noop */ }
+        // page.route cannot intercept fetches issued from the service-worker
+        // scope, which would make manifest stubs unreliable — neuter SW here.
+        try {
+            if (navigator.serviceWorker) navigator.serviceWorker.register = () => Promise.resolve(undefined);
+        } catch (_) { /* noop */ }
     });
     await page.goto(url);
     // deterministic assertions: wait until boot has run (theme applied etc.)
@@ -313,7 +325,10 @@ test('song library: Open button label + multi-source chooser (v2.9.3)', async ({
             })
         }));
     await openApp(page);
+    // v2.9.4: the sidebar button now opens the standalone library view; the
+    // sample-pack modal lives inside that view behind the "示例包" button
     await page.click('#librarySideBtn');
+    await page.click('#libSamplesBtn');
     // button carries action semantics ("打开"), not the old "来源" label
     await expect(page.locator('.library-item-btn').first()).toHaveText('打开');
     // a multi-source song opens the chooser instead of loading straight through
@@ -323,5 +338,35 @@ test('song library: Open button label + multi-source chooser (v2.9.3)', async ({
     await expect(page.locator('#librarySourcePop .library-source-btn')).toHaveCount(2);
     await page.click('#librarySourcePopClose');
     await expect(page.locator('#librarySourcePop')).toBeHidden();
+    expect(errors).toEqual([]);
+});
+
+test('library view: folder import, rows, search, detail, play (v2.9.4)', async ({ page }) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await page.click('#librarySideBtn');
+    await expect(page.locator('.library-view')).toBeVisible();
+    await expect(page.locator('.library-body')).toContainText('曲库为空');
+    // webkitdirectory input accepts a directory path
+    await page.setInputFiles('#libDirInput', 'tests/e2e/fixtures/library');
+    await page.waitForSelector('.lib-row');
+    // the import-finished dialog (if any) closes itself after the progress row
+    await page.locator('#dialogOverlay .dialog-primary').first().click().catch(() => {});
+    await expect(page.locator('.lib-row')).toHaveCount(2);
+    await expect(page.locator('.lib-row').filter({ hasText: '测试歌曲' })).toContainText('测试歌手');
+    await expect(page.locator('.lib-row').filter({ hasText: '裸音源' })).toContainText('ID3歌手');
+    // search hits lyric body text
+    await page.fill('#libSearchInput', 'こんにちは');
+    await expect(page.locator('.lib-row')).toHaveCount(1);
+    await page.fill('#libSearchInput', '');
+    // detail + back
+    await page.locator('.lib-row').filter({ hasText: '测试歌曲' }).locator('[data-action="detail"]').click();
+    await expect(page.locator('.lib-detail-title')).toHaveText('测试歌曲');
+    await page.click('[data-action="detail-back"]');
+    await expect(page.locator('.lib-row')).toHaveCount(2);
+    // play the pack song -> lyrics view renders its lines
+    await page.locator('.lib-row').filter({ hasText: '测试歌曲' }).locator('[data-action="play"]').click();
+    await expect(page.locator('#viewContent .view-lyrics')).toBeVisible();
+    await expect(page.locator('#viewContent')).toContainText('こんにちは');
     expect(errors).toEqual([]);
 });

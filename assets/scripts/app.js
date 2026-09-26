@@ -2911,6 +2911,7 @@
             loadZip: loadZipFile,
             loadLrc: loadLrcFile,
             playLibrarySong: playLibrarySong,
+            openLibrary: openLibrary, closeLibrary: closeLibrary,
             loadFile: handleFile,
             switchView: switchView,
             toggleTheme: toggleTheme,
