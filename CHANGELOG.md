@@ -1,3 +1,16 @@
+## v2.8.1（待发布 · 编辑器 tab 样式对齐设置 · README 三语）
+
+> 修复编辑器「精修/制包」tab 样式与设置页 tab 不一致的问题（改为等宽 + 底部 accent 指示条）；新增 README 中英日三语（默认英文）。
+
+### Changed
+- **编辑器 tab 样式**：`.editor-tabs/.editor-tab` 由「描边圆角按钮」改为与设置页 `.settings-tabs` 同款——`flex:1` 等宽、hover 底色、激活态 accent 色 + 2px 底部指示条（`views.css`）
+- **README 三语**：默认英文 `README.md` + `README.zh-CN.md` + `README.ja.md`；开篇命令示例、四视图截图（`assets/images/shots/`）、功能清单、制包指引、开发命令、精简目录树；徽章（CI / MIT / 零依赖）
+- **截图脚本**：新增 `scripts/readme-shots.mjs`——Playwright 起本地服务、载示例包、逐视图截图（含 build tab），输出 1280x800 高清图到 `assets/images/shots/`
+- **i18n**：无新增键（README 三语不涉及运行时 i18n）
+
+### Notes
+- 部署提醒：部署站 `index.html` 若缺 `utils/netease.js / ai-import.js / ai-prompt.js / lyric-package.js / ui/workspace.js` 会导致制包 tab 空白（本地代码已验证正常），需重新完整部署全部 assets；浏览器刷新两次（SW cache-first）
+
 # Changelog
 
 ## v2.8.0（待发布 · 设置导出/导入）

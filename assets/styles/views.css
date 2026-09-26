@@ -1048,10 +1048,10 @@
 /* ======================= V2.6.0: EDITOR WORKSPACE TABS ======================= */
 .editor-tabs {
     display: flex;
-    gap: 4px;
-    padding: 4px 0 8px;
     border-bottom: 1px solid var(--border-color);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    /* v2.8.1: settings-style tabs — equal-width, bottom accent bar,
+       hover tint (matches .settings-tabs in overlays.css) */
 }
 .editor-empty-hint {
     padding: 18px;
@@ -1063,25 +1063,26 @@
 }
 .editor-empty-hint i { margin-right: 6px; }
 .editor-tab {
-    border: 1px solid var(--border-color);
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
     background: transparent;
     color: var(--text-secondary);
-    padding: 6px 18px;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     font-family: var(--font);
-    border-radius: 4px;
-    transition: background var(--transition), color var(--transition), border-color var(--transition);
+    transition: background var(--transition), color var(--transition);
+    border-bottom: 2px solid transparent;
+    text-align: center;
 }
 .editor-tab:hover {
-    border-color: var(--accent);
-    color: var(--text-primary);
     background: var(--bg-hover);
+    color: var(--text-primary);
 }
 .editor-tab.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
+    color: var(--accent);
+    border-bottom-color: var(--accent);
 }
 .editor-pane {
     min-height: 100%;
