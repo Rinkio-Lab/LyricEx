@@ -10,6 +10,15 @@
 
     root.__lyricexChangelog = [
         {
+            version: '2.9.2',
+            date: '待发布',
+            changes: [
+                { type: 'fixed', text: '制包页 AI 逐词分析：导入分析按钮与上方粘贴结果 textarea 间隙过小（实测约 5px），补 margin 至 12px' },
+                { type: 'added', text: '制包页三处 textarea（原词 LRC / 翻译 LRC / AI 结果）新增一键清空按钮，清空同步重置对应草稿状态' },
+                { type: 'added', text: '关于页「开源与声明」补 GitHub 仓库链接（Rinkio-Lab/LyricEx · 源码与 Release）' },
+            ]
+        },
+        {
             version: '2.9.1',
             date: '待发布',
             changes: [

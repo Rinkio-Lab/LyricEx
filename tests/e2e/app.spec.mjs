@@ -88,6 +88,12 @@ test('workspace build tab: alternating JP/CN LRC auto-splits (v2.7.0)', async ({
     // v2.8.3: live AI-prompt preview renders after parsing
     await expect(page.locator('[data-ws-prompt-preview]')).toBeVisible();
     await expect(page.locator('[data-ws-prompt-preview]')).toContainText('# 角色');
+    // v2.9.2: one-click clear on the lyric textareas + an AI clear button
+    await page.fill('[data-ws-lrc="main"]', 'x');
+    await page.click('[data-ws-clear-lrc="main"]');
+    await expect(page.locator('[data-ws-lrc="main"]')).toHaveValue('');
+    await expect(page.locator('[data-ws-clear-lrc="trans"]')).toBeVisible();
+    await expect(page.locator('[data-ws-clear-ai]')).toBeVisible();
     expect(errors).toEqual([]);
 });
 

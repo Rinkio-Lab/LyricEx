@@ -366,6 +366,7 @@
         'wsParseEmpty': '未解析到有效歌词行',
         'wsParseFail': '解析失败',
         'wsUpload': '上传文件',
+        'wsClear': '清空',
         'wsMixHint': '支持一行日文一行中文交替的 LRC，会自动拆分为原词与翻译',
         'wsAi': 'AI 逐词分析',
         'wsChunk': '分段行数',

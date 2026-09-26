@@ -366,6 +366,7 @@
         'wsParseEmpty': 'No valid lyric lines found',
         'wsParseFail': 'Parse failed',
         'wsUpload': 'Upload file',
+        'wsClear': 'Clear',
         'wsMixHint': 'Alternating JP/CN LRC (one Japanese line, one Chinese line) splits into original + translation automatically',
         'wsAi': 'AI word analysis',
         'wsChunk': 'Chunk size',

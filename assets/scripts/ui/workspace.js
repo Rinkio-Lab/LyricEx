@@ -55,10 +55,12 @@
                 '<label class="ws-lrc-box"><span>' + t('wsLrcMain') + '</span>' +
                 '<textarea class="ws-lrc-input" data-ws-lrc="main" rows="6" spellcheck="false" placeholder="' + t('wsLrcPlaceholder') + '"></textarea>' +
                 '<span class="ws-lrc-upload"><button class="editor-btn" data-ws-upload="main"><i class="fas fa-upload"></i> ' + t('wsUpload') + '</button>' +
+                '<button type="button" class="editor-btn" data-ws-clear-lrc="main"><i class="fas fa-times"></i> ' + t('wsClear') + '</button>' +
                 '<input type="file" class="ws-upload-file" data-ws-upload-file="main" accept=".lrc,.txt,text/plain" style="display:none"></span></label>' +
                 '<label class="ws-lrc-box"><span>' + t('wsLrcTrans') + ' <em>' + t('wsOptional') + '</em></span>' +
                 '<textarea class="ws-lrc-input" data-ws-lrc="trans" rows="6" spellcheck="false" placeholder="' + t('wsLrcPlaceholderTrans') + '"></textarea>' +
                 '<span class="ws-lrc-upload"><button class="editor-btn" data-ws-upload="trans"><i class="fas fa-upload"></i> ' + t('wsUpload') + '</button>' +
+                '<button type="button" class="editor-btn" data-ws-clear-lrc="trans"><i class="fas fa-times"></i> ' + t('wsClear') + '</button>' +
                 '<input type="file" class="ws-upload-file" data-ws-upload-file="trans" accept=".lrc,.txt,text/plain" style="display:none"></span></label>' +
                 '</div>' +
                 '<div class="ws-mix-hint"><i class="fas fa-magic"></i> ' + t('wsMixHint') + '</div>' +
@@ -79,6 +81,7 @@
                 '<pre class="ws-prompt-preview" data-ws-prompt-preview hidden></pre>' +
                 '<textarea class="ws-ai-result" data-ws-ai rows="8" spellcheck="false" placeholder="' + t('wsAiPlaceholder') + '"></textarea>' +
                 '<div class="ws-ai-row">' +
+                '<button type="button" class="editor-btn" data-ws-clear-ai><i class="fas fa-times"></i> ' + t('wsClear') + '</button>' +
                 '<button class="editor-btn" data-ws-ai-import><i class="fas fa-file-import"></i> ' + t('wsImportAi') + '</button>' +
                 '<span class="ws-ai-hint">' + t('wsAiHint') + '</span>' +
                 '</div>' +
@@ -301,6 +304,23 @@
                     if (clear.dataset.wsClear === 'audio') { audioFile = null; }
                     else { instrumentalFile = null; }
                     render(); return;
+                }
+                var lrcClear = e.target.closest('[data-ws-clear-lrc]');
+                if (lrcClear) {
+                    var lrcKey = lrcClear.dataset.wsClearLrc;
+                    if (lrcKey === 'main') { _lrcMain = ''; }
+                    else if (lrcKey === 'trans') { _lrcTrans = ''; }
+                    var lrcTa = viewContent.querySelector('[data-ws-lrc="' + lrcKey + '"]');
+                    if (lrcTa) lrcTa.value = '';
+                    return;
+                }
+                if (e.target.closest('[data-ws-clear-ai]')) {
+                    _aiResult = '';
+                    analysisApplied = false;
+                    var aiTa = viewContent.querySelector('[data-ws-ai]');
+                    if (aiTa) aiTa.value = '';
+                    updateStatus();
+                    return;
                 }
                 if (e.target.closest('[data-ws-parse]')) { parseLyrics(); return; }
                 if (e.target.closest('[data-ws-load]')) { loadToApp(); return; }

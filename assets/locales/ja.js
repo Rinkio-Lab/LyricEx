@@ -366,6 +366,7 @@
         'wsParseEmpty': '有効な歌詞行がありません',
         'wsParseFail': '解析失敗',
         'wsUpload': 'ファイルをアップロード',
+        'wsClear': 'クリア',
         'wsMixHint': '日本語と中国語が交互に並ぶ LRC（日本語1行・中国語1行）は、原詞と翻訳に自動分割されます',
         'wsAi': 'AI 単語解析',
         'wsChunk': '分割行数',

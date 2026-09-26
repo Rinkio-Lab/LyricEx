@@ -1221,6 +1221,7 @@
     outline: none;
     border-color: var(--accent);
 }
+.ws-ai-result { margin: 0 0 12px; } /* v2.9.2: breathing room above the import row (was ~5px) */
 .ws-netease {
     display: flex;
     flex-wrap: wrap;
