@@ -145,7 +145,7 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v2.9.2 · 2026</div>
+                        <div class="version">v2.9.3 · 2026</div>
                         <div class="slogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
                         <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
                         <h3 data-i18n="developer">开发者</h3>
@@ -648,6 +648,12 @@
             <p class="small-text" data-i18n="libraryHint">来自项目 examples/ 的示例歌词包。版权归原作者，仅供学习交流。</p>
             <div class="library-list" id="libraryList"></div>
             <div class="library-status" id="libraryStatus"></div>
+            <!-- v2.9.3: multi-source chooser shown when a song declares >1 source -->
+            <div class="library-source-pop" id="librarySourcePop" hidden>
+                <div class="library-source-pop-title" id="librarySourcePopTitle"></div>
+                <div class="library-source-pop-list" id="librarySourcePopList"></div>
+                <button class="close-btn" id="librarySourcePopClose" data-i18n="close">关闭</button>
+            </div>
             <div class="library-footer">
                 <button class="close-btn" id="libraryCloseBtn" data-i18n="close">关闭</button>
             </div>

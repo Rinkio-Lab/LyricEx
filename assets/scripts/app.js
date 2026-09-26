@@ -41,6 +41,10 @@
     const libraryList = document.getElementById('libraryList');
     const libraryStatus = document.getElementById('libraryStatus');
     const libraryCloseBtn = document.getElementById('libraryCloseBtn');
+    const librarySourcePop = document.getElementById('librarySourcePop');
+    const librarySourcePopTitle = document.getElementById('librarySourcePopTitle');
+    const librarySourcePopList = document.getElementById('librarySourcePopList');
+    const librarySourcePopClose = document.getElementById('librarySourcePopClose');
     const playerExt = document.getElementById('playerExt');
     const playerDrawer = document.getElementById('playerDrawer');
     const playerExtToggle = document.getElementById('playerExtToggle');
@@ -2281,6 +2285,7 @@
 
     function closeLibrary() {
         if (libraryOverlay) libraryOverlay.classList.remove('open');
+        closeSourcePop();
     }
 
     function renderLibrary(manifest) {
@@ -2298,21 +2303,56 @@
                 '<div class="library-item-info"><div class="library-item-title">' + esc(s.title || '') + '</div>' +
                 (meta ? '<div class="library-item-meta">' + meta + '</div>' : '') +
                 '</div><button class="library-item-btn">' + t('librarySource') + '</button>';
-            row.querySelector('.library-item-btn').addEventListener('click', function () { loadLibrarySong(s); });
+            row.querySelector('.library-item-btn').addEventListener('click', function () { openLibrarySong(s); });
             libraryList.appendChild(row);
         });
     }
 
-    function loadLibrarySong(song) {
-        if (!song || !song.file) return;
+    function openLibrarySong(song) {
+        // v2.9.3: manifest.sources[] may declare >1 loadable source for a song;
+        // single-source songs load straight through, multi-source show a chooser
+        var sources = Array.isArray(song.sources) ? song.sources : null;
+        if (sources && sources.length > 1) { renderSourcePop(song, sources); return; }
+        loadLibrarySong(song);
+    }
+
+    function renderSourcePop(song, sources) {
+        if (!librarySourcePop || !librarySourcePopList) return;
+        librarySourcePopTitle.textContent = t('librarySourceTitle');
+        librarySourcePopList.innerHTML = '';
+        sources.forEach(function (src) {
+            var file = src.file || song.file || '';
+            if (!file) return;
+            var label = src.label || file.split('/').pop() || t('librarySource');
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'library-source-btn';
+            btn.innerHTML = '<span class="library-source-label">' + esc(label) + '</span>' +
+                (src.file ? '<span class="library-source-file">' + esc(src.file.split('/').pop()) + '</span>' : '');
+            btn.addEventListener('click', function () {
+                closeSourcePop();
+                loadLibrarySong(song, file);
+            });
+            librarySourcePopList.appendChild(btn);
+        });
+        librarySourcePop.hidden = false;
+    }
+
+    function closeSourcePop() {
+        if (librarySourcePop) librarySourcePop.hidden = true;
+    }
+
+    function loadLibrarySong(song, fileOverride) {
+        var file = fileOverride || (song && song.file) || '';
+        if (!file) return;
         libraryStatus.textContent = t('libraryLoad');
-        fetch(song.file, { cache: 'force-cache' })
+        fetch(file, { cache: 'no-store' })
             .then(function (res) {
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 return res.blob();
             })
             .then(function (blob) {
-                const f = new File([blob], (song.file.split('/').pop() || 'song.lxp.zip'), { type: 'application/zip' });
+                const f = new File([blob], (file.split('/').pop() || 'song.lxp.zip'), { type: 'application/zip' });
                 closeLibrary();
                 handleFile(f);
             })
@@ -2347,6 +2387,8 @@
         if (coverViewerClose) coverViewerClose.addEventListener('click', closeCoverViewer);
         if (coverViewer) coverViewer.addEventListener('click', function (e) { if (e.target === coverViewer) closeCoverViewer(); });
         if (libraryCloseBtn) libraryCloseBtn.addEventListener('click', closeLibrary);
+        if (librarySourcePopClose) librarySourcePopClose.addEventListener('click', closeSourcePop);
+        if (librarySourcePop) librarySourcePop.addEventListener('click', function (e) { if (e.target === librarySourcePop) closeSourcePop(); });
         if (libraryOverlay) libraryOverlay.addEventListener('click', function (e) { if (e.target === libraryOverlay) closeLibrary(); });
         document.addEventListener('click', function (e) {
             if (topDrawer && topDrawer.style.display === 'flex' && !topDrawer.contains(e.target) && !(mobileMoreBtn && mobileMoreBtn.contains(e.target))) topDrawer.style.display = 'none';

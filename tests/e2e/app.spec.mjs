@@ -297,3 +297,31 @@ test('help center: nav, search, and body follows the locale fallback chain (v2.9
     await expect(page.locator('#help-faq')).toContainText('ビルドタブ');
     expect(errors).toEqual([]);
 });
+
+test('song library: Open button label + multi-source chooser (v2.9.3)', async ({ page }) => {
+    const errors = watchErrors(page);
+    // stub a multi-source manifest before boot (real manifest is single-source)
+    await page.route('**/examples/manifest.json', (route) =>
+        route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify({
+                songs: [{
+                    title: '多源示例歌', artist: 'Demo', source: '示例源',
+                    file: 'examples/a.zip',
+                    sources: [{ label: '源 A', file: 'examples/a.zip' }, { label: '源 B', file: 'examples/b.zip' }]
+                }]
+            })
+        }));
+    await openApp(page);
+    await page.click('#librarySideBtn');
+    // button carries action semantics ("打开"), not the old "来源" label
+    await expect(page.locator('.library-item-btn').first()).toHaveText('打开');
+    // a multi-source song opens the chooser instead of loading straight through
+    await page.click('.library-item-btn');
+    await expect(page.locator('#librarySourcePop')).toBeVisible();
+    await expect(page.locator('#librarySourcePopTitle')).toHaveText('选择来源');
+    await expect(page.locator('#librarySourcePop .library-source-btn')).toHaveCount(2);
+    await page.click('#librarySourcePopClose');
+    await expect(page.locator('#librarySourcePop')).toBeHidden();
+    expect(errors).toEqual([]);
+});

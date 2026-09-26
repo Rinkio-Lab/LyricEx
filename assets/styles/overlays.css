@@ -1218,6 +1218,7 @@
     pointer-events: auto;
 }
 .library-modal {
+    position: relative;
     background: var(--bg-secondary);
     color: var(--text-primary);
     max-width: 520px;
@@ -1313,6 +1314,60 @@
     color: var(--text-primary);
     border-color: var(--accent);
 }
+
+/* v2.9.3: multi-source chooser overlays the modal */
+.library-source-pop {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.library-source-pop[hidden] {
+    display: none;
+}
+.library-source-pop-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+.library-source-pop-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.library-source-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 13px;
+    text-align: left;
+    transition: border-color var(--transition);
+}
+.library-source-btn:hover {
+    border-color: var(--accent);
+}
+.library-source-file {
+    font-size: 11px;
+    color: var(--text-muted);
+    word-break: break-all;
+}
+
 
 /* =========================== v2.3.1: LANGUAGE DRAWER ===========================
    Language picking moved from an inline grid to a compact second-level drawer

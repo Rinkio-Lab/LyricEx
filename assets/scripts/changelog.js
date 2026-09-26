@@ -10,6 +10,16 @@
 
     root.__lyricexChangelog = [
         {
+            version: '2.9.3',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: '歌曲库支持多源：manifest songs[].sources 数组可声明多个可加载来源，>1 源时点「打开」弹出来源选择层，选定后加载对应包（单源仍一键直开）' },
+                { type: 'added', text: '示例包升级：春日影 / 私の心はチョココロネ / 星座になれたら 三个旧包补全行中文翻译（元数据行除外），与 MyGO/キリトリセン 一致' },
+                { type: 'fixed', text: '歌曲库行按钮「来源」翻译错误（行为是加载打开示例包，却译成出典/Source/Quelle 等）：改动作语义「打开/Open/開く」并修正全部 10 种语言；新增「选择来源」标题键' },
+                { type: 'fixed', text: '歌曲库加载包文件走 force-cache，示例包更新后用户仍拿旧包——改 no-store（与 manifest 拉取一致）' },
+            ]
+        },
+        {
             version: '2.9.2',
             date: '待发布',
             changes: [
