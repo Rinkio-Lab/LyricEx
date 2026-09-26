@@ -25,9 +25,10 @@ function cmpVersion(a, b) {
 
 // ---- 1. SW cache name vs CHANGELOG head -----------------------------------
 const sw = readFileSync(join(root, 'sw.js'), 'utf8');
-const cacheMatch = /CACHE\s*=\s*'lyricex-(v[\d.]+)'/.exec(sw);
+// allow pre-release suffixes (v3.0.0-alpha) — parse compares [major,minor,patch] only
+const cacheMatch = /CACHE\s*=\s*'lyricex-(v[\d.]+(?:-[a-z0-9]+)?)'/.exec(sw);
 const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
-const headMatch = /^##\s+(v[\d.]+)/m.exec(changelog);
+const headMatch = /^##\s+(v[\d.]+(?:-[a-z0-9]+)?)/m.exec(changelog);
 
 ok(!!cacheMatch, 'sw.js CACHE name found');
 ok(!!headMatch, 'CHANGELOG head version found');

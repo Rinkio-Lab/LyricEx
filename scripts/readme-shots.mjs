@@ -25,7 +25,7 @@ async function main() {
     await page.waitForFunction(() => window.__lyricex !== undefined, null, { timeout: 15000 });
 
     // load an example package via the file input
-    const pkg = join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip');
+    const pkg = join(ROOT, 'tests', 'e2e', 'fixtures', 'library', '测试包.zip');
     await page.setInputFiles('#fileInput', pkg);
     await page.waitForSelector('.view-lyrics .lyric-line', { timeout: 15000 });
 
@@ -49,6 +49,15 @@ async function main() {
     });
     await page.waitForTimeout(400);
     await page.screenshot({ path: join(OUT, 'build.png') });
+
+    // library view (v3.0.0-alpha): import the e2e fixture dir, then shoot
+    await page.click('#librarySideBtn');
+    await page.waitForTimeout(400);
+    await page.setInputFiles('#libDirInput', join(ROOT, 'tests', 'e2e', 'fixtures', 'library'));
+    await page.waitForSelector('.lib-row', { timeout: 15000 });
+    await page.locator('#dialogOverlay .dialog-primary').first().click().catch(() => {});
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: join(OUT, 'library.png') });
 
     await browser.close();
     server.kill();

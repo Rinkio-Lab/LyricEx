@@ -36,6 +36,10 @@ node scripts/serve.mjs
 |---|---|
 | ![混合视图](assets/images/shots/mixed.png) | ![编辑工作区](assets/images/shots/build.png) |
 
+| 歌曲库（本地曲库） |
+|---|
+| ![歌曲库](assets/images/shots/library.png) |
+
 ## 功能
 
 - **四种视图** — 歌词（跟唱）、学习（逐词表：罗马音 / 平假名 / 汉字 / 词性 / 释义）、混合（两者兼得）、编辑（时间轴 + 导出）。

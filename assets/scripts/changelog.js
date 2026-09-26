@@ -10,6 +10,25 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.0.0-alpha',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: '本地歌曲库独立视图（侧边栏「我的曲库」）：IndexedDB 持久化（songs / playlists / meta），浏览器选文件夹递归导入 zip 歌词包与 mp3/flac/m4a/ogg/wav 音频' },
+                { type: 'added', text: '导入自动读元数据：zip 包走 manifest / 旧 song.json / LRC，裸音频解析 ID3v2 标签（歌名/歌手/专辑/流派/年份/曲目/内嵌封面）+ MP3 CBR 时长估算；按「路径+大小」与「歌名+歌手」双重去重' },
+                { type: 'added', text: '浏览与查找：歌名/歌手/专辑/歌词全文搜索；歌手/专辑/流派/年份/标签 5 个筛选；歌名/歌手/时长/添加时间/播放次数排序；滚动加载分页' },
+                { type: 'added', text: '组织与收藏：歌单创建/重命名/删除/打开/增删歌，收藏与取消收藏，最近播放，播放次数统计，标签编辑' },
+                { type: 'added', text: '展示：专辑封面（zip / ID3 内嵌）、歌曲详情页（元数据网格 + 歌词预览）、按歌手/专辑聚合 tab' },
+                { type: 'added', text: '曲库播放走主播放器：有歌词自动进歌词视图、侧栏状态同步、记录播放次数与最近播放' },
+                { type: 'added', text: '控制台日志系统（utils/log.js）：debug/info/warn/error 分级、模块前缀 + 时间戳、localStorage lyricex-log-level 开关，日志永不抛错' },
+                { type: 'fixed', text: '歌曲库详情返回后列表渲染中断：renderBody 对详情视图已替换掉的 #libStatus 元素写 textContent 抛空引用——判空保护' },
+                { type: 'fixed', text: '库视图布局不生效：CSS 类名 .view-library 与 JS 渲染的 .library-view 不一致——统一类名' },
+                { type: 'fixed', text: '库视图按钮全部无样式：全局 .close-btn 仅在弹窗 footer 作用域有样式，独立视图裸用无规则——按视图作用域补齐模态按钮外观' },
+                { type: 'changed', text: '侧边栏/抽屉「歌曲库」从弹窗升级为独立视图；示例包弹窗保留在视图内「示例包」按钮（GitHub 源不支持添加，仅查看/试听）' },
+                { type: 'test', text: '新增 tests/library-test.mjs（metadata 纯函数 32 断言）并入 run-tests 聚合器；e2e 新增库视图用例（fixture 目录导入/搜索/详情/播放）并适配 v2.9.3 多源用例；e2e 禁用 Service Worker 保证 manifest stub 可靠' },
+                { type: 'changed', text: '版本号 3.0.0-alpha（预发布，等待真机验收后再正式 3.0.0）' },
+            ]
+        },
+        {
             version: '2.9.3',
             date: '待发布',
             changes: [

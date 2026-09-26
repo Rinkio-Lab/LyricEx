@@ -151,3 +151,34 @@ song.json + 一个 .mp3
   偏移已烘焙进时间戳（`config.lyricOffset` 写 0，避免二次应用）
 - **导出 .lrc**：直接生成标准 LRC 文件
 - 即：群友包 → LyricEx 包 的转换 = 打开包 + （可选加伴奏/封面）+ 点一次导出
+
+## 5. 歌曲库目录 manifest（examples/manifest.json）
+
+「歌曲库 → 示例包」读取 `examples/manifest.json`（拉取走 `no-store`，更新后
+立即生效）。每首歌一个条目，字段全部可选；`file` 缺省时取 `sources[0]`：
+
+```json
+{
+  "notice": "整库说明，显示在弹窗底部",
+  "songs": [
+    {
+      "title": "歌曲标题",
+      "artist": "艺术家",
+      "file": "examples/xxx.zip",
+      "source": "来源/出处说明",
+      "copyright": "版权声明",
+      "sources": [
+        { "label": "源 A 显示名", "file": "examples/xxx.zip" },
+        { "label": "源 B 显示名", "file": "examples/yyy.zip" }
+      ]
+    }
+  ]
+}
+```
+
+- `sources`（v2.9.3+）：同一首歌可声明多个可加载来源（如不同版本/画质/编码）；
+  **多于 1 个源**时点「打开」弹出来源选择层，选定后加载对应包；单源/缺省仍
+  一键直开 `file`。
+- 该 manifest 仅描述「示例包」目录（GitHub 源），本地歌曲库（IndexedDB）导入
+  不读它：zip 包按 manifest / 旧 song.json / LRC 优先级解析，裸音频解析 ID3v2
+  标签，详见帮助页「歌曲库」章节。
