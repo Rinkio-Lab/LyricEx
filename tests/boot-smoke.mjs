@@ -1,4 +1,4 @@
-﻿/* LyricEx boot smoke test – runs the real app.js against a minimal DOM shim.
+/* LyricEx boot smoke test – runs the real app.js against a minimal DOM shim.
    Run with: node tests/boot-smoke.mjs */
 function makeEl() {
     return {
@@ -72,6 +72,10 @@ await import('../assets/scripts/utils/notes.js');
 await import('../assets/scripts/utils/wordtiming.js');
 await import('../assets/scripts/utils/canvas.js');
 await import('../assets/scripts/utils/share-card.js');
+await import('../assets/scripts/utils/netease.js');
+await import('../assets/scripts/utils/ai-import.js');
+await import('../assets/scripts/utils/ai-prompt.js');
+await import('../assets/scripts/utils/lyric-package.js');
 await import('../assets/scripts/modules/pitch-shift.js');
 await import('../assets/scripts/modules/audio-graph.js');
 await import('../assets/scripts/modules/recent-store.js');
@@ -79,6 +83,7 @@ await import('../assets/scripts/modules/video.js');
 await import('../assets/scripts/ui/video-export.js');
 await import('../assets/scripts/ui/share.js');
 await import('../assets/scripts/ui/editor.js');
+await import('../assets/scripts/ui/workspace.js');
 await import('../assets/scripts/ui/search.js');
 await import('../assets/scripts/ui/mini.js');
 await import('../assets/scripts/ui/cinema.js');

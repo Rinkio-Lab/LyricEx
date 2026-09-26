@@ -1,16 +1,53 @@
-# Node / tooling
-node_modules/
-
-# Test artifacts
-test-results/
-playwright-report/
-coverage/
-.pw-browsers/
-
-# OS / editor junk
-Thumbs.db
-.DS_Store
-*.log
-
 # local tooling state
 .dsh/
+
+# temp: third-party site snapshot for feature study (user-driven)
+temp/
+
+# --- dev/test artifacts (never committed) ---
+node_modules/
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+.pw-browsers/
+
+# --- build output (if a bundler/build step is ever added) ---
+dist/
+build/
+out/
+.vite/
+.cache/
+
+# --- logs & debug ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.eslintcache
+
+# --- editor / IDE (local only) ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.vs/
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- secrets / local env (project stays static, but future-proof) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- local uploads / misc scratch ---
+uploads/
+scratch/
+*.tmp

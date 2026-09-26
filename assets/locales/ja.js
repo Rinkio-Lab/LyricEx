@@ -1,4 +1,4 @@
-﻿/* Japanese – LyricEx */
+/* Japanese – LyricEx */
 (function () {
     var i18n = window.__i18n;
     i18n.register('ja', {
@@ -331,6 +331,52 @@
         'editorInstAdd': '伴奏を追加',
         'editorInstChange': '伴奏を変更',
         'editorInstRemove': '削除',
+
+        /* v2.6.0: editor workspace tabs */
+        'editorTabRefine': '編集',
+        'editorEmptyHint': '歌詞がまだありません。「パック作成」タブで歌詞パックを作成するか、ホーム画面から歌詞をアップロードしてください。',
+        'editorTabBuild': 'パック作成',
+        /* v2.6.0: workspace build pane */
+        'wsMedia': '音声',
+        'wsVocal': 'ボーカル音声（必須）',
+        'wsInst': '伴奏音声（任意）',
+        'wsNoFile': 'ファイル未選択',
+        'wsInstHint': 'ボーカルと伴奏を同時に推奨：パック生成後、再生バーで「ボーカル/伴奏」を切替、各行の伴奏を試聴できます。伴奏は空でも可。',
+        'wsLyrics': '歌詞',
+        'wsLrcMain': '日本語歌詞（LRC）',
+        'wsLrcTrans': '中文訳（LRC）',
+        'wsOptional': '任意',
+        'wsLrcPlaceholder': 'LRC 歌詞を貼り付け、例：\n[00:15.3] 重大な問題抱えて眠る',
+        'wsLrcPlaceholderTrans': '訳 LRC を貼り付け（原文のタイムスタンプと一致）',
+        'wsNetease': 'または NetEase 歌詞 JSON を貼り付け',
+        'wsNeteasePlaceholder': '{&quot;lrc&quot;:{&quot;lyric&quot;:&quot;...&quot;},&quot;tlyric&quot;:{...}}',
+        'wsParse': '解析',
+        'wsLoadToApp': 'プレイヤー/エディタに読込',
+        'wsParsedN': '{n} 行を解析済み',
+        'wsNeedLrc': 'LRC 歌詞または NetEase JSON を先に貼り付けてください',
+        'wsParseEmpty': '有効な歌詞行がありません',
+        'wsParseFail': '解析失敗',
+        'wsUpload': 'ファイルをアップロード',
+        'wsMixHint': '日本語と中国語が交互に並ぶ LRC（日本語1行・中国語1行）は、原詞と翻訳に自動分割されます',
+        'wsAi': 'AI 単語解析',
+        'wsChunk': '分割行数',
+        'wsChunkPlaceholder': '空欄 = 分割しない',
+        'wsCopyPrompt': 'プロンプトをコピー',
+        'wsAiPlaceholder': 'AI が返した JSON 結果を貼り付け',
+        'wsImportAi': '解析を取込',
+        'wsAiHint': 'プロンプトを任意の LLM に貼り、返ってきた JSON をここに貼り付け',
+        'wsPart': '第 {n} 段',
+        'wsPromptCopied': 'プロンプトをクリップボードにコピーしました',
+        'wsCopyFail': 'コピー失敗、手動でコピーしてください',
+        'wsAiOk': '{n} 行をマッチ',
+        'wsAiMiss': '、{n} 行が不一致（時間またはテキスト）',
+        'wsAiApplied': '解析済み、書き出し可',
+        'wsExport': '書き出し',
+        'wsExportPack': 'LyricEx パックを書き出し',
+        'wsReset': 'リセット',
+        'wsNeedAudio': 'ボーカル音声を先に選択してください',
+        'wsExported': 'パックを書き出しました',
+        'wsExportFail': '書き出し失敗',
 
         /* v1.7.0: theme three-state */
         'systemTheme': 'システム連動',

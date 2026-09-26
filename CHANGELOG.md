@@ -1,5 +1,38 @@
 # Changelog
 
+## v2.7.0（待发布 · AI 分析 · 交替 LRC）
+
+> AI 逐词分析走「复制提示词 → 任意大模型 → 粘贴结果」手动流（纯静态，不引 API）；交替双语 LRC（网易云内联格式）自动拆分；LRC 支持直接上传文件（与粘贴并存）；逐字歌词链路确认无需引第三方库。
+
+### Added
+- **AI 逐词分析工作流**：`utils/ai-prompt.js`（重写提示词：角色/输出格式/分析规则/3 条示例/歌词正文，可选手动分段 `{n}` 标注段落）、`utils/ai-import.js`（`parseAiResult` 容错解析：剥代码块/找首个 `{...}`、逐条严格校验；`matchAnalysisToLyrics` 按「时间×10 取整 + 文本去空格」双键保守匹配，未匹配不猜测）
+- **交替 LRC 自动拆分**：`lib.splitMixedLrc`——按 10ms 时间戳分组、复用 `lib.isChinese` 判定，把「一行日文一行中文」的网易云内联 LRC 自动拆为原词 + 翻译（纯中文/纯日文输入不误拆，全部保留为原词）
+- **parseLRC 修复**：网易云行尾时间戳变体（`[t1]正文[t2]`，t2 为下句开始）此前整行丢弃，现取 t1 为行时间、两时间戳之间为正文
+- **LRC 文件上传**：main/trans 双栏各配「上传文件」按钮，读取 `.lrc/.txt` 回填 textarea（粘贴流程保留）；上传交替 LRC 自动触发拆分
+- **逐字歌词链路确认**：增强 LRC（`<mm:ss.xx>` 内联）与 ASS karaoke（`\k`）解析、时间邻近合并、卡拉OK渲染、编辑器「导入逐字时间」入口均已有（v1.6.0 起），不引第三方库——逐字时间戳生成属 ASR/强制对齐领域，任何 LRC 库均不提供，正确工作流是外部生成 → 导入 → 进包
+
+### Changed
+- **空状态可达制包工作区**：`renderEditorView` 在无歌词时不再短路为 empty 视图——渲染 tab 结构，精修页显示引导提示，制包页可直接从零开始建包（v2.6.0 起的设计缺口补全）
+- **i18n**：新增 43 个键（v2.6.0 的 42 个 + `editorEmptyHint`），zh/ja/en 三语同步补齐
+- **测试**：`utils-test.mjs` 新增网易云内联变体解析与 `splitMixedLrc` 分组拆分用例（交替拆/纯中文/纯日文）；boot-smoke、lang-switch 补 import 新模块；e2e 新增「build tab 交替 LRC 自动拆分」用例（空状态 → 进制包 → 粘贴 → 拆分回填）
+
+### Notes
+- 其他语言（ko/fr/es/de/pt-br/ru/ar）由用户手动维护：43 个新键已交付清单，含 `{n}` 占位符须保留，`wsNeteasePlaceholder` 用 `&quot;` 转义
+
+## v2.6.0（待发布 · 制包工作区）
+
+> 编辑器视图升级为「工作区」：精修 / 制包双 tab。制包用现有包逻辑升级为 v2.1（version 仍为 2，加载器零改动，字段全可选）。
+
+### Added
+- **工作区 tab 化**：编辑视图包 `.editor-tabs` 双 tab——「精修」保留原编辑全部功能，「制包」为新建 `ui/workspace.js`（媒体卡片[原声必选+伴奏可选含拖拽]、LRC 双栏 + 网易云 JSON、AI 分析组、导出组；draft 状态独立于 ctx.lyrics，`resetDraft` 清空）
+- **制包 v2.1**：`utils/lyric-package.js` 的 `buildManifest` 新增全可选字段 `audioFileName / instrumentalFileName / config.analysisModel / config.analysisSource`；`version` 恒为 2，兼容 v2.0 加载器（见 FORMAT.md v2.1 增量）
+- **纯函数层**：`utils/netease.js`（parseNeteaseLyrics，tlyric 配对容差 0.05s）、`utils/ai-prompt.js`、`utils/ai-import.js`、`utils/lyric-package.js`（sanitizeMediaName / mediaExt / bakeLyricTimes / buildManifest / buildLyricsPayload）
+
+### Changed
+- **编辑器返回值**：`ui/editor.js` 现返回 `getTab / switchTab`，供 app.js 晚绑定工作区
+- **ctx 新接口**：`renderWorkspaceTab`（晚绑定 → `workspaceApi.render()`）、`loadWorkspaceDraft`（draft → 当前包）、`downloadBlob`（已有）
+- **i18n**：新增 42 个键（`editorTabRefine / editorTabBuild` + `wsMedia…wsExportFail`），zh/ja/en 三语同步补齐
+
 ## v2.5.1（待发布）
 
 > CI 稳定性与无障碍 buffer 补丁：E2E file:// 路径跨平台化、axe 渲染稳定等待、muted 对比度 buffer、h1 移入 landmark；Actions 升级（checkout/setup-node v5、ubuntu-24.04 固定、失败上传 Playwright 报告）。

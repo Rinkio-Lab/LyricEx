@@ -1,4 +1,4 @@
-﻿/* Simplified Chinese – LyricEx */
+/* Simplified Chinese – LyricEx */
 (function () {
     var i18n = window.__i18n;
     i18n.register('zh', {
@@ -331,6 +331,52 @@
         'editorInstAdd': '添加伴奏',
         'editorInstChange': '更换伴奏',
         'editorInstRemove': '移除',
+
+        /* v2.6.0: editor workspace tabs */
+        'editorTabRefine': '精修',
+        'editorEmptyHint': '暂无歌词。请在「制包」页创建歌词包，或先在主页上传歌词。',
+        'editorTabBuild': '制包',
+        /* v2.6.0: workspace build pane */
+        'wsMedia': '音频',
+        'wsVocal': '原声音频（必选）',
+        'wsInst': '伴奏音频（可选）',
+        'wsNoFile': '未选择文件',
+        'wsInstHint': '推荐同时上传原声与伴奏：生成包后播放条可切换「原声/伴奏」，歌词每行可试听伴奏版本。伴奏可留空。',
+        'wsLyrics': '歌词',
+        'wsLrcMain': '日语歌词（LRC）',
+        'wsLrcTrans': '中文翻译（LRC）',
+        'wsOptional': '可选',
+        'wsLrcPlaceholder': '粘贴 LRC 歌词，例如：\n[00:15.3] 重大な問題抱えて眠る',
+        'wsLrcPlaceholderTrans': '粘贴翻译 LRC（与原文时间戳对齐）',
+        'wsNetease': '或粘贴网易云歌词 JSON',
+        'wsNeteasePlaceholder': '{&quot;lrc&quot;:{&quot;lyric&quot;:&quot;...&quot;},&quot;tlyric&quot;:{...}}',
+        'wsParse': '解析',
+        'wsLoadToApp': '载入播放器/编辑器',
+        'wsParsedN': '已解析 {n} 行',
+        'wsNeedLrc': '请先粘贴 LRC 歌词或网易云 JSON',
+        'wsParseEmpty': '未解析到有效歌词行',
+        'wsParseFail': '解析失败',
+        'wsUpload': '上传文件',
+        'wsMixHint': '支持一行日文一行中文交替的 LRC，会自动拆分为原词与翻译',
+        'wsAi': 'AI 逐词分析',
+        'wsChunk': '分段行数',
+        'wsChunkPlaceholder': '留空 = 不分段',
+        'wsCopyPrompt': '复制提示词',
+        'wsAiPlaceholder': '粘贴 AI 返回的 JSON 结果',
+        'wsImportAi': '导入分析',
+        'wsAiHint': '将提示词粘贴给任意大模型，把返回的 JSON 粘贴回此处',
+        'wsPart': '第 {n} 段',
+        'wsPromptCopied': '提示词已复制到剪贴板',
+        'wsCopyFail': '复制失败，请手动选择复制',
+        'wsAiOk': '已匹配 {n} 行',
+        'wsAiMiss': '，{n} 行未匹配（时间或文本不一致）',
+        'wsAiApplied': '分析已应用，可导出',
+        'wsExport': '导出',
+        'wsExportPack': '导出 LyricEx 包',
+        'wsReset': '重置',
+        'wsNeedAudio': '请先选择原声音频',
+        'wsExported': '包已导出',
+        'wsExportFail': '导出失败',
 
         /* v1.7.0: theme three-state */
         'systemTheme': '跟随系统',

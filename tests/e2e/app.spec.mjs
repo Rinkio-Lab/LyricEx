@@ -54,6 +54,34 @@ test('boots to the empty state without JS errors', async ({ page }) => {
     expect(errors).toEqual([]);
 });
 
+test('workspace build tab: alternating JP/CN LRC auto-splits (v2.7.0)', async ({ page }) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    // open the editor view via the sidebar
+    await page.click('.sidebar-btn[data-view="editor"]');
+    await expect(page.locator('.view-editor').first()).toBeVisible();
+    // refine tab is active by default
+    await expect(page.locator('[data-editor-tab="refine"]')).toHaveClass(/active/);
+    await page.click('[data-editor-tab="build"]');
+    await expect(page.locator('[data-editor-pane="build"]')).toBeVisible();
+    // paste an alternating NetEase-inline LRC into the main box only
+    const alt = '[00:08.55](ready set and find out[00:09.83]\n' +
+                '[00:09.83]ready set and find out[00:10.85]\n' +
+                '[00:08.55](准备好 亲自去确认[00:09.83]\n' +
+                '[00:09.83]准备好 亲自去确认[00:10.85]';
+    await page.fill('[data-ws-lrc="main"]', alt);
+    await page.click('[data-ws-parse]');
+    // parse: 2 original lines (translations back-filled into the trans box)
+    await expect(page.locator('[data-ws-status]')).toContainText('已解析 2 行');
+    const transVal = await page.inputValue('[data-ws-lrc="trans"]');
+    expect(transVal).toContain('准备好');
+    expect(transVal).not.toContain('ready set');
+    // upload entry exists alongside paste
+    await expect(page.locator('[data-ws-upload="main"]')).toBeVisible();
+    await expect(page.locator('[data-ws-upload="trans"]')).toBeVisible();
+    expect(errors).toEqual([]);
+});
+
 test('uploads an example package and renders lyrics + views', async ({ page }) => {
     const errors = watchErrors(page);
     await openApp(page);

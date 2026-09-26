@@ -1,4 +1,4 @@
-﻿﻿/* LyricEx v2.0.5 – App Logic */
+/* LyricEx v2.0.5 – App Logic */
 (function () {
     'use strict';
 
@@ -231,7 +231,7 @@
 
     // UI feature controllers (js/ui/) — instantiated at the bottom with the
     // shared context, after every helper function is declared.
-    let editorApi = null, shareApi = null, videoApi = null, searchApi = null,
+    let editorApi = null, workspaceApi = null, shareApi = null, videoApi = null, searchApi = null,
         miniApi = null, cinemaApi = null, settingsApi = null, aboutApi = null;
 
     // =========================== SETTINGS ===========================
@@ -1374,6 +1374,40 @@
         });
     }
 
+    // v2.6.0: workspace build-pane "load to app" — adopt the draft (lyrics,
+    // title, optional vocal/instrumental files) as the current package without
+    // going through the zip loader. Both editor panes then operate on it.
+    function loadWorkspaceDraft(draft) {
+        if (!draft || !draft.lines) return;
+        lyrics = draft.lines.map(function (l) { return Object.assign({}, l); });
+        if (!songData) songData = {};
+        songData.title = draft.title || songData.title || '';
+        songData.artist = songData.artist || '';
+        songData.album = songData.album || '';
+        // replace current audio if the draft carries one; keep playing otherwise
+        if (draft.audioFile) {
+            if (audio) { audio.pause(); audio.src = ''; }
+            if (audioUrl) URL.revokeObjectURL(audioUrl);
+            audioUrl = URL.createObjectURL(draft.audioFile);
+            loadAudioFromUrl(audioUrl);
+        }
+        // optional accompaniment mirrors the editor's instrumental workflow
+        if (draft.instrumentalFile) {
+            stopInstrumental();
+            if (instrumentalUrl) URL.revokeObjectURL(instrumentalUrl);
+            instrumentalUrl = URL.createObjectURL(draft.instrumentalFile);
+            updateTrackToggle();
+        } else if (!draft.instrumentalFile && instrumentalUrl) {
+            stopInstrumental();
+        }
+        mainTrackMode = 'original';
+        activeLineIndex = -1;
+        editorApi.setDirty(true);
+        renderView();
+        updateSidebarStatus();
+        ctx.updateMiniBar();
+    }
+
     function setVolume(val) {
         volume = Math.max(0, Math.min(100, val));
         volumeSlider.value = volume;
@@ -2479,6 +2513,7 @@
             exportNotes: exportNotes,
             exportPoster: exportPoster
         });
+        workspaceApi.bind();
         sidebarStatus.innerHTML = '<span>' + t('waitingUpload') + '</span>';
         uploadFileName.textContent = t('notLoaded');
         timeDisplay.textContent = '0:00 / 0:00';
@@ -2678,6 +2713,12 @@
         closeCinema: function () { cinemaApi && cinemaApi.close(); },
         isMiniOn: function () { return miniApi && miniApi.isOn(); },
         exitMini: function () { miniApi && miniApi.exit(); },
+        // v2.6.0: workspace build-pane render hook (editor renders the tab,
+        // workspace fills the pane — late-bound so neither imports the other)
+        renderWorkspaceTab: function () { workspaceApi && workspaceApi.render(); },
+        // v2.6.0: load the workspace draft into the app (shared state, both
+        // panes see it; used by the build pane's load-to-app action)
+        loadWorkspaceDraft: loadWorkspaceDraft,
         // share / video export DOM refs
         shareCardBtn: shareCardBtn, shareOverlay: shareOverlay, sharePreview: sharePreview,
         shareTemplate: shareTemplate, shareAccent: shareAccent, shareTranslation: shareTranslation,
@@ -2716,6 +2757,7 @@
     videoApi = window.__lyricexVideoExport(ctx);
     shareApi = window.__lyricexShare(ctx);
     editorApi = window.__lyricexEditor(ctx);
+    workspaceApi = window.__lyricexWorkspace(ctx);
     searchApi = window.__lyricexSearch(ctx);
     miniApi = window.__lyricexMini(ctx);
     cinemaApi = window.__lyricexCinema(ctx);

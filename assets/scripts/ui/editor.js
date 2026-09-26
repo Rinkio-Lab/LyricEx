@@ -15,6 +15,21 @@
         var t = ctx.t, esc = ctx.esc, L = ctx.L;
         var viewContent = ctx.viewContent, fileInput = ctx.fileInput;
         var editorDirtyFlag = false;
+        // v2.6.0: workspace tabs — 'refine' (timeline/export, the historical
+        // editor) and 'build' (pack builder, owned by ui/workspace.js).
+        var editorTab = 'refine';
+
+        function switchEditorTab(tab) {
+            if (tab !== 'refine' && tab !== 'build') return;
+            editorTab = tab;
+            viewContent.querySelectorAll('.editor-tab').forEach(function (b) {
+                b.classList.toggle('active', b.dataset.editorTab === tab);
+            });
+            viewContent.querySelectorAll('.editor-pane').forEach(function (p) {
+                p.classList.toggle('hidden', p.dataset.editorPane !== tab);
+            });
+            if (tab === 'build' && ctx.renderWorkspaceTab) ctx.renderWorkspaceTab();
+        }
 
         function markEditorDirty() {
             editorDirtyFlag = true;
@@ -87,8 +102,23 @@
         }
 
         function renderEditorView() {
-            if (!ctx.lyrics.length) { ctx.renderEmpty(); return; }
-            let html = '<div class="view-editor"><div class="editor-head"><div class="editor-toolbar">';
+            // v2.7.0: the build workspace is reachable from the empty state —
+            // making a pack from scratch is its core use. With no lyrics the
+            // refine pane shows a prompt instead of the timeline editor.
+            const hasLyrics = ctx.lyrics.length > 0;
+            // v2.6.0: workspace tabs wrap the historical timeline editor. The
+            // build pane is a placeholder filled by ui/workspace.js via
+            // ctx.renderWorkspaceTab when the tab is active.
+            const activeTab = editorTab || 'refine';
+            let html = '<div class="view-editor"><div class="editor-tabs">' +
+                '<button class="editor-tab' + (activeTab === 'refine' ? ' active' : '') + '" data-editor-tab="refine">' + t('editorTabRefine') + '</button>' +
+                '<button class="editor-tab' + (activeTab === 'build' ? ' active' : '') + '" data-editor-tab="build">' + t('editorTabBuild') + '</button>' +
+                '</div>';
+            html += '<div class="editor-pane' + (activeTab === 'refine' ? '' : ' hidden') + '" data-editor-pane="refine">';
+            if (!hasLyrics) {
+                html += '<div class="editor-empty-hint"><i class="fas fa-tools"></i> ' + t('editorEmptyHint') + '</div>';
+            }
+            html += '<div class="editor-head"><div class="editor-toolbar">';
             // ---- group: 歌曲信息 (metadata + cover + offset) ----
             html += '<div class="editor-group">' +
                 '<div class="editor-group-label">' + t('editorMeta') + '</div>' +
@@ -166,8 +196,12 @@
                     '</div>';
                 html += '<div class="editor-edit hidden" data-edit="' + idx + '">' + editorEditPanelHTML(line) + '</div>';
             });
-            html += '</div>';
+            html += '</div>'; // close .view-editor rows
+            html += '</div>'; // close refine pane
+            html += '<div class="editor-pane' + (activeTab === 'build' ? '' : ' hidden') + '" data-editor-pane="build"></div>';
+            html += '</div>'; // close .view-editor
             viewContent.innerHTML = html;
+            if (activeTab === 'build' && ctx.renderWorkspaceTab) ctx.renderWorkspaceTab();
             ctx.bindScrollInteractions(viewContent.querySelector('.view-editor'));
             if (ctx.activeLineIndex >= 0) ctx.scrollLyricToActive('instant');
         }
@@ -279,6 +313,11 @@
         // handlers owned by app.js (kept out of this module to avoid coupling).
         function bindEditorDelegation(actions) {
             viewContent.addEventListener('click', function (e) {
+                const tab = e.target.closest('.editor-tab');
+                if (tab) {
+                    switchEditorTab(tab.dataset.editorTab);
+                    return;
+                }
                 const seek = e.target.closest('.editor-seek');
                 if (seek) {
                     const row = seek.closest('.editor-row');
@@ -488,7 +527,9 @@
             render: renderEditorView,
             bind: bindEditorDelegation,
             setDirty: function (v) { editorDirtyFlag = v; },
-            getDirty: function () { return editorDirtyFlag; }
+            getDirty: function () { return editorDirtyFlag; },
+            getTab: function () { return editorTab; },
+            switchTab: switchEditorTab
         };
     };
 })(typeof window !== 'undefined' ? window : globalThis);

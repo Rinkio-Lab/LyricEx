@@ -1,4 +1,4 @@
-﻿/* English – LyricEx */
+/* English – LyricEx */
 (function () {
     var i18n = window.__i18n;
     i18n.register('en', {
@@ -331,6 +331,52 @@
         'editorInstAdd': 'Add instrumental',
         'editorInstChange': 'Change instrumental',
         'editorInstRemove': 'Remove',
+
+        /* v2.6.0: editor workspace tabs */
+        'editorTabRefine': 'Refine',
+        'editorEmptyHint': 'No lyrics yet. Build a pack in the Build tab, or upload lyrics from the home view.',
+        'editorTabBuild': 'Build pack',
+        /* v2.6.0: workspace build pane */
+        'wsMedia': 'Audio',
+        'wsVocal': 'Vocal audio (required)',
+        'wsInst': 'Instrumental (optional)',
+        'wsNoFile': 'No file chosen',
+        'wsInstHint': 'Uploading both vocal and instrumental is recommended: the generated pack gets an original/accompaniment switch on the player and per-line accompaniment preview. Instrumental may be left empty.',
+        'wsLyrics': 'Lyrics',
+        'wsLrcMain': 'Japanese lyrics (LRC)',
+        'wsLrcTrans': 'Translation (LRC)',
+        'wsOptional': 'optional',
+        'wsLrcPlaceholder': 'Paste LRC lyrics, e.g.:\n[00:15.3] 重大な問題抱えて眠る',
+        'wsLrcPlaceholderTrans': 'Paste translation LRC (timestamps aligned to original)',
+        'wsNetease': 'Or paste NetEase lyrics JSON',
+        'wsNeteasePlaceholder': '{&quot;lrc&quot;:{&quot;lyric&quot;:&quot;...&quot;},&quot;tlyric&quot;:{...}}',
+        'wsParse': 'Parse',
+        'wsLoadToApp': 'Load into player/editor',
+        'wsParsedN': 'Parsed {n} lines',
+        'wsNeedLrc': 'Paste LRC lyrics or NetEase JSON first',
+        'wsParseEmpty': 'No valid lyric lines found',
+        'wsParseFail': 'Parse failed',
+        'wsUpload': 'Upload file',
+        'wsMixHint': 'Alternating JP/CN LRC (one Japanese line, one Chinese line) splits into original + translation automatically',
+        'wsAi': 'AI word analysis',
+        'wsChunk': 'Chunk size',
+        'wsChunkPlaceholder': 'blank = no chunking',
+        'wsCopyPrompt': 'Copy prompt',
+        'wsAiPlaceholder': 'Paste the JSON returned by the AI',
+        'wsImportAi': 'Import analysis',
+        'wsAiHint': 'Paste the prompt into any LLM, then paste the returned JSON back here',
+        'wsPart': 'Part {n}',
+        'wsPromptCopied': 'Prompt copied to clipboard',
+        'wsCopyFail': 'Copy failed — copy manually',
+        'wsAiOk': 'Matched {n} lines',
+        'wsAiMiss': ', {n} lines unmatched (time or text mismatch)',
+        'wsAiApplied': 'Analysis applied, ready to export',
+        'wsExport': 'Export',
+        'wsExportPack': 'Export LyricEx pack',
+        'wsReset': 'Reset',
+        'wsNeedAudio': 'Choose vocal audio first',
+        'wsExported': 'Pack exported',
+        'wsExportFail': 'Export failed',
 
         /* v1.7.0: theme three-state */
         'systemTheme': 'Follow system',

@@ -63,7 +63,20 @@
             }
             if (!matched) return;
             var body = raw.slice(last).trim();
-            if (!body) return; // timing-only line
+            if (!body) {
+                // v2.7.0: NetEase inline variant - "[t1]text[t2]" where t2 is
+                // the NEXT line's start (row ends with a timestamp). Standard
+                // LRC semantics (body after the LAST timestamp) yield empty
+                // here, so such lines were silently dropped. Take t1 as the
+                // row time and the text between the timestamps as the body.
+                if (tags.length > 1) {
+                    var stripped = raw
+                        .replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]\s*$/, '') // trailing ts
+                        .replace(/^\[[^\]]*\]\s*/, '').trim(); // leading ts
+                    if (stripped) lines.push({ time: tags[0], text: stripped });
+                }
+                return; // timing-only line
+            }
             tags.forEach(function (tm) { lines.push({ time: tm, text: body }); });
         });
         var off = offsetMs / 1000;
@@ -308,6 +321,40 @@
         var s = String(text == null ? '' : text);
         if (/[\u3040-\u30ff\u31f0-\u31ff\u3005\u3006]/.test(s)) return false; // kana / 々 〆 → Japanese
         return /[\u3400-\u4dbf\u4e00-\u9fff]/.test(s); // ideographs, no kana → Chinese
+    };
+
+    // v2.7.0: split an alternating JP+CN LRC (one line Japanese, next line
+    // Chinese, same timestamps — the NetEase inline layout) into two tracks:
+    // main (original) and translation. Grouping is by timestamp so paired
+    // lines stay aligned; language is decided per-line with isChinese. A line
+    // with no kana and no ideographs (romaji/latin) is treated as original —
+    // it cannot be a translation of a Japanese song. Pure-Chinese songs (no
+    // Japanese line at all) stay entirely in main: a translation track with no
+    // original would be worse than no split. Returns { main, trans, split }.
+    lib.splitMixedLrc = function (lines) {
+        var main = [], trans = [], split = false;
+        // group by timestamp, rounded to 10ms so NetEase pairs (identical ts)
+        // always land in one group while adjacent lines stay separate
+        var groups = {};
+        (lines || []).forEach(function (l) {
+            var key = Math.round((Number(l.time) || 0) * 100);
+            (groups[key] = groups[key] || []).push(l);
+        });
+        Object.keys(groups).sort(function (a, b) { return Number(a) - Number(b); }).forEach(function (key) {
+            var g = groups[key];
+            var ja = g.filter(function (l) { return !lib.isChinese(l.text) && /[\u3040-\u30ff\u31f0-\u31ff\u3005\u3006]/.test(l.text); });
+            var cn = g.filter(function (l) { return lib.isChinese(l.text); });
+            var other = g.filter(function (l) { return !lib.isChinese(l.text) && !/[\u3040-\u30ff\u31f0-\u31ff\u3005\u3006]/.test(l.text); });
+            // pick one original and one translation per group (first wins)
+            var orig = ja.length ? ja[0] : (other.length ? other[0] : null);
+            var tr = cn.length ? cn[0] : null;
+            if (orig && tr) split = true;
+            if (orig) main.push(Object.assign({}, orig));
+            if (tr) trans.push(Object.assign({}, tr));
+        });
+        // pure-Chinese input: no split (all lines are originals)
+        if (!main.length) return { main: (lines || []).slice(), trans: [], split: false };
+        return { main: main, trans: trans, split: split };
     };
 
     // =========================== SETTINGS ===========================

@@ -10,6 +10,10 @@ await import('../assets/scripts/utils/subtitles.js');
 await import('../assets/scripts/utils/notes.js');
 await import('../assets/scripts/utils/wordtiming.js');
 await import('../assets/scripts/utils/share-card.js');
+await import('../assets/scripts/utils/netease.js');
+await import('../assets/scripts/utils/ai-import.js');
+await import('../assets/scripts/utils/ai-prompt.js');
+await import('../assets/scripts/utils/lyric-package.js');
 
 const u = globalThis.__lyricexUtils;
 let failures = 0;
@@ -153,6 +157,119 @@ const merged = u.mergeWordTimings(
     1
 );
 ok('mergeWordTimings attaches to nearest', merged[0].words && merged[0].words[0].text === 'x' && !merged[1].words);
+
+// ---- NetEase JSON import (v2.6.0) ----
+const ne = u.parseNeteaseLyrics({
+    title: 'Test Song',
+    lrc: { lyric: '[00:01.00]こんにちは\n[00:03.00]世界' },
+    tlyric: { lyric: '[00:01.00]你好\n[00:03.00]世界（译）' }
+});
+eq('netease line count', ne.lines.length, 2);
+eq('netease title', ne.title, 'Test Song');
+eq('netease first text', ne.lines[0].text, 'こんにちは');
+eq('netease first translation', ne.lines[0].translation, '你好');
+eq('netease second translation', ne.lines[1].translation, '世界（译）');
+const neNoTl = u.parseNeteaseLyrics({ lrc: { lyric: '[00:01.00]a' } });
+eq('netease no tlyric', neNoTl.lines[0].translation, undefined);
+let neThrew = false;
+try { u.parseNeteaseLyrics({ lrc: { lyric: '' } }); } catch (e) { neThrew = e.name === 'NeteaseParseError'; }
+ok('netease rejects empty', neThrew);
+neThrew = false;
+try { u.parseNeteaseLyrics([]); } catch (e) { neThrew = e.name === 'NeteaseParseError'; }
+ok('netease rejects array', neThrew);
+
+// ---- AI result import (v2.7.0) ----
+const aiLyrics = [
+    { time: 15.3, text: '重大な問題抱えて眠る' },
+    { time: 24.7, text: '愛されたほうが確かに無双的だけれど' }
+];
+const parsedAi = u.parseAiResult('{"results":[{"time":15.3,"text":"重大な問題抱えて眠る","analysis":"a,あ,阿,名詞,啊|b,び,び,助詞,吧"},{"time":24.7,"text":"愛されたほうが確かに無双的だけれど","analysis":"c,し,し,動詞,是"}]}');
+eq('ai parse result count', parsedAi.results.length, 2);
+eq('ai parse analysis fields', parsedAi.results[0].analysis[0], { romaji: 'a', hiragana: 'あ', kanji: '阿', partOfSpeech: '名詞', meaning: '啊' });
+const matched = u.matchAnalysisToLyrics(aiLyrics, parsedAi.results);
+eq('ai matched all', matched.unmatched, []);
+eq('ai attaches analysis', matched.lyrics[0].analysis[0].romaji, 'a');
+eq('ai marks source', matched.lyrics[0].analysisSource, 'ai');
+// code-fenced result
+const fenced = u.parseAiResult('```json\n{"results":[{"time":15.3,"text":"重大な問題抱えて眠る","analysis":"x,ぁ,ぁ,名詞,雪"}]}\n```');
+eq('ai fence stripped', fenced.results.length, 1);
+// tolerance match: AI time drifts 0.08s, text same → still matched
+const drift = u.matchAnalysisToLyrics(aiLyrics, [{ time: 15.38, text: '重大な問題抱えて眠る', analysis: 'x,ぁ,ぁ,名詞,雪' }]);
+eq('ai tolerance match', drift.unmatched, [1]);
+eq('ai tolerance attach', drift.lyrics[0].analysis[0].kanji, 'ぁ');
+// mismatch: same time, different text → unmatched, no guess
+const wrong = u.matchAnalysisToLyrics(aiLyrics, [{ time: 15.3, text: '完全不同的歌词', analysis: 'x,ぁ,ぁ,名詞,雪' }]);
+eq('ai text mismatch unmatched', wrong.unmatched, [0, 1]);
+eq('ai text mismatch no attach', wrong.lyrics[0].analysis, undefined);
+let aiThrew = false;
+try { u.parseAiResult('not json at all'); } catch (e) { aiThrew = e.name === 'AiImportError'; }
+ok('ai rejects non-json', aiThrew);
+aiThrew = false;
+try { u.parseAiResult('{"results":[{"time":"bad","text":"x","analysis":"a,b,c,d,e"}]}'); } catch (e) { aiThrew = e.name === 'AiImportError'; }
+ok('ai rejects bad time', aiThrew);
+aiThrew = false;
+try { u.parseAiResult('{"results":[{"time":1,"text":"x","analysis":"a,b,c"}]}'); } catch (e) { aiThrew = e.name === 'AiImportError'; }
+ok('ai rejects short analysis', aiThrew);
+
+// ---- AI prompt builder (v2.7.0) ----
+const prompt = u.buildAnalysisPrompt(aiLyrics);
+ok('prompt has role', prompt.includes('日语形态素分析引擎'));
+ok('prompt has lyric', prompt.includes('重大な問題抱えて眠る'));
+ok('prompt has time', prompt.includes('[00:15.3]'));
+ok('prompt has output contract', prompt.includes('{"results"'));
+eq('chunkLyrics no chunk', u.chunkLyrics(aiLyrics, 0).length, 1);
+eq('chunkLyrics splits', u.chunkLyrics([1, 2, 3, 4, 5], 2).map(c => c.length), [2, 2, 1]);
+const prompts = u.buildAnalysisPrompts(aiLyrics, { chunkSize: 1 });
+eq('buildAnalysisPrompts count', prompts.length, 2);
+ok('chunked prompt announces part', prompts[1].prompt.includes('第 2 / 2 段'));
+
+// ---- lyric package v2.1 (v2.6.0) ----
+eq('sanitize strips traversal', u.sanitizeMediaName('../evil/name.mp3', 'audio.mp3'), 'name.mp3');
+eq('sanitize fallback', u.sanitizeMediaName('', 'audio.mp3'), 'audio.mp3');
+eq('sanitize forces ext', u.sanitizeMediaName('song.wav', 'audio.mp3', 'mp3'), 'song.mp3');
+eq('mediaExt known', u.mediaExt('a.M4A'), 'm4a');
+eq('mediaExt unknown', u.mediaExt('a.txt'), '');
+const baked = u.bakeLyricTimes([{ time: 10.123, text: 'x' }, { time: 5, text: 'y' }], 0.123);
+eq('bake applies offset', baked[0].time, 10);
+eq('bake keeps text', baked[1].text, 'y');
+ok('bake does not mutate', aiLyrics[0].time === 15.3);
+const man = u.buildManifest({
+    title: 'T', artist: 'A', album: 'Al', audioName: 'song.mp3',
+    instrumentalName: 'inst.m4a', coverName: 'c.jpg', convertedFrom: 'legacy', analysisModel: 'glm'
+});
+eq('manifest version stays 2', man.version, 2);
+eq('manifest audio path', man.audio, 'assets/song.mp3');
+eq('manifest v2.1 audioFileName', man.audioFileName, 'song.mp3');
+eq('manifest v2.1 instrumentalFileName', man.instrumentalFileName, 'inst.m4a');
+eq('manifest analysisModel', man.config.analysisModel, 'glm');
+const manMin = u.buildManifest({ title: 'T' });
+eq('manifest minimal no media', manMin.audio, null);
+eq('manifest minimal no v2.1 fields', manMin.audioFileName, undefined);
+const payload = u.buildLyricsPayload([{ time: 2.5, text: 'z' }], 0.5);
+eq('payload baked', payload.lyrics[0].time, 2);
+
+// ---- lib.parseLRC NetEase inline variant + lib.splitMixedLrc (v2.7.0) ----
+const lib = globalThis.__lyricexLib;
+const neLrc = lib.parseLRC('[00:08.55](ready set and find out[00:09.83]\n[00:09.83]ready set and find out[00:10.85]\n[00:08.55](准备好 亲自去确认[00:09.83]\n[00:09.83]准备好 亲自去确认[00:10.85]');
+ok('netease inline variant keeps lines', neLrc.lines.length === 4);
+eq('netease inline first time', neLrc.lines[0].time, 8.55);
+eq('netease inline first text', neLrc.lines[0].text, '(ready set and find out');
+const neTs = neLrc.lines.filter(function (l) { return l.time === 9.83; });
+ok('netease inline paired ts both kept', neTs.length === 2);
+eq('netease inline paired ts text', neTs[0].text, 'ready set and find out');
+const sm = lib.splitMixedLrc(neLrc.lines);
+ok('splitMixedLrc split true', sm.split === true);
+eq('splitMixedLrc main count', sm.main.length, 2);
+eq('splitMixedLrc trans count', sm.trans.length, 2);
+eq('splitMixedLrc main first', sm.main[0].text, '(ready set and find out');
+eq('splitMixedLrc trans first', sm.trans[0].text, '(准备好 亲自去确认');
+const cnOnly = lib.splitMixedLrc(lib.parseLRC('[00:01.00]你好世界\n[00:02.00]这是一首歌').lines);
+ok('splitMixedLrc pure Chinese no split', cnOnly.split === false);
+eq('splitMixedLrc pure Chinese keeps all', cnOnly.main.length, 2);
+eq('splitMixedLrc pure Chinese no trans', cnOnly.trans.length, 0);
+const jpOnly = lib.splitMixedLrc(lib.parseLRC('[00:01.00]こんにちは世界\n[00:02.00]これは歌です').lines);
+ok('splitMixedLrc pure Japanese no trans', jpOnly.trans.length === 0);
+eq('splitMixedLrc pure Japanese keeps all', jpOnly.main.length, 2);
 
 console.log(failures === 0 ? 'UTILS TESTS PASSED' : `${failures} FAILURES`);
 process.exit(failures === 0 ? 0 : 1);

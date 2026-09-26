@@ -1,4 +1,4 @@
-﻿/* LyricEx view styles (split from styles.css, v2.0.5): lyrics / study / mixed /
+/* LyricEx view styles (split from styles.css, v2.0.5): lyrics / study / mixed /
    empty views, cinema mode, karaoke + ruby, editor (+ per-word timing),
    spectrum, mini mode, per-line CN font and the follow pill. */
 /* =========================== VIEW: LYRICS =========================== */
@@ -1043,4 +1043,216 @@
 [dir="rtl"] .view-study .study-row,
 [dir="rtl"] .editor-row {
     direction: ltr;
+}
+
+/* ======================= V2.6.0: EDITOR WORKSPACE TABS ======================= */
+.editor-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0 8px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+}
+.editor-empty-hint {
+    padding: 18px;
+    font-size: 13px;
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+.editor-empty-hint i { margin-right: 6px; }
+.editor-tab {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 18px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font);
+    border-radius: 4px;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.editor-tab:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+.editor-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+.editor-pane {
+    min-height: 100%;
+}
+
+/* ======================= V2.6.0: WORKSPACE BUILD PANE ======================= */
+.ws-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 4px 0 30px;
+}
+.ws-group {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 12px 14px;
+    background: var(--bg-secondary);
+}
+.ws-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.ws-media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+}
+.ws-media-card {
+    position: relative;
+    border: 1px dashed var(--border-color);
+    border-radius: 6px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+}
+.ws-media-card:hover { border-color: var(--accent); background: var(--bg-hover); }
+.ws-media-card.has { border-style: solid; border-color: var(--accent); }
+.ws-media-card.drag { border-color: var(--accent); background: var(--bg-hover); }
+.ws-media-icon { font-size: 20px; color: var(--text-muted); margin-bottom: 6px; }
+.ws-media-card.has .ws-media-icon { color: var(--accent); }
+.ws-media-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.ws-media-name {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    word-break: break-all;
+    max-width: 220px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.ws-media-clear {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 2px 6px;
+}
+.ws-media-clear:hover { color: #c0392b; }
+.ws-media-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 8px;
+}
+.ws-lrc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+}
+.ws-lrc-box { display: flex; flex-direction: column; gap: 6px; }
+.ws-lrc-box > span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.ws-lrc-box em {
+    font-style: normal;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+.ws-lrc-input, .ws-ai-result {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 13px;
+    padding: 8px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+.ws-lrc-input:focus, .ws-ai-result:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+.ws-netease {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+.ws-netease-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+.ws-netease-input {
+    flex: 1;
+    min-width: 200px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 12px;
+    padding: 6px 8px;
+}
+.ws-netease-input:focus { outline: none; border-color: var(--accent); }
+.ws-lrc-upload { margin-top: 6px; }
+.ws-lrc-upload .editor-btn { font-size: 12px; padding: 3px 10px; }
+.ws-mix-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+.ws-status {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    min-height: 16px;
+}
+.ws-status.err { color: #c0392b; }
+.ws-ai-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.ws-chunk {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.ws-chunk-input {
+    width: 80px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 12px;
+    padding: 5px 8px;
+}
+.ws-ai-hint { font-size: 12px; color: var(--text-muted); }
+.ws-export-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
 }
