@@ -331,6 +331,10 @@
     // it cannot be a translation of a Japanese song. Pure-Chinese songs (no
     // Japanese line at all) stay entirely in main: a translation track with no
     // original would be worse than no split. Returns { main, trans, split }.
+    // v2.8.3: three-line sheets (JP + CN + full-line romaji sharing one
+    // timestamp) — when a group holds both a Japanese line and a romaji line,
+    // the romaji is kept on the main line as line.romaji instead of being
+    // dropped (or worse, displacing the Japanese original).
     lib.splitMixedLrc = function (lines) {
         var main = [], trans = [], split = false;
         // group by timestamp, rounded to 10ms so NetEase pairs (identical ts)
@@ -349,7 +353,11 @@
             var orig = ja.length ? ja[0] : (other.length ? other[0] : null);
             var tr = cn.length ? cn[0] : null;
             if (orig && tr) split = true;
-            if (orig) main.push(Object.assign({}, orig));
+            if (orig) {
+                var m = Object.assign({}, orig);
+                if (orig === ja[0] && other.length && !m.romaji) m.romaji = other[0].text;
+                main.push(m);
+            }
             if (tr) trans.push(Object.assign({}, tr));
         });
         // pure-Chinese input: no split (all lines are originals)

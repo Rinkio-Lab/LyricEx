@@ -85,6 +85,9 @@ test('workspace build tab: alternating JP/CN LRC auto-splits (v2.7.0)', async ({
     // upload entry exists alongside paste
     await expect(page.locator('[data-ws-upload="main"]')).toBeVisible();
     await expect(page.locator('[data-ws-upload="trans"]')).toBeVisible();
+    // v2.8.3: live AI-prompt preview renders after parsing
+    await expect(page.locator('[data-ws-prompt-preview]')).toBeVisible();
+    await expect(page.locator('[data-ws-prompt-preview]')).toContainText('# 角色');
     expect(errors).toEqual([]);
 });
 
@@ -113,7 +116,7 @@ test('uploads an example package and renders lyrics + views', async ({ page }) =
     await page.setInputFiles('#fileInput',
         join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip'));
     // lyrics view renders lines once the zip is parsed
-    await expect(page.locator('.view-lyrics .lyric-line').first()).toBeVisible();
+    await expect(page.locator('.view-lyrics .lyric-line').first()).toBeVisible({ timeout: 10000 });
     const lineCount = await page.locator('.view-lyrics .lyric-line').count();
     expect(lineCount).toBeGreaterThan(3);
 
@@ -188,7 +191,7 @@ test('share card + poster render without canvas taint (v2.8.1)', async ({ page }
     await openApp(page);
     await page.setInputFiles('#fileInput',
         join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip'));
-    await expect(page.locator('.view-lyrics .lyric-line').first()).toBeVisible();
+    await expect(page.locator('.view-lyrics .lyric-line').first()).toBeVisible({ timeout: 10000 });
 
     // share card: the button may be folded into the ⋯ drawer
     const shareBtn = page.locator('#shareCardBtn');

@@ -825,6 +825,8 @@
             const r = line.analysis.map(function (a) { return a.romaji; }).filter(Boolean).join(' ');
             if (r) return r;
         }
+        // v2.8.3: full-line romaji attached by splitMixedLrc for three-line sheets
+        if (line.romaji && typeof line.romaji === 'string') return line.romaji;
         return (line.note && typeof line.note === 'string') ? line.note : '';
     }
 

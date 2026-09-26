@@ -76,6 +76,7 @@
                 '<input type="number" class="ws-chunk-input" data-ws-chunk min="0" step="1" placeholder="' + t('wsChunkPlaceholder') + '"></label>' +
                 '<button class="editor-btn" data-ws-prompt><i class="fas fa-copy"></i> ' + t('wsCopyPrompt') + '</button>' +
                 '</div>' +
+                '<pre class="ws-prompt-preview" data-ws-prompt-preview hidden></pre>' +
                 '<textarea class="ws-ai-result" data-ws-ai rows="8" spellcheck="false" placeholder="' + t('wsAiPlaceholder') + '"></textarea>' +
                 '<div class="ws-ai-row">' +
                 '<button class="editor-btn" data-ws-ai-import><i class="fas fa-file-import"></i> ' + t('wsImportAi') + '</button>' +
@@ -175,6 +176,7 @@
                 }
                 if (!lines.length) { setStatus(t('wsParseEmpty'), true); return; }
                 setStatus(t('wsParsedN').replace('{n}', lines.length), false);
+                updatePromptPreview();
             } catch (e) {
                 setStatus(t('wsParseFail') + ': ' + (e && e.message ? e.message : e), true);
             }
@@ -186,16 +188,29 @@
         }
 
         // ---- AI workflow ----
-        function copyPrompt() {
-            if (!lines.length) { parseLyrics(); }
-            if (!lines.length) { setStatus(t('wsNeedLrc'), true); return; }
+        // v2.8.3: one prompt builder feeds both 复制提示词 and the live preview,
+        // so what you see in the preview is exactly what gets copied.
+        function buildPromptText() {
             var chunkEl = viewContent.querySelector('[data-ws-chunk]');
             _chunkSize = chunkEl ? chunkEl.value : '';
             var chunkSize = parseInt(_chunkSize, 10) || 0;
             var prompts = U.buildAnalysisPrompts(lines, { chunkSize: chunkSize });
-            var text = prompts.length === 1 ? prompts[0].prompt :
+            return prompts.length === 1 ? prompts[0].prompt :
                 prompts.map(function (p, i) { return '===== ' + t('wsPart') + ' ' + (i + 1) + '/' + prompts.length + ' =====\n' + p.prompt; }).join('\n\n');
-            copyText(text);
+        }
+
+        function updatePromptPreview() {
+            var el = viewContent.querySelector('[data-ws-prompt-preview]');
+            if (!el) return;
+            var text = lines.length ? buildPromptText() : '';
+            el.textContent = text;
+            el.hidden = !text;
+        }
+
+        function copyPrompt() {
+            if (!lines.length) { parseLyrics(); }
+            if (!lines.length) { setStatus(t('wsNeedLrc'), true); return; }
+            copyText(buildPromptText());
         }
 
         function copyText(text) {
@@ -344,7 +359,7 @@
                 var ne = e.target.closest('[data-ws-netease]');
                 if (ne) { _neteaseText = ne.value; return; }
                 var ch = e.target.closest('[data-ws-chunk]');
-                if (ch) { _chunkSize = ch.value; return; }
+                if (ch) { _chunkSize = ch.value; updatePromptPreview(); return; }
                 var ai = e.target.closest('[data-ws-ai]');
                 if (ai) { _aiResult = ai.value; }
             });

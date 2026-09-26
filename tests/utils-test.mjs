@@ -270,6 +270,20 @@ eq('splitMixedLrc pure Chinese no trans', cnOnly.trans.length, 0);
 const jpOnly = lib.splitMixedLrc(lib.parseLRC('[00:01.00]こんにちは世界\n[00:02.00]これは歌です').lines);
 ok('splitMixedLrc pure Japanese no trans', jpOnly.trans.length === 0);
 eq('splitMixedLrc pure Japanese keeps all', jpOnly.main.length, 2);
+// v2.8.3: three-line sheets — JP + CN + full-line romaji sharing one timestamp;
+// the romaji attaches as line.romaji (never displaces JP, never dropped)
+const three = lib.splitMixedLrc(lib.parseLRC(
+    '[00:01.00]こんにちは世界[00:02.00]\n' +
+    '[00:01.00]你好世界[00:02.00]\n' +
+    '[00:01.00]ko n ni chi wa se ka i[00:02.00]\n' +
+    '[00:02.00]これは歌です[00:03.00]\n' +
+    '[00:02.00]ko re wa u ta de su[00:03.00]').lines);
+ok('splitMixedLrc 3line split true', three.split === true);
+eq('splitMixedLrc 3line main keeps JP', three.main[0].text, 'こんにちは世界');
+eq('splitMixedLrc 3line romaji attached', three.main[0].romaji, 'ko n ni chi wa se ka i');
+eq('splitMixedLrc 3line trans', three.trans[0].text, '你好世界');
+eq('splitMixedLrc 3line second romaji', three.main[1].romaji, 'ko re wa u ta de su');
+eq('splitMixedLrc 3line main count', three.main.length, 2);
 
 // ---- lib.sanitizeSettings (v2.8.0) ----
 const dflt = lib.SETTINGS_DEFAULTS;

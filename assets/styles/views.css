@@ -1226,6 +1226,24 @@
     min-height: 16px;
 }
 .ws-status.err { color: #c0392b; }
+/* v2.8.3: live AI-prompt preview pane (workspace build tab) */
+.ws-prompt-preview {
+    width: 100%;
+    max-height: 12em;
+    overflow: auto;
+    border: 1px dashed var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-family: ui-monospace, Consolas, 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    padding: 8px;
+    margin: 0 0 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-sizing: border-box;
+}
 .ws-ai-row {
     display: flex;
     flex-wrap: wrap;
