@@ -14,6 +14,7 @@
             date: '待发布',
             changes: [
                 { type: 'fixed', text: '制包页 AI 逐词分析：导入分析按钮与上方粘贴结果 textarea 间隙过小（实测约 5px），补 margin 至 12px' },
+                { type: 'fixed', text: '制包页原词/翻译框「上传文件 + 清空」按钮组间距为 0（.ws-lrc-upload 非 flex，按钮 inline-block 且标记无空白）——改 flex + gap 6px，垂直对齐' },
                 { type: 'added', text: '制包页三处 textarea（原词 LRC / 翻译 LRC / AI 结果）新增一键清空按钮，清空同步重置对应草稿状态' },
                 { type: 'added', text: '关于页「开源与声明」补 GitHub 仓库链接（Rinkio-Lab/LyricEx · 源码与 Release）' },
             ]

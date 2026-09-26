@@ -1246,7 +1246,7 @@
     padding: 6px 8px;
 }
 .ws-netease-input:focus { outline: none; border-color: var(--accent); }
-.ws-lrc-upload { margin-top: 6px; }
+.ws-lrc-upload { margin-top: 6px; display: flex; align-items: center; gap: 6px; } /* v2.9.2.1: the upload/clear button pair was 0px apart (inline-block + no whitespace in markup) */
 .ws-lrc-upload .editor-btn { font-size: 12px; padding: 3px 10px; }
 .ws-mix-hint {
     font-size: 12px;
