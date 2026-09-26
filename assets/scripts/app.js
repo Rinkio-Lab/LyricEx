@@ -31,7 +31,6 @@
     const moreCinemaBtn = document.getElementById('moreCinemaBtn');
     const moreMiniBtn = document.getElementById('moreMiniBtn');
     const moreUploadBtn = document.getElementById('moreUploadBtn');
-    const moreLibraryBtn = document.getElementById('moreLibraryBtn');
     const mobileRecentList = document.getElementById('mobileRecentList');
     const mobileQueueList = document.getElementById('mobileQueueList');
     const coverViewer = document.getElementById('coverViewer');
@@ -50,7 +49,6 @@
     const playerExtToggle = document.getElementById('playerExtToggle');
     const playerExtBadge = document.getElementById('playerExtBadge');
     const playerCoverBtn = document.getElementById('playerCoverBtn');
-    const librarySideBtn = document.getElementById('librarySideBtn');
     const playBtn = document.getElementById('playBtn');
     const playIconWrap = document.getElementById('playIconWrap');
     const resetBtn = document.getElementById('resetBtn');
@@ -1191,6 +1189,9 @@
             case 'mixed': renderMixedView(); break;
             case 'editor': editorApi.render(); break;
             case 'help': renderHelpView(); break;
+            case 'library':
+                if (window.__lyricexLibraryUI) window.__lyricexLibraryUI.render();
+                break;
             default: renderLyricsView(); break;
         }
         if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
@@ -1918,6 +1919,35 @@
             '<span style="color:#c0392b;"><i class="fas fa-times-circle" style="margin-right:4px;"></i>' + msg + '</span>';
     }
 
+    // v2.9.4: play a library song through the main player (audio blob from IDB)
+    function playLibrarySong(entry) {
+        if (!entry || !entry.audioBlob) { if (window.__lyricexLog) window.__lyricexLog.warn('app', 'playLibrarySong without audio', entry && entry.id); return; }
+        try {
+        if (audioUrl) { URL.revokeObjectURL(audioUrl); audioUrl = null; }
+        if (coverUrl) { URL.revokeObjectURL(coverUrl); coverUrl = null; }
+        stopInstrumental();
+        if (instrumentalUrl) { URL.revokeObjectURL(instrumentalUrl); instrumentalUrl = null; }
+        mainTrackMode = 'original';
+        songData = {
+            title: entry.title || '', artist: entry.artist || '', album: entry.album || '',
+            sourceFormat: entry.sourceFormat || 'library'
+        };
+        lyrics = entry.lyricLines ? JSON.parse(entry.lyricLines) : [];
+        offset = Number(entry.lyricOffset) || 0;
+        audioUrl = URL.createObjectURL(entry.audioBlob);
+        if (entry.coverBlob) coverUrl = URL.createObjectURL(entry.coverBlob);
+        updateTrackToggle();
+        uploadFileName.textContent = entry.fileName || '';
+        activeLineIndex = -1;
+        if (audioUrl) loadAudioFromUrl(audioUrl);
+        updateSidebarStatus();
+        if (window.__lyricexLibrary && window.__lyricexLibrary.recordPlay) window.__lyricexLibrary.recordPlay(entry.id);
+        if (lyrics.length) switchView('lyrics');
+        } catch (err) {
+            if (window.__lyricexLog) window.__lyricexLog.error('app', 'playLibrarySong failed', entry && entry.id, err && err.message);
+        }
+    }
+
     async function loadZipFile(file) {
         const token = ++loadToken;
         try {
@@ -2373,8 +2403,7 @@
         if (moreCinemaBtn) moreCinemaBtn.addEventListener('click', function () { closeAllDrawers(); cinemaApi.open(); });
         if (moreMiniBtn) moreMiniBtn.addEventListener('click', function () { closeAllDrawers(); miniApi.toggle(); });
         if (moreUploadBtn) moreUploadBtn.addEventListener('click', function () { closeAllDrawers(); fileInput.click(); });
-        if (moreLibraryBtn) moreLibraryBtn.addEventListener('click', function () { openLibrary(); });
-        if (librarySideBtn) librarySideBtn.addEventListener('click', function () { openLibrary(); });
+        // v2.9.4: library entries moved to the standalone library view (data-view)
         if (bottomNav) bottomNav.addEventListener('click', function (e) {
             const btn = e.target.closest('.bottom-nav-slot');
             if (!btn || !btn.dataset.view) return;
@@ -2881,6 +2910,7 @@
         window.__lyricex = {
             loadZip: loadZipFile,
             loadLrc: loadLrcFile,
+            playLibrarySong: playLibrarySong,
             loadFile: handleFile,
             switchView: switchView,
             toggleTheme: toggleTheme,

@@ -50,6 +50,7 @@
     <link rel="stylesheet" href="assets/styles/layout.css" />
     <link rel="stylesheet" href="assets/styles/views.css" />
     <link rel="stylesheet" href="assets/styles/overlays.css" />
+    <link rel="stylesheet" href="assets/styles/library.css" />
     <link rel="stylesheet" href="assets/styles/responsive.css" />
 </head>
 <body>
@@ -100,9 +101,9 @@
             </button>
             <!-- v2.1.1: song library (examples/manifest.json) — desktop entry;
                  mobile has #moreLibraryBtn in the more drawer -->
-            <button class="sidebar-btn" id="librarySideBtn" data-i18n-title="songLibrary" title="歌曲库">
-                <span class="icon"><i class="fas fa-music"></i></span>
-                <span class="label" data-i18n="songLibrary">歌曲库</span>
+            <button class="sidebar-btn" id="librarySideBtn" data-view="library" data-sidebar-item="library" data-i18n-title="libTitle" title="我的曲库">
+                <span class="icon"><i class="fas fa-compact-disc"></i></span>
+                <span class="label" data-i18n="libTitle">我的曲库</span>
             </button>
             <button class="sidebar-btn" id="helpBtn" data-view="help" data-sidebar-item="help" data-i18n-title="help" title="帮助">
                 <span class="icon"><i class="fas fa-question-circle"></i></span>
@@ -615,7 +616,7 @@
         <button class="drawer-item" id="moreCinemaBtn"><i class="fas fa-tv"></i> <span data-i18n="cinemaMode">影院模式</span></button>
         <button class="drawer-item" id="moreMiniBtn"><i class="fas fa-window-restore"></i> <span data-i18n="miniMode">迷你模式</span></button>
         <button class="drawer-item" id="moreUploadBtn"><i class="fas fa-file-import"></i> <span data-i18n="uploadZip">上传 .zip / .lrc</span></button>
-        <button class="drawer-item" id="moreLibraryBtn"><i class="fas fa-music"></i> <span data-i18n="songLibrary">歌曲库</span></button>
+        <button class="drawer-item" id="moreLibraryBtn" data-view="library"><i class="fas fa-compact-disc"></i> <span data-i18n="libTitle">我的曲库</span></button>
         <div class="drawer-section">
             <div class="drawer-label" data-i18n="recentTitle">最近打开</div>
             <div class="recent-list mobile-recent" id="mobileRecentList"></div>
@@ -689,6 +690,7 @@
 
 <!-- App Logic (pure helpers → modules → app, in dependency order) -->
 <script src="assets/scripts/lib.js"></script>
+<script src="assets/scripts/utils/log.js"></script>
 <script src="assets/scripts/changelog.js"></script>
 <script src="assets/scripts/utils/theme.js"></script>
 <script src="assets/scripts/utils/loop.js"></script>
@@ -720,6 +722,10 @@
 <!-- v2.8.1: native dialog system (alert/confirm/prompt) — before app.js so the
      rest of the UI can call window.__lyricexDialog at interaction time -->
 <script src="assets/scripts/ui/dialog.js"></script>
+<!-- v2.9.4: local song library (metadata -> IndexedDB store -> UI) -->
+<script src="assets/scripts/library/metadata.js"></script>
+<script src="assets/scripts/library/library-db.js"></script>
+<script src="assets/scripts/library/library-ui.js"></script>
 <!-- v2.9.1: help body + chapter titles live here, one block per language -->
 <script src="assets/scripts/help-content.js"></script>
 <script src="assets/scripts/app.js"></script>
