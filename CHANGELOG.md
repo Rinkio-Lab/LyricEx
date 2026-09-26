@@ -1,4 +1,4 @@
-## v2.8.1（待发布 · 弹窗原生统一 · 分享/海报修复 · 编辑器 tab 样式对齐 · README 三语）
+## v2.8.2（待发布 · 弹窗原生统一 · 分享/海报修复 · 制包页空白真修复 · 编辑器 tab 样式对齐 · README 三语）
 
 > 收口 v2.8.0 之后的三个用户反馈 bug：系统弹窗统一为原生对话框、分享卡片/竖屏海报不可用、制包页空白；并保留编辑器 tab 样式对齐与 README 三语改动。
 
@@ -16,8 +16,8 @@
 - **i18n**：新增 3 键（`dialogOk / dialogCancel / wsModuleMissing`），zh/ja/en 三语同步补齐
 
 ### Notes
-- 部署提醒：部署站 `index.html` 若缺 `utils/netease.js / ai-import.js / ai-prompt.js / lyric-package.js / ui/workspace.js` 仍会导致制包 tab 空白（与本次修复的代码 bug 相互独立，v2.8.1 起缺失时显示 `wsModuleMissing` 明确提示），需重新完整部署全部 assets；浏览器刷新两次（SW cache-first）
-- SW CACHE 保持 `lyricex-v2.8.1`：本版本未发布过，用户端持有的仍是旧版本 SW，发布后新 CACHE 名即触发换新，无需再加补丁后缀（与 CHANGELOG 头部版本锁步）
+- 部署提醒：部署站 `index.html` 若缺 `utils/netease.js / ai-import.js / ai-prompt.js / lyric-package.js / ui/workspace.js` 仍会导致制包 tab 空白（与本次修复的代码 bug 相互独立，v2.8.2 起缺失时显示 `wsModuleMissing` 明确提示），需重新完整部署全部 assets；浏览器刷新两次（SW cache-first）
+- SW CACHE 保持 `lyricex-v2.8.2`：本版本未发布过，用户端持有的仍是旧版本 SW，发布后新 CACHE 名即触发换新，无需再加补丁后缀（与 CHANGELOG 头部版本锁步）
 
 # Changelog
 
