@@ -4,6 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Zero runtime deps](https://img.shields.io/badge/runtime%20deps-0-brightgreen.svg)](package.json)
 
+[中文](README.zh-CN.md) · [日本語](README.ja.md)
+
 A pure-frontend Japanese lyric study tool. Upload a lyric pack (`.zip` / `.lrc`), then sing along, learn word-by-word, mix study with lyrics, or edit and re-export — all in four views, with karaoke word timing, kanji furigana, per-word analysis, and timeline editing. **Zero runtime dependencies** (fonts / Font Awesome / JSZip are vendored locally) — double-click `index.html` and go.
 
 ```bash
@@ -75,7 +77,3 @@ See [FORMAT.md](FORMAT.md) for the package format, [CHANGELOG.md](CHANGELOG.md) 
 ## License
 
 MIT — see [LICENSE](LICENSE). This tool plays only audio you provide locally; it does not store or host any media.
-
----
-
-[中文](README.zh-CN.md) · [日本語](README.ja.md)

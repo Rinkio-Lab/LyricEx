@@ -4,6 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![ランタイム依存ゼロ](https://img.shields.io/badge/runtime%20deps-0-brightgreen.svg)](package.json)
 
+[English](README.md) · [中文](README.zh-CN.md)
+
 日本語の歌詞を学ぶための純フロントエンドツール。歌詞パック（`.zip` / `.lrc`）をアップロードすると、**歌詞 / 学習 / ミックス / 編集** の 4 つのビューで、カラオケのワードタイミング、漢字のふりがな、単語ごとの解析、タイムライン編集、書き出しができます。**ランタイム依存ゼロ**（フォント / Font Awesome / JSZip は `vendor/` に同梱）— `index.html` をダブルクリックするだけで動きます。
 
 ```bash
@@ -75,7 +77,3 @@ LyricEx/
 ## ライセンス
 
 MIT — [LICENSE](LICENSE) を参照。本ツールはローカルで提供された音声のみを再生し、メディアを保存・ホストしません。
-
----
-
-[English](README.md) · [中文](README.zh-CN.md)

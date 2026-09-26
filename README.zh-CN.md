@@ -4,6 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![零运行时依赖](https://img.shields.io/badge/runtime%20deps-0-brightgreen.svg)](package.json)
 
+[English](README.md) · [日本語](README.ja.md)
+
 纯前端日语歌词鉴赏工具。上传歌词包（`.zip` / `.lrc`），在 **歌词 / 学习 / 混合 / 编辑** 四种视图里跟唱、逐字卡拉OK、汉字注音、逐词解析、时间轴校准与导出。**零运行时依赖**（字体 / Font Awesome / JSZip 已内置在 `vendor/`），双击 `index.html` 即可使用，无需联网。
 
 ```bash
@@ -75,7 +77,3 @@ LyricEx/
 ## 许可证
 
 MIT — 见 [LICENSE](LICENSE)。本工具只播放你本地提供的音频，不存储或托管任何媒体。
-
----
-
-[English](README.md) · [日本語](README.ja.md)
