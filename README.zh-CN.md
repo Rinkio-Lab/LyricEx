@@ -9,10 +9,18 @@
 纯前端日语歌词鉴赏工具。上传歌词包（`.zip` / `.lrc`），在 **歌词 / 学习 / 混合 / 编辑** 四种视图里跟唱、逐字卡拉OK、汉字注音、逐词解析、时间轴校准与导出。**零运行时依赖**（字体 / Font Awesome / JSZip 已内置在 `vendor/`），双击 `index.html` 即可使用，无需联网。
 
 ```bash
-# 本地启动（任选其一）
+# 方式一：Python
 python -m http.server 8090
+```
+
+```bash
+# 方式二：npx
 npx serve .
-node scripts/serve.mjs        # 零依赖、跨平台
+```
+
+```bash
+# 方式三：Node（零依赖、跨平台）
+node scripts/serve.mjs
 ```
 
 ## 截图

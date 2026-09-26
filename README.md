@@ -9,10 +9,18 @@
 A pure-frontend Japanese lyric study tool. Upload a lyric pack (`.zip` / `.lrc`), then sing along, learn word-by-word, mix study with lyrics, or edit and re-export — all in four views, with karaoke word timing, kanji furigana, per-word analysis, and timeline editing. **Zero runtime dependencies** (fonts / Font Awesome / JSZip are vendored locally) — double-click `index.html` and go.
 
 ```bash
-# serve locally (any of these works)
+# Option 1 — Python
 python -m http.server 8090
+```
+
+```bash
+# Option 2 — npx
 npx serve .
-node scripts/serve.mjs        # zero-dep, cross-platform
+```
+
+```bash
+# Option 3 — Node (zero-dep, cross-platform)
+node scripts/serve.mjs
 ```
 
 ## Screenshots
