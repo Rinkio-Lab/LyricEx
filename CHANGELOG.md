@@ -14,13 +14,16 @@
 - **帮助正文多语化**：zh / ja / en 三语正文；默认沿 i18n fallback 链解析（ja→日文、pt-br/ar/ko→英文、其余→中文），不再一律硬回中文
 - **帮助页独立语言切换**：目录栏顶部 zh / 日本語 / English 胶囊按钮，选择持久化（`lyricex-help-locale`），不影响全局 UI 语言
 - **帮助内容模块化**：正文与章节标题迁入独立 `assets/scripts/help-content.js`（每语言一个块，头部注释写明新增语言步骤），新增帮助语言像加语言字典一样简单；原 `help*` 词典键保留不删（避免牵动用户语言字典）
+- **提交问题与贡献**：帮助页新增独立章节（zh/ja/en 三语）——报告问题要点（浏览器与版本、控制台报错、复现步骤）、Fork → 分支 → 全量自检 → 单版本单 commit → PR 的贡献流程、本地联调命令；内容复用 README 贡献指南
 
 ### Changed
 - **代码块字体**：`.help-card code` 字体栈在等宽字体后补中文字体 fallback（Noto Sans SC / PingFang SC / Microsoft YaHei）
 - **i18n**：新增 8 键（helpContents / helpSearch / helpNoResults / helpBackToTop / helpPrev / helpNext / helpFeedbackTitle / helpLangLabel），zh/ja/en 三语同步补齐
+- **三语发布流程图**：`scripts/render-release-flow.mjs` 正式入库并支持三语输出（`release-flow-en/zh/ja.png`），README 三语各引对应语言图；AGENTS.md 新增 §4.5「可复用构造工具链」规范（会再次用到的构造流程必须入库，命名 `x.x.x-someword`，禁止用完即删）
 
 ### Fixed
 - **重复 CSS**：移除 views.css 中重复的 `.ws-empty-hint` 块（v2.8.1 遗留）
+- **Firefox 滚动条适配**：补 `scrollbar-width` / `scrollbar-color` 标准属性（此前只有 `::-webkit-scrollbar`，Firefox Developer 里滚动条退回系统默认）；同版本内缓存名 bump 为 `lyricex-v2.9.1.1`
 
 ### Test
 - e2e 新增帮助中心用例（目录点击滚动高亮、搜索过滤与 Esc 恢复、ja 直接正文 / pt-br 回退英文正文）；boot-smoke 增加帮助视图渲染断言

@@ -65,7 +65,7 @@ npm run release-check   # CACHE/changelog lockstep + size report + full tests
 
 ## Before you commit / push
 
-![Release flow](assets/images/shots/release-flow.png)
+![Release flow](assets/images/shots/release-flow-en.png)
 
 1. `npm run lint` — 0 errors.
 2. `node tests/run-tests.mjs` — full self-check (i18n / boot smoke / lang switch / utils), ALL PASS.

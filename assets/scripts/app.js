@@ -457,6 +457,7 @@
             { id: 'help-netease', title: titles.netease || 'NetEase lyrics JSON', key: 'netease' },
             { id: 'help-demo', title: titles.demo || 'Demo', key: 'demo' },
             { id: 'help-faq', title: titles.faq || 'FAQ', key: 'faq' },
+            { id: 'help-contribute', title: titles.contribute || 'Contribute', key: 'contribute' },
             { id: 'help-feedback', title: titles.feedback || 'Feedback & Support', key: 'feedback' }
         ];
         const navHtml = sections.map(function (sec) {
@@ -483,7 +484,8 @@
                     '<section class="help-card" id="help-netease"><h3>' + sections[1].title + '</h3>' + (block.netease || '') + '</section>' +
                     '<section class="help-card" id="help-demo"><h3>' + sections[2].title + '</h3><img class="help-demo" src="assets/images/demo.gif" alt="LyricEx demo" loading="lazy"></section>' +
                     '<section class="help-card" id="help-faq"><h3>' + sections[3].title + '</h3>' + (block.faq || '') + '</section>' +
-                    '<section class="help-card" id="help-feedback"><h3>' + sections[4].title + '</h3>' + (block.feedback || '') + '</section>' +
+                    '<section class="help-card" id="help-contribute"><h3>' + sections[4].title + '</h3>' + (block.contribute || '') + '</section>' +
+                    '<section class="help-card" id="help-feedback"><h3>' + sections[5].title + '</h3>' + (block.feedback || '') + '</section>' +
                     '<p class="help-no-results" id="helpNoResults" hidden>' + t('helpNoResults') + '</p>' +
                     '<button class="help-top" id="helpTopBtn" hidden>' + t('helpBackToTop') + '</button>' +
                     '<nav class="help-pager">' +

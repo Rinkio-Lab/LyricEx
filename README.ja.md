@@ -65,7 +65,7 @@ npm run release-check   # CACHE/changelog 整合 + サイズレポート + 全�
 
 ## コミット / プッシュ前のフロー
 
-![リリースフロー](assets/images/shots/release-flow.png)
+![リリースフロー](assets/images/shots/release-flow-ja.png)
 
 1. `npm run lint` — エラー 0。
 2. `node tests/run-tests.mjs` — 全量セルフチェック（i18n / 起動スモーク / 言語切替 / utils）、ALL PASS。

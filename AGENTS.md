@@ -116,9 +116,15 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 - 新增面向用户的功能（制包、导入格式、导出、设置项）：在 `CHANGELOG.md` + `changelog.js` 记条目；有明确使用方法（如网易云 JSON 获取）时在 `docs/` 写指南并挂进帮助页。
 - 包格式 / 加载契约变更：同步 `FORMAT.md`。
 - README 三语（`README.md` / `README.zh-CN.md` / `README.ja.md`）：功能清单、截图、命令、流程图的改动三语同步；截图由 `scripts/readme-shots.mjs` 重新生成。
-- 工程规范变更（工具链、CI、发布流程）：同步 AGENTS.md / README 开发小节 / 流程图（`assets/images/shots/release-flow.png`，由 `scripts/_render-flow.mjs` 重渲染）。
+- 工程规范变更（工具链、CI、发布流程）：同步 AGENTS.md / README 开发小节 / 流程图（`assets/images/shots/release-flow-en/zh/ja.png`，由 `scripts/render-release-flow.mjs` 三语重渲染）。
 
 #### 4.4 发布前文档审计
 - 每个版本发布前把 README 三语、FORMAT.md、docs/ 下全部指南、CHANGELOG.md、changelog.js、package.json 全查一遍：过期描述、缺版本记录、格式不统一、日期矛盾、漏掉的待办。
 - 发现乱格式当场统一，不留给下个版本；文档整理本身也是一条 changelog 记录（type 用 `changed` 或 `fixed`）。
 - 帮助页 / 指南里的「待办」项一旦完成，立即删除对应待办并更新状态（曾出现指南里写着「后续版本计划支持 klyric/yrc」而功能已实现的过期状态）。
+
+#### 4.5 可复用构造工具链（禁止用完即删）
+- **会再次用到的构造流程必须正式入库**，不得每次现写现删：流程文档 + 其工具链一起提交。例：提交/推送前流程图（`scripts/render-release-flow.mjs` 渲染 `assets/images/shots/release-flow.png`）、README 截图（`scripts/readme-shots.mjs`）、发布自检（`scripts/release-check.mjs`）、本地联调（`scripts/serve.mjs`）。
+- 命名规范 `x.x.x-someword`：脚本文件名用描述词（如 `render-release-flow.mjs`），**文件头注释标注对应引入版本**（如 `Introduced at v2.8.4`）与用法（依赖、`PLAYWRIGHT_BROWSERS_PATH`、输出路径）；文档版本头沿用 `vX.Y.Z（日期 · 主题词）`。
+- 正式脚本放 `scripts/`，**不带 `_` 前缀**（`_patch-*.mjs` 仅限一次性补丁，跑完即删、不入库）；新增正式脚本须过 lint（`eslint.config.mjs` 已覆盖 `scripts/**/*.mjs`）。
+- 改动流程步骤/截图内容时，**必须重跑对应工具链并同批提交产物**（文档与图同源，禁止只改文档）。

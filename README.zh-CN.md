@@ -65,7 +65,7 @@ npm run release-check   # CACHE/changelog 一致性 + 体积报告 + 全量测�
 
 ## 提交 / 推送前流程
 
-![发布流程](assets/images/shots/release-flow.png)
+![发布流程](assets/images/shots/release-flow-zh.png)
 
 1. `npm run lint` — 0 错误。
 2. `node tests/run-tests.mjs` — 全量自检（i18n / 启动冒烟 / 语言切换 / utils），ALL PASS。

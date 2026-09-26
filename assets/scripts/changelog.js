@@ -13,11 +13,14 @@
             version: '2.9.1',
             date: '待发布',
             changes: [
+                { type: 'added', text: '帮助页新增「提交问题与贡献」章节（三语）：报告问题要点（浏览器与版本 / 控制台报错 / 复现步骤）+ Fork→PR 贡献流程 + 本地联调命令，内容复用 README 贡献指南' },
                 { type: 'added', text: '帮助页升级为完整帮助中心：左侧目录导航（滚动自动高亮）+ 搜索过滤 + 上一节/下一节分页 + 返回顶部 + ↑/↓ 键盘导航 + 窄屏横向导航条 + 反馈与支持章节（GitHub Issues 直达）' },
                 { type: 'added', text: '帮助页独立语言切换（zh/ja/en 胶囊按钮，持久化 lyricex-help-locale，不影响全局 UI 语言）；正文与章节标题迁入独立模块 help-content.js（新增帮助语言像加语言字典一样简单）' },
                 { type: 'added', text: '帮助正文多语化（zh/ja/en）：默认沿 i18n fallback 链解析（pt-br / ar / ko 等回退到 en，再落到 zh），不再一律硬回中文' },
+                { type: 'changed', text: '提交/推送前流程图渲染工具链正式入库 scripts/render-release-flow.mjs 并支持三语输出（release-flow-en/zh/ja.png，README 三语各引对应语言图）；AGENTS.md 新增 §4.5 可复用构造工具链规范（命名 x.x.x-someword，禁止用完即删）' },
                 { type: 'changed', text: '帮助页代码块字体栈补中文字体 fallback（等宽字体后接 Noto Sans SC / PingFang SC / Microsoft YaHei）；章节标题移入 help-content.js 后不再引用 help* 词典键（键保留不删）' },
                 { type: 'fixed', text: '移除 views.css 中重复的 .ws-empty-hint 块（v2.8.1 遗留的重复定义）' },
+                { type: 'fixed', text: 'Firefox 滚动条适配：补 scrollbar-width / scrollbar-color 标准属性（此前只有 ::-webkit-scrollbar，Firefox Developer 里滚动条退回系统默认）' },
                 { type: 'test', text: 'e2e 新增帮助中心用例（目录点击滚动高亮 / 搜索过滤与 Esc 恢复 / 帮助页语言切换与持久化 / ja 直接正文、pt-br 回退英文正文）；boot-smoke 增加帮助视图渲染断言' },
             ]
         },

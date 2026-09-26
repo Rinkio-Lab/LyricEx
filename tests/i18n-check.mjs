@@ -60,7 +60,7 @@ const dynamic = new Set(['editorOffsetRange', 'editorOffsetValue', 'exportPackag
     'editorCoverBtn', 'editorCoverRemoveBtn', 'editorCoverFile', 'editorCoverThumb',
     'editorInstBtn', 'editorInstRemoveBtn', 'editorInstFile', 'editorInstThumb',
     'helpContent', 'helpSearchInput', 'helpNoResults', 'helpTopBtn',
-    'helpPrevBtn', 'helpNextBtn', 'helpPagerLabel']);
+    'helpPrevBtn', 'helpNextBtn', 'helpPagerLabel', 'helpContribute']);
 let idMiss = 0;
 for (const id of ids) {
     if (dynamic.has(id)) continue;

@@ -340,6 +340,14 @@ textarea {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--scrollbar-thumb-hover);
 }
+/* Firefox ignores the ::-webkit-* pseudo-elements above; the standard props
+   give it the same thin themed track/thumb.
+   ponytail: scrollbar-color has no :hover variant — thumb-hover stays Chromium
+   only; acceptable ceiling, upgrade path = a JS scrollbar library. */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
 * {
     border-radius: 0 !important;
 }

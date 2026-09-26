@@ -12,7 +12,11 @@ export default defineConfig({
     use: {
         baseURL: 'http://127.0.0.1:8090',
         headless: true,
-        locale: 'zh-CN' // deterministic bootstrap: locale-boot.js picks the browser language
+        locale: 'zh-CN', // deterministic bootstrap: locale-boot.js picks the browser language
+        // CI stability: GitHub Actions Linux runners have a small /dev/shm
+        // (64 MB default); Chromium crashes the FIRST page under load with
+        // "Protocol error … session closed" unless it uses a tmpfs shm instead.
+        launchOptions: { args: ['--disable-dev-shm-usage'] }
     },
     webServer: {
         command: 'node scripts/serve.mjs 8090',

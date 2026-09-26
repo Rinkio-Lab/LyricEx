@@ -241,7 +241,7 @@ test('help center: nav, search, and body follows the locale fallback chain (v2.9
     await openApp(page);
     await page.click('#helpBtn');
     await expect(page.locator('.view-help')).toBeVisible();
-    await expect(page.locator('#helpNavList a')).toHaveCount(5);
+    await expect(page.locator('#helpNavList a')).toHaveCount(6);
     await expect(page.locator('#helpSearchInput')).toBeVisible();
     // the content pane is the real scroll container (sidebar/other views scroll themselves)
     const overflowY = await page.evaluate(() => getComputedStyle(document.getElementById('helpContent')).overflowY);
