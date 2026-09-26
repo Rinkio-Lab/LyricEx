@@ -3,11 +3,103 @@
    Entry shape: { version, date, changes: [{ type, text }] }
    type ∈ added | changed | fixed | test | removed | breaking
    Note: the change text below is written in Chinese (the developer's language) and
-   is intentionally NOT i18n'd — the surrounding UI (title, type badges, close) is. */
+   is intentionally NOT i18n'd — the surrounding UI (title, type badges, close) is.
+   Rule: every bumped version MUST have an entry here AND in CHANGELOG.md (same facts). */
 (function (root) {
     'use strict';
 
     root.__lyricexChangelog = [
+        {
+            version: '2.8.4',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: '帮助页：侧边栏「系统」组新增「帮助」视图——快速上手 / 网易云歌词 JSON 获取指南（内嵌要点）/ 30 秒演示 GIF / 常见问题；指南全文保留在 docs/netease-lyrics-guide.md' },
+                { type: 'added', text: 'klyric / yrc 逐字歌词导入：网易云 JSON 的 klyric.lyric 自动解析并附加到歌词行 words（逐字卡拉OK高亮即生效）；编辑器「导入逐字时间」支持 .yrc / .klyric 文件（与 .lrc / .ass 并列）' },
+                { type: 'added', text: '提交前流程整理：README（英/中/日）新增「Before you commit / push」小节 + 渲染流程图（release-flow.png，9 步 + 全绿判定）' },
+                { type: 'added', text: '30 秒演示 GIF（Playwright 录制 + ffmpeg 压缩，assets/images/demo.gif）；docs/netease-lyrics-guide.md 更新（klyric/yrc 已支持 + 帮助页入口）' },
+                { type: 'changed', text: 'i18n 新增 6 键（help 系列），zh/ja/en 三语同步补齐；CHANGELOG.md 全文件格式统一（标题归位、版本头/分节/日期统一）并同步 changelog.js 2.5.0 → 2.8.4（修复重复 2.3.2 条目、2.3.3 归位、回填 v2.8.1 缺失记录）' },
+                { type: 'fixed', text: '制包页出现「跟随」：build 工作区不是歌词视图，滚动不再暂停精修跟随（getLyricsScrollTarget + 切换 tab 刷新跟随 pill）' },
+                { type: 'fixed', text: '精修页空置高度溢出出现滚动条：空状态只渲染提示；.view-editor 改 flex 列布局根治' },
+                { type: 'fixed', text: '编辑页「全局偏移(ms)」滑杆样式：原生 range 统一为自定义轨道 + accent 圆形滑块（与音量滑杆同风格）' },
+                { type: 'test', text: 'utils-test 新增 YRC / klyric 逐字解析单测（行时间/字时间/容差/元数据行/集成配对）' },
+            ]
+        },
+        {
+            version: '2.8.3',
+            date: '待发布',
+            changes: [
+                { type: 'fixed', text: '三行一句歌词（日文+中文+罗马字同时间戳）导入不再错乱：按时间戳分组后主歌词取日文、翻译取中文、罗马字存入该行 romaji 字段，歌词视图副行（自动/罗马音模式）可显示' },
+                { type: 'added', text: '制包页 AI 逐词分析复制提示词按钮下方新增实时预览窗（所见即所拷）' },
+                { type: 'added', text: 'docs/netease-lyrics-guide.md 网易云歌词 JSON 获取指南（浏览器抓包 / curl 两法，接口实测）' },
+            ]
+        },
+        {
+            version: '2.8.2',
+            date: '待发布',
+            changes: [
+                { type: 'fixed', text: '系统弹窗原生统一：全部 23 处 alert/confirm/prompt 替换为与设置/关于同风格的对话框（ui/dialog.js，Promise 式 API，焦点圈定接入；破坏性操作确认键红色）' },
+                { type: 'fixed', text: '分享卡片 / 竖屏海报不可用：SVG foreignObject 路径 canvas 污染（drawImage 成功但 toDataURL 抛 SecurityError）导致预览空白、海报无下载——加 1px getImageData 污染探测，污染即回退纯 2D 渲染' },
+                { type: 'fixed', text: '制包页空白（真 bug）：v2.7.0 引入 tab 结构时 renderEditorView 多拼了一层 </div>，把 build pane 挤出 .view-editor 被 overflow 裁剪容器裁掉——删除多余闭合标签归位；e2e 增加结构断言防回归' },
+                { type: 'fixed', text: '部署站缺模块时制包 tab 显示 wsModuleMissing 明确提示而非空白（renderWorkspaceMissing 守卫）' },
+                { type: 'changed', text: '编辑器 tab 样式对齐设置页（flex:1 等宽 + 激活态 accent 指示条）；README 三语化（EN/中/日 + 四视图截图 + scripts/readme-shots.mjs 截图脚本）；i18n 新增 3 键（dialogOk/dialogCancel/wsModuleMissing）' },
+            ]
+        },
+        {
+            version: '2.8.1',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: '首次 Android APK 打包链路：Nitron 本地打包 Release APK（cn.linko.lyricex.app）+ uber-apk-signer 重签（v1+v2+v3）；keystore 与密码仅存本地 android-build/ 且 .gitignore 排除，绝不上传 GitHub' },
+                { type: 'fixed', text: '系统弹窗原生统一（23 处 alert/confirm/prompt → 原生风格对话框）、分享卡片/海报 taint 探测自动回退、制包页模块缺失守卫 wsModuleMissing' },
+                { type: 'test', text: 'e2e 新增分享卡片渲染 + 海报下载用例（防 taint 回归）' },
+            ]
+        },
+        {
+            version: '2.8.0',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: '设置导出/导入：导出当前全部偏好为 JSON（lyricex-settings-YYYYMMDD.json）；导入经 lib.sanitizeSettings 白名单 + 值类型回退过滤，保留界面语言与文本方向' },
+                { type: 'changed', text: 'i18n 新增 6 键（设置导出/导入相关），zh/ja/en 三语同步补齐' },
+                { type: 'test', text: 'utils-test 新增 8 条 sanitizeSettings 断言（类型回退/嵌套保留/未知键过滤/合法值透传）；e2e 新增设置导出控件与下载用例' },
+            ]
+        },
+        {
+            version: '2.7.0',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: 'AI 逐词分析工作流：复制提示词 → 任意大模型 → 粘贴结果（纯静态不引 API）；ai-prompt.js 重写提示词（可选手动分段）、ai-import.js 容错解析 + 双键保守匹配（时间×10 取整 + 文本去空格）' },
+                { type: 'added', text: '交替双语 LRC 自动拆分：lib.splitMixedLrc 按 10ms 时间戳分组 + isChinese 判定，把「一行日文一行中文」的网易云内联 LRC 自动拆为原词 + 翻译' },
+                { type: 'added', text: 'LRC 文件上传入口（main/trans 双栏各配「上传文件」按钮，.lrc/.txt 回填 textarea）；parseLRC 支持网易云行尾时间戳变体（[t1]正文[t2]）' },
+                { type: 'changed', text: '空状态可达制包工作区：无歌词时精修页显示引导、制包页可从零开始建包（v2.6.0 设计缺口补全）；i18n 新增 43 键三语补齐' },
+                { type: 'test', text: 'utils-test 新增网易云内联变体解析与 splitMixedLrc 分组拆分用例；e2e 新增「build tab 交替 LRC 自动拆分」用例' },
+            ]
+        },
+        {
+            version: '2.6.0',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: '编辑视图升级为工作区：精修 / 制包双 tab；制包用 ui/workspace.js（媒体卡片[原声必选+伴奏可选]、LRC 双栏 + 网易云 JSON、AI 分析组、导出组；draft 独立于 ctx.lyrics，resetDraft 清空）' },
+                { type: 'added', text: '制包格式升级 v2.1：manifest 新增全可选字段（audioFileName/instrumentalFileName/config.analysisModel/config.analysisSource），version 恒为 2 兼容 v2.0 加载器（FORMAT.md v2.1 增量）' },
+                { type: 'changed', text: 'i18n 新增 42 键（editorTabRefine/editorTabBuild + wsMedia…wsExportFail），zh/ja/en 三语同步补齐' },
+            ]
+        },
+        {
+            version: '2.5.1',
+            date: '待发布',
+            changes: [
+                { type: 'fixed', text: 'E2E file:// 测试跨平台化（pathToFileURL 运行时推导，修 CI Linux ERR_FILE_NOT_FOUND）；axe color-contrast CI 偶发（--text-muted 加深至 #6a625c + 渲染稳定等待）；关于弹窗 h4→h3 + sr-only h1 移入 main landmark' },
+                { type: 'changed', text: 'CI 升级：checkout/setup-node@v5、ubuntu-24.04 固定、失败上传 Playwright 报告' },
+            ]
+        },
+        {
+            version: '2.5.0',
+            date: '待发布',
+            changes: [
+                { type: 'added', text: '工程化补齐：package.json（test/lint/test:cov/e2e/release-check 脚本）、ESLint 9 flat config、GitHub Actions CI 门禁（push/PR 跑 lint + 5 套全量自检 + c8 覆盖率 + Playwright E2E + axe 无障碍）、CSP、release-check 发布自检（sw.js CACHE ≥ CHANGELOG 最新版本 + 体积报告）' },
+                { type: 'added', text: '浏览器真机测试：tests/e2e/（Playwright + Chromium，真实 HTTP 服务：上传示例包、视图切换、zh/ja/ar 语言切换含 RTL、焦点圈定、axe 扫描）' },
+                { type: 'fixed', text: '抽屉开关误关（outside-click 监听未排除按钮内子元素，改为 contains 判定）；主题色行 label 缺失补回' },
+                { type: 'added', text: 'A11y：弹窗可读名 10 处、图标按钮 aria-label、表单标注、对比度 WCAG AA、标题结构；CHANGELOG 回填 v2.2.0–v2.4.2 条目' },
+            ]
+        },
         {
             version: '2.4.2',
             date: '2026-09-26',
@@ -35,7 +127,7 @@
             ]
         },
         {
-            version: '2.3.2',
+            version: '2.3.3',
             date: '2026-09-26',
             changes: [
                 { type: 'added', text: '首次引导（欢迎页）左下角新增语言切换地球按钮，新用户进入即可选择界面语言' },
@@ -47,7 +139,7 @@
             version: '2.3.2',
             date: '2026-09-25',
             changes: [
-                { type: 'changed', text: '语言文件按需加载：首次进入只加载当前语言及其 fallback 链（+简体中文兜底），不再全量拉取所有语言；语言抽屉里选择未加载的语言时自动按需加载后再切换' },
+                { type: 'changed', text: '语言列表完整显示：语言按钮渲染注册表全部语言，未加载的字典标 lang-pending；语言文件按需加载——首次进入只加载当前语言及其 fallback 链（+简体中文兜底），不再全量拉取所有语言；选择未加载语言时自动按需加载后再切换' },
                 { type: 'fixed', text: '修复语言抽屉被设置面板遮罩遮挡的问题（层级错误），点击「更改」现在可以正常弹出语言列表' },
                 { type: 'changed', text: 'Service Worker 安装时预缓存全部核心资源（样式/脚本/简体中文），版本更新后刷新一次即加载到新资源，不再需要连续刷新两三次缓存才跟上' },
             ]
@@ -75,14 +167,10 @@
             version: '2.2.0',
             date: '2026-09-25',
             changes: [
-                { type: 'added', text: '无障碍：新增高对比亮 / 暗双主题（设置 → 外观 → 主题色）；移动端不强制禁用页面缩放、不自动放大表单输入' },
+                { type: 'added', text: '无障碍：新增高对比亮 / 暗双主题（设置 → 外观 → 主题色）；移动端不强制禁用页面缩放、不自动放大表单输入；弹窗焦点圈定（focus-trap.js）、图标按钮 aria-label' },
                 { type: 'added', text: '移动端三段式布局：顶栏（LOGO + 滚动歌名 + 歌手 + 封面入口 + 设置/关于抽屉）、底边导航（4 个可配置位 + 「更多」）、功能抽屉收纳上传/歌曲库/影院/迷你模式' },
-                { type: 'added', text: '播放条扩展控制可钉选（外观 → 布局）：音量/速度/移调/AB 循环/书签/分享任选常驻，未勾选的收进 ⋯ 抽屉，窄屏不再堆叠成三行' },
-                { type: 'added', text: '封面查看：桌面播放条与移动顶栏均可点击封面按钮查看大图' },
-                { type: 'added', text: '影院背景效果全套（外观 → 影院）：模糊/亮度/对比度/饱和度/暗化/玻璃/边框，并可切换是否用封面作背景' },
-                { type: 'added', text: '歌曲库：从 examples/ 直接加载示例歌词包（清单含版权声明，仅供学习交流）' },
-                { type: 'fixed', text: '移动端窄屏下播放条功能键不再堆叠成三行；侧边栏在移动端由底边导航替代' },
-                { type: 'fixed', text: '移动端收尾修复：⋯ 抽屉与顶栏抽屉锚定到固定顶栏/底栏（此前会弹出到视口外）；暗色主题下顶栏、底栏的次要灰字不再与亮色同色；AB 循环/书签/分享等扩展按钮恢复统一样式；抽屉不整体滚动，仅内部列表滚动；主题变量同时作用到 <html>，使顶栏/底栏/迷你条/影院等 body 级元素正确跟随暗色与高对比主题；设置 → 外观子导航「影院/布局」补齐中英日文案' },
+                { type: 'added', text: '播放条扩展控制可钉选（外观 → 布局）：音量/速度/移调/AB 循环/书签/分享任选常驻，未勾选的收进 ⋯ 抽屉，窄屏不再堆叠成三行；封面查看大图；影院背景效果全套；歌曲库从 examples/ 加载示例包' },
+                { type: 'fixed', text: '移动端窄屏下播放条功能键不再堆叠成三行；侧边栏在移动端由底边导航替代；⋯ 抽屉/顶栏抽屉锚定修正；暗色主题下顶栏/底栏次要灰字不再与亮色同色；扩展按钮统一样式；主题变量同时作用到 <html>（顶栏/底栏/迷你条/影院正确跟随暗色与高对比主题）' },
             ]
         },
         {

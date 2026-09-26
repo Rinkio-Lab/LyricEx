@@ -63,6 +63,18 @@ npm run e2e             # Playwright real-browser smoke + axe a11y (first: npm r
 npm run release-check   # CACHE/changelog lockstep + size report + full tests
 ```
 
+## Before you commit / push
+
+![Release flow](assets/images/shots/release-flow.png)
+
+1. `npm run lint` — 0 errors.
+2. `node tests/run-tests.mjs` — full self-check (i18n / boot smoke / lang switch / utils), ALL PASS.
+3. `npm run e2e` — Playwright real-browser smoke + axe a11y.
+4. `npm run release-check` — SW CACHE vs CHANGELOG lockstep + full tests + asset-size report.
+5. Bump the version anchors together: `sw.js` CACHE, `package.json`, `package-lock.json`, `index.html` footer, `CHANGELOG.md` head — and sync the in-app log `assets/scripts/changelog.js`.
+6. Git safety sweep: never stage `*.keystore` / passwords / secrets; run `git status` and confirm before committing.
+7. Commit (one commit per version), push, deploy and refresh twice (cache-first SW), acceptance-test on a real device, then release.
+
 Project structure (abridged):
 
 ```text

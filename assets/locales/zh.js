@@ -426,6 +426,15 @@
         'shareCopy': '复制到剪贴板',
         'shareCopied': '已复制',
         'shareCopyFailed': '复制失败，请改用下载',
-        'shareDownload': '下载 PNG',
+
+
+        /* v2.8.4: help view */
+        'help': '帮助',
+        'helpQuickStart': '快速上手',
+        'helpNetease': '网易云歌词 JSON 获取',
+        'helpDemo': '演示',
+        'helpFaq': '常见问题',
+        'helpFeedback': '遇到问题或建议？请在 GitHub Issues 反馈，附上控制台报错与复现步骤。',
+            'shareDownload': '下载 PNG',
     });
 })();

@@ -158,6 +158,24 @@ const merged = u.mergeWordTimings(
 );
 ok('mergeWordTimings attaches to nearest', merged[0].words && merged[0].words[0].text === 'x' && !merged[1].words);
 
+// ---- NetEase YRC / klyric word lyrics (v2.8.4) ----
+const yrc = u.parseYrcLines('[190871,1984](190871,361,0)For (191232,172,0)the (191404,376,0)first (191780,1075,0)time\n[193459,4198](193459,412,0)What\'s (193871,574,0)past (194445,506,0)is (194951,2706,0)past\n');
+eq('yrc line count', yrc.length, 2);
+eq('yrc line time', Math.round(yrc[0].time * 1000), 190871);
+eq('yrc clean text', yrc[0].text, 'For the first time');
+ok('yrc word times absolute', Math.abs(yrc[0].words[0].start - 190.871) < 1e-6 && Math.abs(yrc[0].words[0].end - 191.232) < 1e-6);
+eq('yrc two-field tolerated', u.parseYrcLines('[1000,500](1000,200)ab(1200,300)cd\n')[0].words.length, 2);
+eq('yrc meta line skipped', u.parseYrcLines('[by:someone]\n[1000,500](1000,200)ab\n')[0].words.length, 1);
+const neK = u.parseNeteaseLyrics({
+    lrc: { lyric: '[00:01.00]こんにちは世界\n[00:03.00]第二行' },
+    tlyric: { lyric: '[00:01.00]你好世界' },
+    klyric: { lyric: '[1000,1000](1000,300,0)こ(1300,200,0)ん(1500,200,0)にちは(1700,200,0)世界\n[3000,1000](3000,300,0)第(3300,300,0)二(3600,300,0)行' }
+});
+eq('netease klyric line0 words', neK.lines[0].words.length, 4);
+eq('netease klyric first word text', neK.lines[0].words[0].text, 'こ');
+eq('netease klyric line1 words', neK.lines[1].words.length, 3);
+eq('netease klyric translation kept', neK.lines[0].translation, '你好世界');
+
 // ---- NetEase JSON import (v2.6.0) ----
 const ne = u.parseNeteaseLyrics({
     title: 'Test Song',

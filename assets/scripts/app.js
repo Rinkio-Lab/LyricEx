@@ -421,6 +421,50 @@
         if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
     }
 
+    // Help view (v2.8.4): quick start / NetEase guide / demo / FAQ.
+    // Body text is developer Chinese (same convention as the in-app changelog);
+    // section headers are i18n'd.
+    function renderHelpView() {
+        const html =
+            '<div class="view-help">' +
+                '<header class="help-head"><h2>' + t('help') + '</h2></header>' +
+                '<section class="help-card">' +
+                    '<h3 data-i18n="helpQuickStart">快速上手</h3>' +
+                    '<ol>' +
+                        '<li><b>上传</b>：把 <code>.zip</code> 歌词包或 <code>.lrc</code> 拖到左侧「歌词包」区，或点「上传 .zip / .lrc」选择文件；也可从「歌曲库」加载示例包（仅供学习交流）。</li>' +
+                        '<li><b>建包</b>：编辑 → 制包 → 上传原声（必选）/ 伴奏（可选）→ 粘贴或上传 LRC（日文/中文交替自动拆分为原词+翻译）→ 可选粘贴网易云歌词 JSON 补翻译与逐字时间 → 可选 AI 逐词分析 → 导出包。</li>' +
+                        '<li><b>练唱</b>：歌词视图跟唱（逐字卡拉OK高亮、当前行下可显示翻译/罗马音副行），学习视图逐词表，混合视图两者同屏。</li>' +
+                        '<li><b>导出</b>：学习笔记（MD/HTML）、竖版海报、分享卡片、歌词视频（Chrome/Edge）、字幕（SRT/ASS）。</li>' +
+                    '</ol>' +
+                '</section>' +
+                '<section class="help-card">' +
+                    '<h3 data-i18n="helpNetease">网易云歌词 JSON 获取</h3>' +
+                    '<p>制包页支持直接粘贴网易云歌词 JSON（含原词、翻译、逐字）。获取方法（详见 <code>docs/netease-lyrics-guide.md</code>）：</p>' +
+                    '<dl>' +
+                        '<dt>方法一 · 浏览器抓包（最稳）</dt><dd>打开网易云网页版歌曲页 → F12 → Network → 过滤 <code>lyric</code> → 点开 <code>song/lyric</code> 请求 → 复制响应 JSON。</dd>' +
+                        '<dt>方法二 · 命令行</dt><dd>接口 <code>https://music.163.com/api/song/lyric?id=&lt;歌曲ID&gt;&amp;lv=-1&amp;kv=-1&amp;tv=-1</code>，<b>必须</b>带 <code>User-Agent</code> 与 <code>Referer: https://music.163.com/</code>，否则返回 400。<br>curl：<code>curl.exe -H "User-Agent: Mozilla/5.0 …" -H "Referer: https://music.163.com/" "接口URL"</code><br>PowerShell：<code>Invoke-RestMethod -Headers @{ "User-Agent"="Mozilla/5.0 …"; "Referer"="https://music.163.com/" } -Uri "接口URL"</code></dd>' +
+                        '<dt>返回字段</dt><dd><code>lrc.lyric</code> 原词（标准/增强内联）、<code>tlyric.lyric</code> 翻译、<code>klyric.lyric</code> 逐字（YRC 语法，LyricEx 已支持导入并用于卡拉OK高亮）、部分歌曲新接口含 <code>yrc</code>。</dd>' +
+                    '</dl>' +
+                    '<p class="help-tip">把整个 JSON 粘到制包页「或粘贴网易云歌词JSON」框点解析即可：翻译自动配对，klyric 逐字时间自动附加到对应行。</p>' +
+                '</section>' +
+                '<section class="help-card">' +
+                    '<h3 data-i18n="helpDemo">演示</h3>' +
+                    '<img class="help-demo" src="assets/images/demo.gif" alt="LyricEx 30 秒演示" loading="lazy">' +
+                '</section>' +
+                '<section class="help-card">' +
+                    '<h3 data-i18n="helpFaq">常见问题</h3>' +
+                    '<dl>' +
+                        '<dt>制包页空白？</dt><dd>部署后请刷新两次（Service Worker 缓存优先）；仍空白请用无痕窗口/换端口验证，若仅旧缓存导致则属正常。</dd>' +
+                        '<dt>逐字歌词（卡拉OK高亮）从哪来？</dt><dd>包内 <code>words</code> 时间戳或网易云 JSON 的 <code>klyric</code>；也可在编辑视图「导入逐字时间」导入 <code>.yrc/.klyric/.ass/增强.lrc</code> 文件。</dd>' +
+                        '<dt>导出视频没声音或不能用？</dt><dd>仅 Chrome/Edge 支持，录制期间请完整播放一遍、不要切换窗口。</dd>' +
+                        '<dt>离线能用吗？</dt><dd>PWA：通过 http(s) 访问后可安装并离线使用（file:// 直开无法安装）。</dd>' +
+                    '</dl>' +
+                '</section>' +
+                '<footer class="help-foot" data-i18n="helpFeedback">遇到问题或建议？请在 GitHub Issues 反馈，附上控制台报错与复现步骤。</footer>' +
+            '</div>';
+        viewContent.innerHTML = html;
+    }
+
     // =========================== SETTINGS EXPORT / IMPORT (v2.8.0) ===========================
     // Export: download the whole settings object as JSON for backup or moving
     // between browsers. Import: parse → sanitize (whitelist keys + revert wrong
@@ -1025,6 +1069,7 @@
             case 'study': renderStudyView(); break;
             case 'mixed': renderMixedView(); break;
             case 'editor': editorApi.render(); break;
+            case 'help': renderHelpView(); break;
             default: renderLyricsView(); break;
         }
         if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
@@ -1099,6 +1144,9 @@
             return { container: viewContent.querySelector('.view-mixed'), selector: '.lyric-line.active' };
         }
         if (currentView === 'editor') {
+            // v2.8.4: the build workspace is not a lyric view — no follow
+            // target, so the follow pill never appears on the Build tab.
+            if (editorApi.getTab && editorApi.getTab() === 'build') return null;
             return { container: viewContent.querySelector('.view-editor'), selector: '.editor-row.active' };
         }
         return null;
@@ -1179,6 +1227,8 @@
         function userScrollIntent() {
             cancelScrollAnim();
             if (!followEnabled) return;
+            // v2.8.4: scrolling the build workspace must not pause refine follow
+            if (currentView === 'editor' && editorApi.getTab && editorApi.getTab() === 'build') return;
             if (container.scrollHeight <= container.clientHeight + 1) return;
             followEnabled = false;
             updateFollowPill();

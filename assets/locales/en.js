@@ -426,6 +426,15 @@
         'shareCopy': 'Copy to clipboard',
         'shareCopied': 'Copied',
         'shareCopyFailed': 'Copy failed — use download',
-        'shareDownload': 'Download PNG',
+
+
+        /* v2.8.4: help view */
+        'help': 'Help',
+        'helpQuickStart': 'Quick start',
+        'helpNetease': 'NetEase lyric JSON',
+        'helpDemo': 'Demo',
+        'helpFaq': 'FAQ',
+        'helpFeedback': 'Problems or suggestions? Open a GitHub Issue with the console error and reproduction steps.',
+            'shareDownload': 'Download PNG',
     });
 })();

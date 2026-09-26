@@ -510,6 +510,10 @@
     overflow-y: auto;
     padding-right: 8px;
     overscroll-behavior: contain;
+    /* v2.8.4: flex column so .editor-pane's fill does not re-add the tabs row
+       height on top of min-height:100% (empty state used to scroll) */
+    display: flex;
+    flex-direction: column;
 }
 /* v2.0.0: the whole head (toolbar groups + hint) is one sticky block so the
    operation hints stay pinned with the buttons while rows scroll under it. */
@@ -556,7 +560,35 @@
 }
 .editor-offset input[type="range"] {
     width: 180px;
-    accent-color: var(--accent);
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--progress-bg);
+    outline: none;
+    cursor: pointer;
+    transition: background var(--transition);
+}
+.editor-offset input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.editor-offset input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+}
+.editor-offset input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: transparent;
 }
 .editor-offset .offset-value {
     font-variant-numeric: tabular-nums;
@@ -1085,7 +1117,8 @@
     border-bottom-color: var(--accent);
 }
 .editor-pane {
-    min-height: 100%;
+    flex: 1;
+    min-height: 0;
 }
 
 /* ======================= V2.6.0: WORKSPACE BUILD PANE ======================= */
@@ -1301,3 +1334,18 @@
     line-height: 1.7;
 }
 .ws-empty-hint i { color: var(--accent); font-size: 18px; }
+
+/* ============================ HELP VIEW (v2.8.4) ============================ */
+.view-help{max-width:860px;margin:0 auto;padding:20px 24px 64px;}
+.help-head h2{margin:0 0 16px;font-size:24px;}
+.help-card{border:1px solid var(--border,#e5e0d8);border-radius:10px;padding:16px 20px;margin-bottom:18px;background:var(--card-bg,#fff);}
+.help-card h3{margin:0 0 10px;font-size:16px;color:var(--accent,#8a7a6a);}
+.help-card ol{padding-left:22px;line-height:1.8;}
+.help-card li{margin-bottom:6px;}
+.help-card dl{margin:0;line-height:1.7;}
+.help-card dt{font-weight:600;margin-top:10px;}
+.help-card dd{margin:2px 0 0;padding-left:14px;color:var(--text-muted,#6a625c);}
+.help-card code{background:rgba(0,0,0,.05);padding:1px 5px;border-radius:4px;font-family:var(--font-mono);font-size:.92em;}
+.help-demo{display:block;max-width:100%;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.12);}
+.help-tip{font-size:.92em;color:var(--text-muted,#6a625c);}
+.help-foot{padding:10px 4px 0;color:var(--text-muted,#6a625c);font-size:.9em;}

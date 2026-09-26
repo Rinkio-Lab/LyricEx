@@ -53,6 +53,15 @@
             }
             out.lines.push(line);
         });
+
+        // klyric (NetEase 逐字歌词, YRC grammar) → per-word timings for the
+        // karaoke highlight. Line stamps are emitted in lockstep with lrc, so
+        // a tight tolerance is enough; unmatched klyric lines are ignored.
+        var klyric = lyricText(data, 'klyric');
+        if (klyric.trim() && u.parseYrcLines) {
+            var klines = u.parseYrcLines(klyric);
+            if (klines.length) u.mergeWordTimings(out.lines, klines, 0.1);
+        }
         return out;
     };
 })(typeof window !== 'undefined' ? window : globalThis);

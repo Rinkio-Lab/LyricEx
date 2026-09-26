@@ -87,6 +87,45 @@
         return lines;
     };
 
+    // NetEase YRC / klyric word-level lyrics (逐字歌词): each line is
+    //   [lineStartMs,lineDurMs](wordStartMs,wordDurMs,0)text(…,0)text…
+    // — absolute-ms timestamps, word FIRST then its text; the trailing `0`
+    // is a fixed third field (its meaning is unknown; some exporters omit it,
+    // so the parser accepts 2 or 3 fields). Text may contain full-width
+    // parens（ ） but never half-width ones. Returns
+    //   [{ time, text, words:[{text,start,end}] }] (seconds, absolute).
+    u.parseYrcLines = function (text) {
+        var lines = [];
+        String(text || '').split(/\r?\n/).forEach(function (raw) {
+            var h = /^\s*\[(\d+),(\d+)\](.*)$/.exec(raw);
+            if (!h) return; // skip meta lines like [by:…] / [offset:…]
+            var lineStart = Number(h[1]) / 1000;
+            var content = h[3];
+            var toks = [];
+            var re = /\((\d+),(\d+)(?:,(\d+))?\)/g;
+            var m;
+            while ((m = re.exec(content))) toks.push({ start: Number(m[1]), dur: Number(m[2]), idx: m.index, end: re.lastIndex });
+            var words = [];
+            for (var i = 0; i < toks.length; i++) {
+                var nextIdx = (i + 1 < toks.length) ? toks[i + 1].idx : content.length;
+                var wtext = content.slice(toks[i].end, nextIdx);
+                if (!wtext) continue;
+                words.push({ text: wtext, start: toks[i].start / 1000, end: null });
+            }
+            if (!words.length) {
+                if (content.trim()) lines.push({ time: lineStart, text: content.trim(), words: [] });
+                return;
+            }
+            words.forEach(function (w, j) {
+                w.end = (j + 1 < words.length) ? words[j + 1].start : (w.start + (toks[j].dur / 1000));
+                if (!(w.end > w.start)) w.end = w.start + 0.5;
+            });
+            var clean = words.map(function (w) { return w.text; }).join('');
+            lines.push({ time: lineStart, text: clean, words: words });
+        });
+        return lines;
+    };
+
     // Merge word timings from a source line set into a target set, matching by
     // closest line time within `tolerance` seconds (greedy, one-to-one).
     u.mergeWordTimings = function (target, source, tolerance) {

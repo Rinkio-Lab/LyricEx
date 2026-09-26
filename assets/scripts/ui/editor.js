@@ -29,6 +29,8 @@
                 p.classList.toggle('hidden', p.dataset.editorPane !== tab);
             });
             if (tab === 'build' && ctx.renderWorkspaceTab) ctx.renderWorkspaceTab();
+            // v2.8.4: build pane is not a lyric view — hide/refresh the follow pill
+            if (ctx.updateFollowPill) ctx.updateFollowPill();
         }
 
         function markEditorDirty() {
@@ -48,9 +50,12 @@
             if (!file) return;
             file.text().then(function (text) {
                 const isAss = /\.ass$/i.test(file.name);
+                const isYrc = /\.(yrc|klyric)$/i.test(file.name);
                 const parsed = isAss
                     ? { lines: window.__lyricexUtils.parseAssKaraoke(text) }
-                    : window.__lyricexUtils.parseLrcWordLines(text);
+                    : isYrc
+                        ? { lines: window.__lyricexUtils.parseYrcLines(text) }
+                        : window.__lyricexUtils.parseLrcWordLines(text);
                 if (!parsed.lines.length) { window.__lyricexDialog.alert(t('importWordTimingEmpty')); return; }
                 const matched = window.__lyricexUtils.mergeWordTimings(ctx.lyrics, parsed.lines, 1.5);
                 const count = matched.filter(function (l) { return l.words && l.words.length; }).length;
@@ -118,6 +123,7 @@
             if (!hasLyrics) {
                 html += '<div class="editor-empty-hint"><i class="fas fa-tools"></i> ' + t('editorEmptyHint') + '</div>';
             }
+            if (hasLyrics) {
             html += '<div class="editor-head"><div class="editor-toolbar">';
             // ---- group: 歌曲信息 (metadata + cover + offset) ----
             html += '<div class="editor-group">' +
@@ -155,7 +161,7 @@
                 '<button class="editor-btn" id="editorAddLineBtn"><i class="fas fa-plus"></i> ' + t('editorAddLine') + '</button>' +
                 '<button class="editor-btn" id="editorReloadBtn"><i class="fas fa-undo-alt"></i> ' + t('editorReload') + '</button>' +
                 '<button class="editor-btn" id="importWordsBtn"><i class="fas fa-clock"></i> ' + t('importWordTiming') + '</button>' +
-                '<input type="file" id="importWordsFile" accept=".lrc,.ass" style="display:none">' +
+                '<input type="file" id="importWordsFile" accept=".lrc,.ass,.yrc,.klyric" style="display:none">' +
                 '<button class="editor-btn" id="editorSeekStartBtn"><i class="fas fa-undo"></i> ' + t('backToStart') + '</button>' +
                 '</div></div>';
             // ---- group: 导出 ----
@@ -196,6 +202,7 @@
                     '</div>';
                 html += '<div class="editor-edit hidden" data-edit="' + idx + '">' + editorEditPanelHTML(line) + '</div>';
             });
+            } // end if (hasLyrics): empty state shows only the hint (no toolbar, no overflow)
             // v2.8.1 fix: there was a stray extra `</div>` here (one closing
             // both the refine pane AND .view-editor), so the build pane got
             // appended OUTSIDE .view-editor — the overflow-clipped container

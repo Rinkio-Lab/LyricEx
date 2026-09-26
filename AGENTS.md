@@ -69,7 +69,7 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 - 禁止修改无关文件，除非与当前需求强相关。
 
 ### 完成后输出
-1. 修改文件列表 2. 每个文件的关键改动 3. 注释地图（每条注释解释了哪个「为什么」）4. 行为不变说明 5. 格式化 / lint / 测试结果 6. 剩余风险与后续建议 7. 自检（行为不变 / 风格一致 / 注释关键 / 命名清晰 / 无过度设计 / 无无关依赖）。
+1. 修改文件列表 2. 每个文件的关键改动 3. 注释地图（每条注释解释了哪个「为什么」）4. 行为不变说明 5. 格式化 / lint / 测试结果 6. 剩余风险与后续建议 7. 自检（行为不变 / 风格一致 / 注释关键 / 命名清晰 / 无过度设计 / 无无关依赖）8. **文档同步说明**（本次改动涉及的版本/功能/接口是否已同步 CHANGELOG.md、changelog.js、README、FORMAT.md、docs/ 等相应位置；未同步必须说明原因）。
 
 
 ## 项目特有规则（LyricEx 专属，AI 必须遵守）
@@ -93,3 +93,32 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 ### 3. 测试与验证入口
 - 全量自检：`cd E:\Projects\LyricEx; node tests/run-tests.mjs` —— 它是**真聚合器**：先跑自身 lib 断言，再以子进程依次执行全部兄弟套件 `tests/i18n-check.mjs`（三语键完整 + 全注册语言键对齐（自动 import 所有语言文件）+ fallback 链（虚构 xx/yy 模拟，不污染真实字典）+ BCP 47 检测 + RTL dir + 方向覆盖 + 静态 id）、`tests/boot-smoke.mjs`（app 启动冒烟；其中 "manifest invalid" stderr 是预期日志）、`tests/lang-switch.mjs`（语言切换回归）、`tests/utils-test.mjs`；**任一套件失败则整体 FAIL**。改动后至少跑相关套件，全部通过才算完成。
 - 本地联调：`python -m http.server 8090 --directory "E:\Projects\LyricEx"`（项目不依赖 file:// 运行，歌曲库/Service Worker 均需 HTTP）。
+
+### 4. 文档维护（积极维护文档，AI 必须遵守）
+
+文档与代码同源：每次改动（新功能、修复、重构、接口变更）都必须同步维护受影响文档，不允许「代码改了文档还是旧的」。发布前逐文件审计一遍。
+
+#### 4.1 CHANGELOG.md 规范（唯一事实源之一）
+- `# Changelog` 标题必须位于文件**顶部**（曾出现标题在文件中部）。
+- 版本头统一格式：`## vX.Y.Z（YYYY-MM-DD · 主题词）`；**未发布的版本用 `（待发布 · 主题词）`**。禁止半角括号 `(2026-10-06)`、禁止 `日期不详`。
+- 分节固定为 `### Added / Fixed / Changed / Removed / Test / Notes` 这一顺序；**禁止自造小节**（如 工程化（本次）/ A11y / 基础设施——A11y 类条目按性质归入 Added 或 Fixed）。每个版本至少一个分节，条目保持 `**标题**：内容` 或短句即可。
+- 日期唯一权威 = `assets/scripts/changelog.js` 的日期时间线；CHANGELOG.md 与 changelog.js **不得互相矛盾**（曾出现 2.1.0 的日期比 2.2.0 还晚）。历史回填日期一律以 changelog.js 为准。
+- **不得漏版本**：每个 bump 过的版本必须有记录（曾整个漏掉 v2.8.1）。补记录时按时间线插在正确位置。
+
+#### 4.2 changelog.js（应用内更新日志）同步规则
+- schema 固定：`{ version, date, changes: [{ type, text }] }`，`type ∈ added | changed | fixed | test | removed | breaking`，条目 **newest-first**。
+- 正文为开发者中文，**不 i18n**（文件头注释与 UI 标签才走三语）。
+- **每 bump 一次版本，必须在同一次改动中同步写 CHANGELOG.md 与 changelog.js 同一批条目**（同一事实、两个载体，防止只更新一个）。
+- 版本序号必须连续：2.5.0 → 2.6.0 → … → 2.8.x 缺一不可；同版本条目不得重复（曾出现两条 version 相同的 2.3.2，其中一条实为 2.3.3 内容——按真实内容归位版本号）。
+
+#### 4.3 每次改动后的文档联动清单
+- 新增/变更 i18n 键：zh.js / ja.js / en.js 三语补齐（见第 2 节），键名变更同步改 index.html 静态文案与文档示例。
+- 新增面向用户的功能（制包、导入格式、导出、设置项）：在 `CHANGELOG.md` + `changelog.js` 记条目；有明确使用方法（如网易云 JSON 获取）时在 `docs/` 写指南并挂进帮助页。
+- 包格式 / 加载契约变更：同步 `FORMAT.md`。
+- README 三语（`README.md` / `README.zh-CN.md` / `README.ja.md`）：功能清单、截图、命令、流程图的改动三语同步；截图由 `scripts/readme-shots.mjs` 重新生成。
+- 工程规范变更（工具链、CI、发布流程）：同步 AGENTS.md / README 开发小节 / 流程图（`assets/images/shots/release-flow.png`，由 `scripts/_render-flow.mjs` 重渲染）。
+
+#### 4.4 发布前文档审计
+- 每个版本发布前把 README 三语、FORMAT.md、docs/ 下全部指南、CHANGELOG.md、changelog.js、package.json 全查一遍：过期描述、缺版本记录、格式不统一、日期矛盾、漏掉的待办。
+- 发现乱格式当场统一，不留给下个版本；文档整理本身也是一条 changelog 记录（type 用 `changed` 或 `fixed`）。
+- 帮助页 / 指南里的「待办」项一旦完成，立即删除对应待办并更新状态（曾出现指南里写着「后续版本计划支持 klyric/yrc」而功能已实现的过期状态）。

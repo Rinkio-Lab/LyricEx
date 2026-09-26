@@ -426,6 +426,15 @@
         'shareCopy': 'クリップボードにコピー',
         'shareCopied': 'コピーしました',
         'shareCopyFailed': 'コピー失敗（ダウンロードを使用）',
-        'shareDownload': 'PNG をダウンロード',
+
+
+        /* v2.8.4: help view */
+        'help': 'ヘルプ',
+        'helpQuickStart': 'クイックスタート',
+        'helpNetease': '网易云歌词 JSON の取得',
+        'helpDemo': 'デモ',
+        'helpFaq': 'よくある質問',
+        'helpFeedback': '問題や提案は GitHub Issues でお知らせください（コンソールのエラーと再現手順を添えて）。',
+            'shareDownload': 'PNG をダウンロード',
     });
 })();
