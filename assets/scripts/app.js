@@ -421,48 +421,163 @@
         if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
     }
 
-    // Help view (v2.8.4): quick start / NetEase guide / demo / FAQ.
-    // Body text is developer Chinese (same convention as the in-app changelog);
-    // section headers are i18n'd.
+    // Help view (v2.9.1): full help-center layout — left chapter nav with
+    // scroll auto-highlight, search filter, back-to-top, prev/next pager and
+    // up/down keyboard navigation. The help page has its OWN language switch
+    // (persisted in 'lyricex-help-locale'); body + chapter titles come from the
+    // standalone help-content.js module (add a language there like a locale dict).
+    // The UI chrome (search/pager/labels/header) follows the global UI locale.
+    let helpObserver = null;
+    function getHelpLang() {
+        const saved = (typeof localStorage !== 'undefined' && localStorage.getItem('lyricex-help-locale')) || '';
+        if (saved === 'zh' || saved === 'ja' || saved === 'en') return saved;
+        const i = window.__i18n;
+        if (!i) return 'zh';
+        const seen = {};
+        let loc = i._current || 'zh';
+        for (;;) {
+            if (loc === 'zh' || loc === 'ja' || loc === 'en') return loc;
+            const next = i._resolveFallback ? i._resolveFallback(loc, seen) : null;
+            if (!next || next === 'zh') return 'zh';
+            loc = next;
+        }
+    }
+    // body + chapter titles live in help-content.js; fall back to the zh block
+    // when a language (or the module itself, e.g. in tests) is missing
+    const HELP_BODY = window.__lyricexHelpContent || {};
+    function helpBlock(lang) {
+        return HELP_BODY[lang] || HELP_BODY.zh || {};
+    }
     function renderHelpView() {
+        const helpLang = getHelpLang();
+        const block = helpBlock(helpLang);
+        const titles = block.titles || {};
+        const sections = [
+            { id: 'help-quick', title: titles.quick || 'Quick start', key: 'quick' },
+            { id: 'help-netease', title: titles.netease || 'NetEase lyrics JSON', key: 'netease' },
+            { id: 'help-demo', title: titles.demo || 'Demo', key: 'demo' },
+            { id: 'help-faq', title: titles.faq || 'FAQ', key: 'faq' },
+            { id: 'help-feedback', title: titles.feedback || 'Feedback & Support', key: 'feedback' }
+        ];
+        const navHtml = sections.map(function (sec) {
+            return '<li><a href="#' + sec.id + '" data-target="' + sec.id + '">' + sec.title + '</a></li>';
+        }).join('');
+        const langBtns = ['zh', 'ja', 'en'].map(function (code) {
+            const native = { zh: '简体中文', ja: '日本語', en: 'English' }[code];
+            return '<button type="button" class="help-lang-btn' + (code === helpLang ? ' active' : '') + '" data-help-lang="' + code + '">' + native + '</button>';
+        }).join('');
         const html =
             '<div class="view-help">' +
-                '<header class="help-head"><h2>' + t('help') + '</h2></header>' +
-                '<section class="help-card">' +
-                    '<h3 data-i18n="helpQuickStart">快速上手</h3>' +
-                    '<ol>' +
-                        '<li><b>上传</b>：把 <code>.zip</code> 歌词包或 <code>.lrc</code> 拖到左侧「歌词包」区，或点「上传 .zip / .lrc」选择文件；也可从「歌曲库」加载示例包（仅供学习交流）。</li>' +
-                        '<li><b>建包</b>：编辑 → 制包 → 上传原声（必选）/ 伴奏（可选）→ 粘贴或上传 LRC（日文/中文交替自动拆分为原词+翻译）→ 可选粘贴网易云歌词 JSON 补翻译与逐字时间 → 可选 AI 逐词分析 → 导出包。</li>' +
-                        '<li><b>练唱</b>：歌词视图跟唱（逐字卡拉OK高亮、当前行下可显示翻译/罗马音副行），学习视图逐词表，混合视图两者同屏。</li>' +
-                        '<li><b>导出</b>：学习笔记（MD/HTML）、竖版海报、分享卡片、歌词视频（Chrome/Edge）、字幕（SRT/ASS）。</li>' +
-                    '</ol>' +
-                '</section>' +
-                '<section class="help-card">' +
-                    '<h3 data-i18n="helpNetease">网易云歌词 JSON 获取</h3>' +
-                    '<p>制包页支持直接粘贴网易云歌词 JSON（含原词、翻译、逐字）。获取方法（详见 <code>docs/netease-lyrics-guide.md</code>）：</p>' +
-                    '<dl>' +
-                        '<dt>方法一 · 浏览器抓包（最稳）</dt><dd>打开网易云网页版歌曲页 → F12 → Network → 过滤 <code>lyric</code> → 点开 <code>song/lyric</code> 请求 → 复制响应 JSON。</dd>' +
-                        '<dt>方法二 · 命令行</dt><dd>接口 <code>https://music.163.com/api/song/lyric?id=&lt;歌曲ID&gt;&amp;lv=-1&amp;kv=-1&amp;tv=-1</code>，<b>必须</b>带 <code>User-Agent</code> 与 <code>Referer: https://music.163.com/</code>，否则返回 400。<br>curl：<code>curl.exe -H "User-Agent: Mozilla/5.0 …" -H "Referer: https://music.163.com/" "接口URL"</code><br>PowerShell：<code>Invoke-RestMethod -Headers @{ "User-Agent"="Mozilla/5.0 …"; "Referer"="https://music.163.com/" } -Uri "接口URL"</code></dd>' +
-                        '<dt>返回字段</dt><dd><code>lrc.lyric</code> 原词（标准/增强内联）、<code>tlyric.lyric</code> 翻译、<code>klyric.lyric</code> 逐字（YRC 语法，LyricEx 已支持导入并用于卡拉OK高亮）、部分歌曲新接口含 <code>yrc</code>。</dd>' +
-                    '</dl>' +
-                    '<p class="help-tip">把整个 JSON 粘到制包页「或粘贴网易云歌词JSON」框点解析即可：翻译自动配对，klyric 逐字时间自动附加到对应行。</p>' +
-                '</section>' +
-                '<section class="help-card">' +
-                    '<h3 data-i18n="helpDemo">演示</h3>' +
-                    '<img class="help-demo" src="assets/images/demo.gif" alt="LyricEx 30 秒演示" loading="lazy">' +
-                '</section>' +
-                '<section class="help-card">' +
-                    '<h3 data-i18n="helpFaq">常见问题</h3>' +
-                    '<dl>' +
-                        '<dt>制包页空白？</dt><dd>部署后请刷新两次（Service Worker 缓存优先）；仍空白请用无痕窗口/换端口验证，若仅旧缓存导致则属正常。</dd>' +
-                        '<dt>逐字歌词（卡拉OK高亮）从哪来？</dt><dd>包内 <code>words</code> 时间戳或网易云 JSON 的 <code>klyric</code>；也可在编辑视图「导入逐字时间」导入 <code>.yrc/.klyric/.ass/增强.lrc</code> 文件。</dd>' +
-                        '<dt>导出视频没声音或不能用？</dt><dd>仅 Chrome/Edge 支持，录制期间请完整播放一遍、不要切换窗口。</dd>' +
-                        '<dt>离线能用吗？</dt><dd>PWA：通过 http(s) 访问后可安装并离线使用（file:// 直开无法安装）。</dd>' +
-                    '</dl>' +
-                '</section>' +
-                '<footer class="help-foot" data-i18n="helpFeedback">遇到问题或建议？请在 GitHub Issues 反馈，附上控制台报错与复现步骤。</footer>' +
+                '<aside class="help-nav">' +
+                    '<div class="help-lang" role="group" aria-label="' + t('helpLangLabel') + '">' + langBtns + '</div>' +
+                    '<div class="help-search">' +
+                        '<input id="helpSearchInput" type="search" placeholder="' + t('helpSearch') + '" aria-label="' + t('helpSearch') + '">' +
+                        '<i class="fa fa-search" aria-hidden="true"></i>' +
+                    '</div>' +
+                    '<div class="help-nav-title">' + t('helpContents') + '</div>' +
+                    '<ul class="help-nav-list" id="helpNavList">' + navHtml + '</ul>' +
+                '</aside>' +
+                '<div class="help-content" id="helpContent" tabindex="0">' +
+                    '<header class="help-head"><h2>' + t('help') + '</h2></header>' +
+                    '<section class="help-card" id="help-quick"><h3>' + sections[0].title + '</h3>' + (block.quick || '') + '</section>' +
+                    '<section class="help-card" id="help-netease"><h3>' + sections[1].title + '</h3>' + (block.netease || '') + '</section>' +
+                    '<section class="help-card" id="help-demo"><h3>' + sections[2].title + '</h3><img class="help-demo" src="assets/images/demo.gif" alt="LyricEx demo" loading="lazy"></section>' +
+                    '<section class="help-card" id="help-faq"><h3>' + sections[3].title + '</h3>' + (block.faq || '') + '</section>' +
+                    '<section class="help-card" id="help-feedback"><h3>' + sections[4].title + '</h3>' + (block.feedback || '') + '</section>' +
+                    '<p class="help-no-results" id="helpNoResults" hidden>' + t('helpNoResults') + '</p>' +
+                    '<button class="help-top" id="helpTopBtn" hidden>' + t('helpBackToTop') + '</button>' +
+                    '<nav class="help-pager">' +
+                        '<button class="help-pager-btn" id="helpPrevBtn">' + t('helpPrev') + '</button>' +
+                        '<span class="help-pager-label" id="helpPagerLabel"></span>' +
+                        '<button class="help-pager-btn" id="helpNextBtn">' + t('helpNext') + '</button>' +
+                    '</nav>' +
+                '</div>' +
             '</div>';
         viewContent.innerHTML = html;
+
+        // help-page language switch: persist the choice and re-render in place
+        document.querySelectorAll('.help-lang-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                try { localStorage.setItem('lyricex-help-locale', btn.getAttribute('data-help-lang')); } catch (_) { /* noop */ }
+                renderHelpView();
+            });
+        });
+
+        const content = document.getElementById('helpContent');
+        const cards = sections.map(function (sec) { return document.getElementById(sec.id); });
+        const navLinks = sections.map(function (sec) {
+            return document.querySelector('.help-nav-list a[data-target="' + sec.id + '"]');
+        });
+        const search = document.getElementById('helpSearchInput');
+        const noRes = document.getElementById('helpNoResults');
+        const topBtn = document.getElementById('helpTopBtn');
+        const prevBtn = document.getElementById('helpPrevBtn');
+        const nextBtn = document.getElementById('helpNextBtn');
+        const pagerLabel = document.getElementById('helpPagerLabel');
+        // guard: DOM shims (boot-smoke) cannot resolve querySelector — render
+        // nothing rather than crash the boot path; real browsers always pass
+        if (!content || !search || !navLinks[0] || !pagerLabel) return;
+        let visible = sections.map(function (_s, i) { return i; });
+
+        function setActive(idx) {
+            navLinks.forEach(function (a, i) { a.classList.toggle('active', i === idx); });
+            const pos = visible.indexOf(idx);
+            pagerLabel.textContent = (pos < 0 ? visible.length : pos + 1) + ' / ' + visible.length;
+        }
+        function goTo(idx, smooth) {
+            if (!cards[idx] || cards[idx].hidden) return;
+            setActive(idx);
+            if (smooth) content.scrollTo({ top: cards[idx].offsetTop - 14, behavior: 'smooth' });
+            else content.scrollTop = cards[idx].offsetTop - 14;
+        }
+        navLinks.forEach(function (a, i) {
+            a.addEventListener('click', function (e) { e.preventDefault(); goTo(i, true); });
+        });
+        if (helpObserver) helpObserver.disconnect();
+        helpObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) {
+                if (en.isIntersecting) {
+                    const idx = sections.findIndex(function (sec) { return sec.id === en.target.id; });
+                    if (idx >= 0) setActive(idx);
+                }
+            });
+        }, { root: content, rootMargin: '-10% 0px -55% 0px' });
+        cards.forEach(function (c) { helpObserver.observe(c); });
+
+        function currentIdx() {
+            return sections.findIndex(function (_sec, i) { return navLinks[i].classList.contains('active'); });
+        }
+        function applyFilter() {
+            const q = search.value.trim().toLowerCase();
+            visible = [];
+            cards.forEach(function (c, i) {
+                const hit = !q || c.textContent.toLowerCase().indexOf(q) >= 0;
+                c.hidden = !hit;
+                navLinks[i].hidden = !hit;
+                if (hit) visible.push(i);
+            });
+            noRes.hidden = visible.length !== 0;
+            if (visible.length) setActive(visible.indexOf(currentIdx()) >= 0 ? currentIdx() : visible[0]);
+        }
+        function step(dir) {
+            if (!visible.length) return;
+            const cur = visible.indexOf(currentIdx());
+            const next = cur < 0 ? 0 : Math.min(visible.length - 1, Math.max(0, cur + dir));
+            goTo(visible[next], true);
+        }
+        search.addEventListener('input', applyFilter);
+        search.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { search.value = ''; applyFilter(); search.blur(); }
+        });
+        content.addEventListener('scroll', function () { topBtn.hidden = content.scrollTop < 300; });
+        topBtn.addEventListener('click', function () { content.scrollTo({ top: 0, behavior: 'smooth' }); });
+        prevBtn.addEventListener('click', function () { step(-1); });
+        nextBtn.addEventListener('click', function () { step(1); });
+        content.addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+        });
+        setActive(0);
     }
 
     // =========================== SETTINGS EXPORT / IMPORT (v2.8.0) ===========================

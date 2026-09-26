@@ -89,6 +89,7 @@ await import('../assets/scripts/ui/mini.js');
 await import('../assets/scripts/ui/cinema.js');
 await import('../assets/scripts/ui/about.js');
 await import('../assets/scripts/ui/settings.js');
+await import('../assets/scripts/help-content.js');
 await import('../assets/scripts/app.js');
 await import('../assets/scripts/ui/focus-trap.js'); // v2.2.0 a11y module (same order as index.html)
 
@@ -148,6 +149,8 @@ api.switchView('study');
 ok('study view renders', true);
 api.switchView('editor');
 ok('editor view renders', true);
+api.switchView('help');
+ok('help view renders (nav guard path)', true);
 
 // mini mode
 api.toggleMini();

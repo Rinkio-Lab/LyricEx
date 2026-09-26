@@ -435,6 +435,14 @@
         'helpDemo': '演示',
         'helpFaq': '常见问题',
         'helpFeedback': '遇到问题或建议？请在 GitHub Issues 反馈，附上控制台报错与复现步骤。',
+        'helpContents': '目录',
+        'helpSearch': '搜索帮助…',
+        'helpNoResults': '没有匹配的章节',
+        'helpBackToTop': '返回顶部',
+        'helpPrev': '上一节',
+        'helpNext': '下一节',
+        'helpFeedbackTitle': '反馈与支持',
+        'helpLangLabel': '正文语言',
             'shareDownload': '下载 PNG',
     });
 })();

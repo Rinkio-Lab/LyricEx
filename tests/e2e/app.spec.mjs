@@ -235,3 +235,59 @@ test('axe-core scan finds no critical or serious violations', async ({ page }) =
     expect(severe.map((v) => v.id + ': ' + v.help)).toEqual([]);
     expect(errors).toEqual([]);
 });
+
+test('help center: nav, search, and body follows the locale fallback chain (v2.9.1)', async ({ page }) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await page.click('#helpBtn');
+    await expect(page.locator('.view-help')).toBeVisible();
+    await expect(page.locator('#helpNavList a')).toHaveCount(5);
+    await expect(page.locator('#helpSearchInput')).toBeVisible();
+    // the content pane is the real scroll container (sidebar/other views scroll themselves)
+    const overflowY = await page.evaluate(() => getComputedStyle(document.getElementById('helpContent')).overflowY);
+    expect(overflowY).toBe('auto');
+
+    // nav click highlights the chapter and scrolls the pane
+    await page.click('.help-nav-list a[data-target="help-faq"]');
+    await expect(page.locator('.help-nav-list a[data-target="help-faq"]')).toHaveClass(/active/);
+    const faqTarget = await page.evaluate(() => document.getElementById('help-faq').offsetTop - 14);
+    await expect.poll(() =>
+        page.evaluate(() => Math.round(document.getElementById('helpContent').scrollTop)),
+        { timeout: 5000 }
+    ).toBeGreaterThanOrEqual(faqTarget - 2);
+
+    // search filters both cards and the nav list; Esc restores
+    // 'song/lyric' matches only the netease chapter — quick's body also
+    // mentions 网易云, so it must NOT be used as the exclusive needle
+    await page.fill('#helpSearchInput', 'song/lyric');
+    await expect(page.locator('#help-netease')).toBeVisible();
+    await expect(page.locator('#help-quick')).toBeHidden();
+    await expect(page.locator('.help-nav-list a[data-target="help-quick"]')).toBeHidden();
+    await page.press('#helpSearchInput', 'Escape');
+    await expect(page.locator('#help-quick')).toBeVisible();
+    await expect(page.locator('.help-nav-list a[data-target="help-quick"]')).toBeVisible();
+
+    // body language: ja directly; pt-br falls back to en (NOT zh) per the
+    // i18n fallback chain — re-enter the view after each locale change
+    await pickLocale(page, 'ja');
+    await page.click('.sidebar-btn[data-view="lyrics"]');
+    await page.click('#helpBtn');
+    await expect(page.locator('#help-faq')).toContainText('ビルドタブ');
+    await pickLocale(page, 'pt-br');
+    await page.click('.sidebar-btn[data-view="lyrics"]');
+    await page.click('#helpBtn');
+    await expect(page.locator('#help-faq')).toContainText('Build tab blank?');
+
+    // help-page OWN language switch: ja body while the global UI stays pt-br
+    await page.click('.help-lang-btn[data-help-lang="ja"]');
+    await expect(page.locator('#help-faq')).toContainText('ビルドタブ');
+    // chapter titles switch too (they live in help-content.js)
+    await expect(page.locator('.help-nav-list a[data-target="help-faq"]')).toContainText('よくある質問');
+    // the global UI locale is NOT touched by the help-page switch
+    expect(await page.evaluate(() => document.documentElement.lang)).toBe('pt-br');
+    // the choice persists across view switches
+    await page.click('.sidebar-btn[data-view="lyrics"]');
+    await page.click('#helpBtn');
+    await expect(page.locator('#help-faq')).toContainText('ビルドタブ');
+    expect(errors).toEqual([]);
+});

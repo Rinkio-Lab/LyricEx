@@ -435,6 +435,14 @@
         'helpDemo': 'Demo',
         'helpFaq': 'FAQ',
         'helpFeedback': 'Problems or suggestions? Open a GitHub Issue with the console error and reproduction steps.',
+        'helpContents': 'Contents',
+        'helpSearch': 'Search help…',
+        'helpNoResults': 'No matching sections',
+        'helpBackToTop': 'Back to top',
+        'helpPrev': 'Previous',
+        'helpNext': 'Next',
+        'helpFeedbackTitle': 'Feedback & Support',
+        'helpLangLabel': 'Body language',
             'shareDownload': 'Download PNG',
     });
 })();

@@ -145,7 +145,7 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v2.9.0 · 2026</div>
+                        <div class="version">v2.9.1 · 2026</div>
                         <div class="slogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
                         <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
                         <h3 data-i18n="developer">开发者</h3>
@@ -713,6 +713,8 @@
 <!-- v2.8.1: native dialog system (alert/confirm/prompt) — before app.js so the
      rest of the UI can call window.__lyricexDialog at interaction time -->
 <script src="assets/scripts/ui/dialog.js"></script>
+<!-- v2.9.1: help body + chapter titles live here, one block per language -->
+<script src="assets/scripts/help-content.js"></script>
 <script src="assets/scripts/app.js"></script>
 <!-- v2.1.1: universal modal focus trap (a11y) — self-inits, after app.js -->
 <script src="assets/scripts/ui/focus-trap.js"></script>

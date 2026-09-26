@@ -1,3 +1,30 @@
+# Changelog
+
+## v2.9.1（待发布 · 帮助中心）
+
+> 帮助页从四卡片「半成品」升级为完整 wiki 帮助查看页：左侧目录导航 + 滚动高亮 + 搜索 + 分页 + 返回顶部 + 键盘导航 + 窄屏适配；帮助正文真正多语（zh/ja/en），语言沿 i18n fallback 链解析，不再一律硬回中文。
+
+### Added
+- **帮助中心布局**：左侧 200px 目录栏（搜索框 + 5 章节导航，滚动时 IntersectionObserver 自动高亮当前章节）；右侧独立滚动内容区
+- **搜索过滤**：按章节标题与正文实时过滤卡片和目录项，空结果提示，Esc 一键清空
+- **章节分页**：上一节 / 下一节按钮 + 当前位置（n / m）；内容区聚焦时 ↑ / ↓ 键盘切换章节
+- **返回顶部**：内容滚动超过 300px 出现，点击平滑回顶
+- **窄屏适配**：≤860px 目录栏变 sticky 横向胶囊条（搜索 + 章节横排）
+- **反馈与支持**：原页脚升级为独立章节，GitHub Issues 直达外链
+- **帮助正文多语化**：zh / ja / en 三语正文；默认沿 i18n fallback 链解析（ja→日文、pt-br/ar/ko→英文、其余→中文），不再一律硬回中文
+- **帮助页独立语言切换**：目录栏顶部 zh / 日本語 / English 胶囊按钮，选择持久化（`lyricex-help-locale`），不影响全局 UI 语言
+- **帮助内容模块化**：正文与章节标题迁入独立 `assets/scripts/help-content.js`（每语言一个块，头部注释写明新增语言步骤），新增帮助语言像加语言字典一样简单；原 `help*` 词典键保留不删（避免牵动用户语言字典）
+
+### Changed
+- **代码块字体**：`.help-card code` 字体栈在等宽字体后补中文字体 fallback（Noto Sans SC / PingFang SC / Microsoft YaHei）
+- **i18n**：新增 8 键（helpContents / helpSearch / helpNoResults / helpBackToTop / helpPrev / helpNext / helpFeedbackTitle / helpLangLabel），zh/ja/en 三语同步补齐
+
+### Fixed
+- **重复 CSS**：移除 views.css 中重复的 `.ws-empty-hint` 块（v2.8.1 遗留）
+
+### Test
+- e2e 新增帮助中心用例（目录点击滚动高亮、搜索过滤与 Esc 恢复、ja 直接正文 / pt-br 回退英文正文）；boot-smoke 增加帮助视图渲染断言
+
 ## v2.9.0（待发布 · 导出防溢出与样式提升）
 
 > 竖屏海报 / 分享卡片补齐防溢出（视频导出自 v2.0.1 起已有逐字符换行 + 限行省略）；分享卡/海报 HTML 模板、学习笔记 HTML 导出、打印样式整体提升。
@@ -9,8 +36,6 @@
 ### Changed
 - **学习笔记 HTML 导出**：新增内联样式表（`.wrap` 容器、section 左边框 + 圆角、`time` 灰字、`.notes-table` 表头底色/边框），表格从内联 `border` 属性改为类名；打印友好（`@media print` 分页避让）
 - **打印样式**：`responsive.css` 补 `@page{margin:14mm}` 与打印表格行 `page-break-inside:avoid`
-
-# Changelog
 
 ## v2.8.4（待发布 · 帮助页 · 逐字歌词 · 提交前流程 · 修复）
 

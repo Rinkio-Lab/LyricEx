@@ -48,7 +48,7 @@ for (const k of used) if (!d.zh[k]) { console.log('UNUSED-KEY-MISSING', k); miss
 console.log(miss === 0 ? 'ALL USED KEYS EXIST (' + used.size + ' used)' : miss + ' MISSING');
 
 // id contract: every getElementById('x') across assets/scripts/ (static ones) exists in
-// index.html. Dynamic ids created inside renderEditorView are excluded.
+// index.html. Dynamic ids created inside renderEditorView / renderHelpView are excluded.
 const ids = new Set();
 for (const src of jsSources) {
     for (const m of src.matchAll(/getElementById\('([^']+)'\)/g)) ids.add(m[1]);
@@ -58,7 +58,9 @@ const dynamic = new Set(['editorOffsetRange', 'editorOffsetValue', 'exportPackag
     'metaAlbum', 'editorAddLineBtn', 'editorReloadBtn', 'printStudyBtn', 'exportNotesBtn',
     'exportNotesHtmlBtn', 'posterBtn', 'importWordsBtn', 'importWordsFile',
     'editorCoverBtn', 'editorCoverRemoveBtn', 'editorCoverFile', 'editorCoverThumb',
-    'editorInstBtn', 'editorInstRemoveBtn', 'editorInstFile', 'editorInstThumb']);
+    'editorInstBtn', 'editorInstRemoveBtn', 'editorInstFile', 'editorInstThumb',
+    'helpContent', 'helpSearchInput', 'helpNoResults', 'helpTopBtn',
+    'helpPrevBtn', 'helpNextBtn', 'helpPagerLabel']);
 let idMiss = 0;
 for (const id of ids) {
     if (dynamic.has(id)) continue;

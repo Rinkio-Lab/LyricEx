@@ -435,6 +435,14 @@
         'helpDemo': 'デモ',
         'helpFaq': 'よくある質問',
         'helpFeedback': '問題や提案は GitHub Issues でお知らせください（コンソールのエラーと再現手順を添えて）。',
+        'helpContents': '目次',
+        'helpSearch': 'ヘルプを検索…',
+        'helpNoResults': '一致する章がありません',
+        'helpBackToTop': '先頭へ戻る',
+        'helpPrev': '前の節',
+        'helpNext': '次の節',
+        'helpFeedbackTitle': 'フィードバックとサポート',
+        'helpLangLabel': '本文言語',
             'shareDownload': 'PNG をダウンロード',
     });
 })();
