@@ -51,3 +51,9 @@ Desktop.ini
 uploads/
 scratch/
 *.tmp
+
+# --- Android packaging (Nitron local build; keystore & staging never commit) ---
+android-build/
+*.keystore
+*.jks
+keystore/

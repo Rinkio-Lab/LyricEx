@@ -1447,6 +1447,101 @@
     font-size: 12px;
 }
 
+/* =========================== v2.8.1: DIALOG (alert/confirm/prompt) ===========================
+   One reusable native-style dialog replacing window.alert/confirm/prompt.
+   Mirrors the settings/about modal look: backdrop blur + footer close-btns. */
+.dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* above settings/share (1000) and the guide/lang drawer (1100) */
+    z-index: 1200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.dialog-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+.dialog-modal {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    width: min(400px, 90vw);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-hover);
+    padding: 22px 24px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.dialog-message {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    word-break: break-word;
+}
+.dialog-input-row input[type="text"] {
+    width: 100%;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: var(--font);
+    box-sizing: border-box;
+    transition: border-color var(--transition);
+}
+.dialog-input-row input[type="text"]:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 4px 0 14px;
+}
+.dialog-footer .close-btn {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 28px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.dialog-footer .close-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+.dialog-footer .dialog-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+.dialog-footer .dialog-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+.dialog-footer .dialog-danger {
+    background: transparent;
+    color: #c0392b;
+    border-color: #c0392b;
+}
+.dialog-footer .dialog-danger:hover {
+    background: rgba(192, 57, 43, 0.08);
+    color: #c0392b;
+    border-color: #c0392b;
+}
+
 /* =========================== v2.4.1: SETTING ICONS =========================== */
 .setting-label i {
     margin-right: 8px;

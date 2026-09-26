@@ -24,8 +24,8 @@
 
         function openVideoOverlay() {
             if (!appCtx.lyrics.length) return;
-            if (!window.__lyricexVideo.supported()) { alert(t('videoUnsupported')); return; }
-            if (!appCtx.audio) { alert(t('pleaseUpload')); return; }
+            if (!window.__lyricexVideo.supported()) { window.__lyricexDialog.alert(t('videoUnsupported')); return; }
+            if (!appCtx.audio) { window.__lyricexDialog.alert(t('pleaseUpload')); return; }
             videoOverlay.classList.add('open');
             videoStatus.textContent = '';
             videoProgressFill.style.width = '0%';

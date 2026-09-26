@@ -396,8 +396,9 @@
         refreshSpectrumColor();
     }
 
-    function resetSettings() {
-        if (!confirm(t('resetConfirm'))) return;
+    async function resetSettings() {
+        // v2.8.1: native confirm dialog (red OK — destructive action)
+        if (!(await window.__lyricexDialog.confirm(t('resetConfirm'), { danger: true }))) return;
         // v2.3.3: interface language and text direction survive a reset — the
         // user picked them on purpose; resetting to zh out of nowhere is worse
         // than keeping a stale value. (lyricex-locale is NOT removed.)
@@ -438,12 +439,12 @@
     function importSettingsFile(file) {
         if (!file) return;
         const reader = new FileReader();
-        reader.onerror = function () { alert(t('settingsImportFail')); };
+        reader.onerror = function () { window.__lyricexDialog.alert(t('settingsImportFail')); };
         reader.onload = function () {
             let parsed = null;
             try { parsed = JSON.parse(String(reader.result)); } catch (_) { /* noop */ }
             if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-                alert(t('settingsImportBad'));
+                window.__lyricexDialog.alert(t('settingsImportBad'));
                 return;
             }
             const keepLocale = settings.locale;
@@ -459,7 +460,7 @@
             renderShortcutControls();
             renderView();
             if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
-            alert(t('settingsImportOk'));
+            window.__lyricexDialog.alert(t('settingsImportOk'));
         };
         reader.readAsText(file);
     }
@@ -749,11 +750,11 @@
         if (['Shift', 'Control', 'Alt', 'Meta'].indexOf(e.key) !== -1) return; // need a real key
         const key = L.normalizeKey(e.key);
         if (!key) return;
-        if (/^[0-9]$/.test(key)) { alert(t('shortcutDigitsReserved')); cancelShortcutCapture(); return; }
+        if (/^[0-9]$/.test(key)) { window.__lyricexDialog.alert(t('shortcutDigitsReserved')); cancelShortcutCapture(); return; }
         for (let i = 0; i < SHORTCUT_DEFS.length; i++) {
             const id = SHORTCUT_DEFS[i][0];
             if (id !== shortcutCapture.action && L.normalizeKey(getSetting('shortcuts.' + id)) === key) {
-                alert(t('shortcutConflict'));
+                window.__lyricexDialog.alert(t('shortcutConflict'));
                 cancelShortcutCapture();
                 return;
             }
@@ -1312,7 +1313,7 @@
                 loadAudioFromUrl(audioUrl);
                 setTimeout(function () { togglePlay(); }, 300);
             } else {
-                alert(t('pleaseUpload'));
+                window.__lyricexDialog.alert(t('pleaseUpload'));
             }
             return;
         }
@@ -1900,13 +1901,13 @@
         const lower = file.name.toLowerCase();
         if (lower.endsWith('.zip')) loadZipFile(file);
         else if (lower.endsWith('.lrc')) loadLrcFile(file);
-        else alert(t('pleaseSelectZip'));
+        else window.__lyricexDialog.alert(t('pleaseSelectZip'));
     }
 
     // v2.0.0 #14: multi-file input → load first, queue the rest
     function handleFiles(fileList) {
         const files = Array.prototype.slice.call(fileList || []);
-        if (!files.length) { alert(t('pleaseDropZip')); return; }
+        if (!files.length) { window.__lyricexDialog.alert(t('pleaseDropZip')); return; }
         handleFile(files[0]);
         for (let i = 1; i < files.length; i++) {
             if (/\.(zip|lrc)$/i.test(files[i].name)) queue.push({ name: files[i].name, file: files[i] });
@@ -2248,7 +2249,7 @@
             if (currentView === 'editor') editorApi.render();
         } catch (err) {
             console.error('export failed:', err);
-            alert(t('exportFailed') + ': ' + err.message);
+            window.__lyricexDialog.alert(t('exportFailed') + ': ' + err.message);
         }
     }
 
@@ -2711,6 +2712,15 @@
         };
     }
 
+    // v2.8.1: build-tab blank guard — a missing/failed workspace module used to
+    // render a BLANK build pane on incomplete deployments; show a hint instead.
+    function renderWorkspaceMissing() {
+        const pane = viewContent.querySelector('[data-editor-pane="build"]');
+        if (!pane) return;
+        pane.innerHTML = '<div class="ws-empty-hint"><i class="fas fa-tools"></i> ' +
+            t('wsModuleMissing') + '</div>';
+    }
+
     // =========================== UI MODULE WIRING ===========================
     // The feature controllers in js/ui/ cannot see this IIFE's closure, so ctx
     // hands them the shared state (as getters, so a package reload that
@@ -2763,7 +2773,11 @@
         exitMini: function () { miniApi && miniApi.exit(); },
         // v2.6.0: workspace build-pane render hook (editor renders the tab,
         // workspace fills the pane — late-bound so neither imports the other)
-        renderWorkspaceTab: function () { workspaceApi && workspaceApi.render(); },
+        renderWorkspaceTab: function () {
+            if (!workspaceApi) { renderWorkspaceMissing(); return; }
+            try { workspaceApi.render(); }
+            catch (e) { console.error('workspace render failed', e); renderWorkspaceMissing(); }
+        },
         // v2.6.0: load the workspace draft into the app (shared state, both
         // panes see it; used by the build pane's load-to-app action)
         loadWorkspaceDraft: loadWorkspaceDraft,

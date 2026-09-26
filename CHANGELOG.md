@@ -1,15 +1,22 @@
-## v2.8.1（待发布 · 编辑器 tab 样式对齐设置 · README 三语）
+## v2.8.1（待发布 · 弹窗原生统一 · 分享/海报修复 · 编辑器 tab 样式对齐 · README 三语）
 
-> 修复编辑器「精修/制包」tab 样式与设置页 tab 不一致的问题（改为等宽 + 底部 accent 指示条）；新增 README 中英日三语（默认英文）。
+> 收口 v2.8.0 之后的三个用户反馈 bug：系统弹窗统一为原生对话框、分享卡片/竖屏海报不可用、制包页空白；并保留编辑器 tab 样式对齐与 README 三语改动。
+
+### Fixed
+- **系统弹窗原生统一**：全部 23 处 `alert / confirm / prompt` 替换为与设置/关于同风格的对话框——新建 `ui/dialog.js`（Promise 式 `alert/confirm/prompt`，单复用 overlay，`.open` 显隐 + focus-trap 接入）；重置设置、删除歌词行等破坏性操作确认键为红色；此前快捷键冲突、导入失败、上传提示等均为浏览器原生弹窗，风格突兀
+- **分享卡片 / 竖屏海报不可用**：SVG `<foreignObject>` 渲染路径在 Chrome 下可能 resolve 出「被污染」canvas（`drawImage` 成功但 `toDataURL/toBlob` 抛 SecurityError），既有 2D 兜底只在 SVG 路径报错时触发，导致预览空白、海报无下载——`renderHtmlToCanvas` 增加 1px `getImageData` 污染探测，污染即 reject → 自动回退纯 2D 渲染（`utils/canvas.js`）
+- **制包页空白**：本地代码已验证制包 tab 正常（e2e 覆盖）；部署站缺 `utils/*` 或 `ui/workspace.js`、或模块渲染异常时此前显示空白页——`renderWorkspaceTab` 增加守卫，缺失/异常时制包页显示明确提示（`wsModuleMissing`）而非空白（app.js `renderWorkspaceMissing`）
+- **e2e 新增**：「分享卡片 PNG 预览 + 竖屏海报下载」用例（防 taint 回归）
 
 ### Changed
 - **编辑器 tab 样式**：`.editor-tabs/.editor-tab` 由「描边圆角按钮」改为与设置页 `.settings-tabs` 同款——`flex:1` 等宽、hover 底色、激活态 accent 色 + 2px 底部指示条（`views.css`）
 - **README 三语**：默认英文 `README.md` + `README.zh-CN.md` + `README.ja.md`；开篇命令示例、四视图截图（`assets/images/shots/`）、功能清单、制包指引、开发命令、精简目录树；徽章（CI / MIT / 零依赖）
 - **截图脚本**：新增 `scripts/readme-shots.mjs`——Playwright 起本地服务、载示例包、逐视图截图（含 build tab），输出 1280x800 高清图到 `assets/images/shots/`
-- **i18n**：无新增键（README 三语不涉及运行时 i18n）
+- **i18n**：新增 3 键（`dialogOk / dialogCancel / wsModuleMissing`），zh/ja/en 三语同步补齐
 
 ### Notes
-- 部署提醒：部署站 `index.html` 若缺 `utils/netease.js / ai-import.js / ai-prompt.js / lyric-package.js / ui/workspace.js` 会导致制包 tab 空白（本地代码已验证正常），需重新完整部署全部 assets；浏览器刷新两次（SW cache-first）
+- 部署提醒：部署站 `index.html` 若缺 `utils/netease.js / ai-import.js / ai-prompt.js / lyric-package.js / ui/workspace.js` 会导致制包 tab 空白（本地代码已验证正常，v2.8.1 起空白页会显示明确提示），需重新完整部署全部 assets；浏览器刷新两次（SW cache-first）
+- SW CACHE 保持 `lyricex-v2.8.1`：本版本未发布过，用户端持有的仍是旧版本 SW，发布后新 CACHE 名即触发换新，无需再加补丁后缀（与 CHANGELOG 头部版本锁步）
 
 # Changelog
 

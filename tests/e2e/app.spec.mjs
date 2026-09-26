@@ -177,6 +177,39 @@ test('file:// direct-open still boots under the strict CSP meta', async ({ brows
     expect(errors).toEqual([]);
 });
 
+test('share card + poster render without canvas taint (v2.8.1)', async ({ page }) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await page.setInputFiles('#fileInput',
+        join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip'));
+    await expect(page.locator('.view-lyrics .lyric-line').first()).toBeVisible();
+
+    // share card: the button may be folded into the ⋯ drawer
+    const shareBtn = page.locator('#shareCardBtn');
+    if (!(await shareBtn.isVisible())) {
+        await page.click('#playerExtToggle');
+        await expect(shareBtn).toBeVisible();
+    }
+    await shareBtn.click();
+    await expect(page.locator('#shareOverlay')).toHaveClass(/open/);
+    // preview must be a rendered PNG — the SVG <foreignObject> path can resolve
+    // with a TAINTED canvas (Chrome); the taint probe must fall back to the 2D
+    // renderer or toDataURL throws SecurityError and the preview stays blank
+    await page.waitForFunction(() => {
+        const src = document.getElementById('sharePreview').getAttribute('src') || '';
+        return src.startsWith('data:image/png');
+    }, null, { timeout: 10000 });
+    await page.click('#shareCloseBtn');
+
+    // 竖屏海报 download from the editor view
+    await page.click('.sidebar-btn[data-view="editor"]');
+    await expect(page.locator('#posterBtn')).toBeVisible();
+    const dl = page.waitForEvent('download');
+    await page.click('#posterBtn');
+    expect((await dl).suggestedFilename()).toMatch(/-poster\.png$/);
+    expect(errors).toEqual([]);
+});
+
 test('axe-core scan finds no critical or serious violations', async ({ page }) => {
     const errors = watchErrors(page);
     await openApp(page);

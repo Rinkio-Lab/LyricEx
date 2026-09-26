@@ -51,7 +51,7 @@
                 const parsed = isAss
                     ? { lines: window.__lyricexUtils.parseAssKaraoke(text) }
                     : window.__lyricexUtils.parseLrcWordLines(text);
-                if (!parsed.lines.length) { alert(t('importWordTimingEmpty')); return; }
+                if (!parsed.lines.length) { window.__lyricexDialog.alert(t('importWordTimingEmpty')); return; }
                 const matched = window.__lyricexUtils.mergeWordTimings(ctx.lyrics, parsed.lines, 1.5);
                 const count = matched.filter(function (l) { return l.words && l.words.length; }).length;
                 ctx.lyrics.forEach(function (l) { delete l._words; });
@@ -59,8 +59,8 @@
                 if (ctx.currentView === 'editor') renderEditorView();
                 else ctx.renderView();
                 ctx.updateSidebarStatus();
-                if (count === 0) alert(t('importWordTimingEmpty'));
-            }).catch(function () { alert(t('importWordTimingEmpty')); });
+                if (count === 0) window.__lyricexDialog.alert(t('importWordTimingEmpty'));
+            }).catch(function () { window.__lyricexDialog.alert(t('importWordTimingEmpty')); });
         }
 
         function editorEditPanelHTML(line) {
@@ -246,8 +246,8 @@
             }
         }
 
-        function deleteEditorLine(idx) {
-            if (!confirm(t('editorDeleteConfirm'))) return;
+        async function deleteEditorLine(idx) {
+            if (!(await window.__lyricexDialog.confirm(t('editorDeleteConfirm'), { danger: true }))) return;
             ctx.lyrics.splice(idx, 1);
             if (ctx.activeLineIndex >= ctx.lyrics.length) ctx.activeLineIndex = Math.max(0, ctx.lyrics.length - 1);
             markEditorDirty();
@@ -264,10 +264,10 @@
             ctx.setActiveLine(ctx.lyrics.length - 1, 'instant');
         }
 
-        function reloadEditorFile() {
+        async function reloadEditorFile() {
             const f = fileInput.files && fileInput.files[0];
-            if (!f) { alert(t('editorNoFile')); return; }
-            if (!confirm(t('editorReloadConfirm'))) return;
+            if (!f) { window.__lyricexDialog.alert(t('editorNoFile')); return; }
+            if (!(await window.__lyricexDialog.confirm(t('editorReloadConfirm'), { danger: true }))) return;
             ctx.handleFile(f);
         }
 

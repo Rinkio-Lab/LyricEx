@@ -484,7 +484,7 @@
             saveBtn.textContent = t('savePreset');
             saveBtn.addEventListener('click', function () {
                 const name = nameInput.value.trim();
-                if (!name) { alert(t('presetNameRequired')); return; }
+                if (!name) { window.__lyricexDialog.alert(t('presetNameRequired')); return; }
                 const presetsNow = loadThemePresets();
                 presetsNow[name] = captureThemePreset();
                 saveThemePresets(presetsNow);

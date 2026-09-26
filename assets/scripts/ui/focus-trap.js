@@ -10,7 +10,7 @@
     'use strict';
 
     var FOCUSABLE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
-    var OVERLAY_SELECTOR = '.about-overlay, .settings-overlay, .share-overlay, .video-overlay, .guide-overlay, .search-overlay, .cinema-overlay, .cover-viewer, .library-overlay';
+    var OVERLAY_SELECTOR = '.about-overlay, .settings-overlay, .share-overlay, .video-overlay, .guide-overlay, .search-overlay, .cinema-overlay, .cover-viewer, .library-overlay, .dialog-overlay';
 
     function visible(el) {
         return el && (el.offsetParent !== null || el === root.document.activeElement);

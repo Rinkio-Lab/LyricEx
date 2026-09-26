@@ -57,8 +57,8 @@
             });
         }
 
-        function exportShareTemplate() {
-            const name = prompt(t('tplExportName') || '模板名称', ctx.safePackageName());
+        async function exportShareTemplate() {
+            const name = await window.__lyricexDialog.prompt(t('tplExportName') || '模板名称', ctx.safePackageName());
             if (!name) return;
             const tpl = { name: String(name).slice(0, 60), css: shareCss.value || '' };
             ctx.downloadBlob(new Blob([JSON.stringify(tpl, null, 2)], { type: 'application/json;charset=utf-8' }),
@@ -69,8 +69,8 @@
             if (!file) return;
             file.text().then(function (text) {
                 let tpl;
-                try { tpl = JSON.parse(text); } catch (_) { alert(t('tplImportBad')); return; }
-                if (!tpl || typeof tpl.name !== 'string' || typeof tpl.css !== 'string') { alert(t('tplImportBad')); return; }
+                try { tpl = JSON.parse(text); } catch (_) { window.__lyricexDialog.alert(t('tplImportBad')); return; }
+                if (!tpl || typeof tpl.name !== 'string' || typeof tpl.css !== 'string') { window.__lyricexDialog.alert(t('tplImportBad')); return; }
                 shareTemplates.push({ name: tpl.name.slice(0, 60), css: tpl.css });
                 persistShareTemplates();
                 refreshShareTemplateOptions();
@@ -78,7 +78,7 @@
         }
 
         function openShare() {
-            if (!ctx.lyrics.length || ctx.activeLineIndex < 0) { alert(t('pleaseUpload')); return; }
+            if (!ctx.lyrics.length || ctx.activeLineIndex < 0) { window.__lyricexDialog.alert(t('pleaseUpload')); return; }
             shareOverlay.classList.add('open');
             shareAccent.value = ctx.settings.customAccent || '#8a7a6a';
             loadShareTemplates();

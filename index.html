@@ -141,7 +141,7 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v2.8.0 · 2026</div>
+                        <div class="version">v2.8.1 · 2026</div>
                         <div class="slogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
                         <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
                         <h3 data-i18n="developer">开发者</h3>
@@ -648,6 +648,19 @@
             </div>
         </div>
     </div>
+
+    <!-- v2.8.1: native-style dialog (alert/confirm/prompt) — replaces
+         window.alert/confirm/prompt; styled like the settings/about modals.
+         ui/dialog.js owns behaviour; focus-trap.js contains Tab inside it. -->
+    <div class="dialog-overlay" id="dialogOverlay" role="dialog" aria-modal="true" data-i18n-title="dialogTitle" aria-label="提示">
+        <div class="dialog-modal">
+            <div class="dialog-message" id="dialogMessage"></div>
+            <div class="dialog-input-row" style="display:none;">
+                <input type="text" id="dialogInput" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="dialog-footer" id="dialogFooter"></div>
+        </div>
+    </div>
 </div>
 
 <!-- PRINT SHEET (v2.0.0 #17): hidden on screen, shown by @media print -->
@@ -693,6 +706,9 @@
 <script src="assets/scripts/ui/cinema.js"></script>
 <script src="assets/scripts/ui/about.js"></script>
 <script src="assets/scripts/ui/settings.js"></script>
+<!-- v2.8.1: native dialog system (alert/confirm/prompt) — before app.js so the
+     rest of the UI can call window.__lyricexDialog at interaction time -->
+<script src="assets/scripts/ui/dialog.js"></script>
 <script src="assets/scripts/app.js"></script>
 <!-- v2.1.1: universal modal focus trap (a11y) — self-inits, after app.js -->
 <script src="assets/scripts/ui/focus-trap.js"></script>

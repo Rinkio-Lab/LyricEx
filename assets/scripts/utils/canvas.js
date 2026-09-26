@@ -28,6 +28,14 @@
                 var ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
                 root.URL.revokeObjectURL(url);
+                // v2.8.1: Chrome can resolve this promise with a TAINTED canvas
+                // (Blob-URL SVG + <foreignObject>); drawImage succeeds, but any
+                // later toDataURL/toBlob throws SecurityError, which silently
+                // broke share-card previews and poster export. Probe 1px — on a
+                // tainted canvas getImageData throws — and reject so callers
+                // (renderShareCard/renderPoster) fall back to the 2D renderer.
+                try { ctx.getImageData(0, 0, 1, 1); }
+                catch (e) { reject(e); return; }
                 resolve(canvas);
             };
             img.onerror = function (e) {
