@@ -1,0 +1,388 @@
+﻿/* LyricEx base styles (split from styles.css, v2.0.5): reset, design tokens
+   (:root + Morandi/dark theme presets), shared utilities (.hidden) and app-wide
+   motion. Loaded first — every other stylesheet depends on these variables. */
+/* v1.6.0: default CJK fonts (Noto Sans SC for Chinese, M PLUS Rounded 1c for
+   Japanese). v1.6.4: webfonts are vendored locally under vendor/fonts/ (see
+   scripts/fetch-assets.mjs) — no Google Fonts CDN at runtime; the system-font
+   fallbacks in the stacks below still cover the offline-without-vendor case.
+   v1.6.2: Courier Prime for timestamps / keycaps. */
+
+/* =========================== GLOBAL =========================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+    --bg-primary: #f6f4f0;
+    --bg-secondary: #ffffff;
+    --bg-sidebar: #eae7e2;
+    --bg-card: #ffffff;
+    --bg-hover: #e8e4de;
+    --bg-active: #d6d0c8;
+    --text-primary: #1e1a16;
+    --text-secondary: #5a524a;
+    /* v2.5.0: #8a827a failed WCAG AA (≈3.1–3.5:1 on sidebar/card surfaces);
+       #6e675e ≈4.5–5.5:1 across light themes (axe-core verified) */
+    --text-muted: #6e675e;
+    --border-color: #d6d0c8;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.10);
+    --accent: #8a7a6a;
+    --accent-hover: #6a5a4a;
+    --accent-bg: #e8e0d8;
+    --scrollbar-track: #e8e4de;
+    --scrollbar-thumb: #c8c0b8;
+    --scrollbar-thumb-hover: #b0a898;
+    --player-bg: #ffffff;
+    --progress-bg: #d6d0c8;
+    --progress-fill: #8a7a6a;
+    --highlight-bg: #f0ece6;
+    --highlight-border: #b0a898;
+    --table-border: #d6d0c8;
+    --table-header-bg: #eae7e2;
+    --placeholder-color: #b0a898;
+    --transition: 0.25s ease;
+    --font: 'Noto Sans SC', 'M PLUS Rounded 1c', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+    /* v1.6.2: fixed per-line override stacks (not user-configurable) */
+    --font-lyrics-sc: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Hiragino Sans GB', sans-serif;
+    --font-mono: 'Courier Prime', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    /* v1.6.0: per-POS study-table colors (customizable in settings; inline
+       vars on #app override these when set) */
+    --pos-romaji: var(--text-secondary);
+    --pos-hiragana: #5a7a9a;
+    --pos-kanji: var(--text-primary);
+    --pos-pos: var(--text-muted);
+    --pos-meaning: #6a8a5a;
+}
+[data-theme="dark"] {
+    --bg-primary: #181614;
+    --bg-secondary: #1e1c18;
+    --bg-sidebar: #141210;
+    --bg-card: #22201c;
+    --bg-hover: #2e2a26;
+    --bg-active: #3a3632;
+    --text-primary: #ece8e2;
+    --text-secondary: #b8b0a8;
+    /* v2.1.1: dark muted must differ from light — the old value (#8a827a)
+       was identical in both themes, so muted labels (mobile top-bar artist,
+       bottom-nav icons/labels) never picked up a light tone in dark mode */
+    --text-muted: #9b938a;
+    --border-color: #3a3632;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.6);
+    --accent: #b8a898;
+    --accent-hover: #d0c8b8;
+    --accent-bg: #2e2a26;
+    --scrollbar-track: #2e2a26;
+    --scrollbar-thumb: #4a4642;
+    --scrollbar-thumb-hover: #5a5652;
+    --player-bg: #1e1c18;
+    --progress-bg: #3a3632;
+    --progress-fill: #b8a898;
+    --highlight-bg: #2e2a26;
+    --highlight-border: #5a5652;
+    --table-border: #3a3632;
+    --table-header-bg: #2e2a26;
+    --placeholder-color: #6a625a;
+    --pos-hiragana: #7a9aba;
+    --pos-meaning: #8aaa7a;
+}
+
+/* =========================== MORANDI COLOR THEMES =========================== */
+/* 烟灰粉 Dusty Rose */
+[data-color-theme="dusty-rose"] {
+    --accent: #b8958a;
+    --accent-hover: #9a7a6e;
+    --accent-bg: #f0e6e2;
+    --bg-primary: #f5f0ee;
+    --bg-secondary: #fdfbfa;
+    --bg-sidebar: #ede5e2;
+    --bg-card: #fdfbfa;
+    --bg-hover: #e8deda;
+    --bg-active: #d8ccc8;
+    --border-color: #d8ccc8;
+    --highlight-bg: #f2eae6;
+    --highlight-border: #c8b4ae;
+    --scrollbar-track: #e8deda;
+    --scrollbar-thumb: #d0c4c0;
+    --scrollbar-thumb-hover: #c0b0aa;
+    --player-bg: #fdfbfa;
+    --progress-bg: #d8ccc8;
+    --progress-fill: #b8958a;
+    --table-border: #d8ccc8;
+    --table-header-bg: #ede5e2;
+    --placeholder-color: #c0b0aa;
+}
+/* 雾灰蓝 Misty Blue */
+[data-color-theme="misty-blue"] {
+    --accent: #8a9aa8;
+    --accent-hover: #6e7e8c;
+    --accent-bg: #e2e8ee;
+    --bg-primary: #eef2f5;
+    --bg-secondary: #f8fafb;
+    --bg-sidebar: #e2e8ed;
+    --bg-card: #f8fafb;
+    --bg-hover: #dce4ea;
+    --bg-active: #ccd6de;
+    --border-color: #ccd6de;
+    --highlight-bg: #e6ecf2;
+    --highlight-border: #b0bec8;
+    --scrollbar-track: #dce4ea;
+    --scrollbar-thumb: #c4ced6;
+    --scrollbar-thumb-hover: #b0bac2;
+    --player-bg: #f8fafb;
+    --progress-bg: #ccd6de;
+    --progress-fill: #8a9aa8;
+    --table-border: #ccd6de;
+    --table-header-bg: #e2e8ed;
+    --placeholder-color: #b0bac2;
+}
+/* 鼠尾草绿 Sage Green */
+[data-color-theme="sage-green"] {
+    --accent: #8a9e8a;
+    --accent-hover: #6e826e;
+    --accent-bg: #e2e8e2;
+    --bg-primary: #eef2ee;
+    --bg-secondary: #f8faf8;
+    --bg-sidebar: #e2e8e2;
+    --bg-card: #f8faf8;
+    --bg-hover: #dce4dc;
+    --bg-active: #ccd6cc;
+    --border-color: #ccd6cc;
+    --highlight-bg: #e6ece6;
+    --highlight-border: #b0beb0;
+    --scrollbar-track: #dce4dc;
+    --scrollbar-thumb: #c4cec4;
+    --scrollbar-thumb-hover: #b0baa8;
+    --player-bg: #f8faf8;
+    --progress-bg: #ccd6cc;
+    --progress-fill: #8a9e8a;
+    --table-border: #ccd6cc;
+    --table-header-bg: #e2e8e2;
+    --placeholder-color: #b0baa8;
+}
+/* 暖灰褐 Warm Taupe */
+[data-color-theme="warm-taupe"] {
+    --accent: #9a8a7a;
+    --accent-hover: #7a6a5a;
+    --accent-bg: #e8e0d8;
+    --bg-primary: #f4f0ec;
+    --bg-secondary: #fcfaf8;
+    --bg-sidebar: #e8e2da;
+    --bg-card: #fcfaf8;
+    --bg-hover: #e2dad2;
+    --bg-active: #d4ccc4;
+    --border-color: #d4ccc4;
+    --highlight-bg: #eee8e0;
+    --highlight-border: #c4b8a8;
+    --scrollbar-track: #e2dad2;
+    --scrollbar-thumb: #ccc4bc;
+    --scrollbar-thumb-hover: #b8b0a8;
+    --player-bg: #fcfaf8;
+    --progress-bg: #d4ccc4;
+    --progress-fill: #9a8a7a;
+    --table-border: #d4ccc4;
+    --table-header-bg: #e8e2da;
+    --placeholder-color: #b8b0a8;
+}
+/* 薰衣草灰 Lavender Gray */
+[data-color-theme="lavender-gray"] {
+    --accent: #958aa8;
+    --accent-hover: #7a6e8c;
+    --accent-bg: #e8e4f0;
+    --bg-primary: #f0eef5;
+    --bg-secondary: #faf8fb;
+    --bg-sidebar: #e5e2ed;
+    --bg-card: #faf8fb;
+    --bg-hover: #dedae8;
+    --bg-active: #d0cad8;
+    --border-color: #d0cad8;
+    --highlight-bg: #e9e6f0;
+    --highlight-border: #beb4c8;
+    --scrollbar-track: #dedae8;
+    --scrollbar-thumb: #c8c2d0;
+    --scrollbar-thumb-hover: #b4aec0;
+    --player-bg: #faf8fb;
+    --progress-bg: #d0cad8;
+    --progress-fill: #958aa8;
+    --table-border: #d0cad8;
+    --table-header-bg: #e5e2ed;
+    --placeholder-color: #b4aec0;
+}
+/* 暖杏色 Warm Apricot */
+[data-color-theme="warm-apricot"] {
+    --accent: #b8957a;
+    --accent-hover: #9a7a5e;
+    --accent-bg: #f0e6da;
+    --bg-primary: #f5f0ea;
+    --bg-secondary: #fdfaf6;
+    --bg-sidebar: #ede5da;
+    --bg-card: #fdfaf6;
+    --bg-hover: #e8ded0;
+    --bg-active: #d8ccc0;
+    --border-color: #d8ccc0;
+    --highlight-bg: #f2eae0;
+    --highlight-border: #c8b8a4;
+    --scrollbar-track: #e8ded0;
+    --scrollbar-thumb: #d0c4b8;
+    --scrollbar-thumb-hover: #c0b0a4;
+    --player-bg: #fdfaf6;
+    --progress-bg: #d8ccc0;
+    --progress-fill: #b8957a;
+    --table-border: #d8ccc0;
+    --table-header-bg: #ede5da;
+    --placeholder-color: #c0b0a4;
+}
+/* 高对比 · 亮 High Contrast Light (v2.2.0, a11y) — near-black on pure white,
+   deep accent; secondary text stays black, muted text darkened to pass
+   WCAG AA on white. Sits after [data-theme] so it wins over the light/dark
+   cycle regardless of the current 亮/暗/跟随系统 state. */
+[data-color-theme="hc-light"] {
+    --accent: #0057a0;
+    --accent-hover: #003c70;
+    --accent-bg: #dbe9f7;
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-sidebar: #f2f2f2;
+    --bg-card: #ffffff;
+    --bg-hover: #e0e0e0;
+    --bg-active: #c9c9c9;
+    --border-color: #000000;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.28);
+    --text-primary: #000000;
+    --text-secondary: #000000;
+    --text-muted: #333333;
+    --scrollbar-track: #e0e0e0;
+    --scrollbar-thumb: #666666;
+    --scrollbar-thumb-hover: #333333;
+    --player-bg: #ffffff;
+    --progress-bg: #999999;
+    --progress-fill: #0057a0;
+    --highlight-bg: #dbe9f7;
+    --highlight-border: #0057a0;
+    --table-border: #000000;
+    --table-header-bg: #f2f2f2;
+    --placeholder-color: #555555;
+    --pos-hiragana: #00407a;
+    --pos-meaning: #005a2e;
+}
+/* 高对比 · 暗 High Contrast Dark (v2.2.0, a11y) — pure white on pure black,
+   bright accent; muted text lightened to pass WCAG AA on black. */
+[data-color-theme="hc-dark"] {
+    --accent: #4cc9f0;
+    --accent-hover: #8ce0ff;
+    --accent-bg: #002a3d;
+    --bg-primary: #000000;
+    --bg-secondary: #000000;
+    --bg-sidebar: #111111;
+    --bg-card: #000000;
+    --bg-hover: #1a1a1a;
+    --bg-active: #333333;
+    --border-color: #ffffff;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.95);
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
+    --text-muted: #cccccc;
+    --scrollbar-track: #1a1a1a;
+    --scrollbar-thumb: #999999;
+    --scrollbar-thumb-hover: #ffffff;
+    --player-bg: #000000;
+    --progress-bg: #666666;
+    --progress-fill: #4cc9f0;
+    --highlight-bg: #002a3d;
+    --highlight-border: #4cc9f0;
+    --table-border: #ffffff;
+    --table-header-bg: #111111;
+    --placeholder-color: #bbbbbb;
+    --pos-hiragana: #8ce0ff;
+    --pos-meaning: #7fe0a8;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    /* v2.2.0 (mobile): stop iOS Safari from auto-zooming text after an input
+       focus/rotate — the app stays user-scalable, this only kills the forced
+       browser text-zoom. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    transition: background var(--transition), color var(--transition);
+}
+/* v2.2.0 (mobile): no double-tap/double-tap-hold zoom delays on interactive
+   controls — zoom gestures on the page itself still work. */
+button,
+select,
+input[type="range"],
+input[type="color"],
+input[type="text"],
+textarea {
+    touch-action: manipulation;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+* {
+    border-radius: 0 !important;
+}
+.app {
+    display: flex;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--bg-primary);
+    transition: background var(--transition);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* v2.5.0: visually-hidden (but accessible) content — the app's h1 for axe
+   page-has-heading-one; WCAG 1.3.1 / 1.4.4 safe */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* =========================== MOTION (v1.6.3) =========================== */
+/* Gentle fade-in on explicit view switches. JS adds/removes the class in
+   switchView(), so the study view's per-line re-render stays instant. */
+#viewContent.view-anim {
+    animation: view-in 0.28s ease;
+}
+@keyframes view-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* User toggle off → freeze every transition/animation. */
+#app[data-motion="off"] *,
+#app[data-motion="off"] *::before,
+#app[data-motion="off"] *::after {
+    transition: none !important;
+    animation: none !important;
+}

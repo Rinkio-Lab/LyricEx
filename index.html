@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN" translate="no">
+<head>
+    <meta charset="UTF-8" />
+    <!-- v2.1.1: viewport-fit=cover so notched/safe-area phones don't letterbox;
+         user-scalable stays allowed — never force-disables pinch-zoom (that is
+         an accessibility regression). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- v1.6.5: the app manages its own i18n; block browser auto-translate from
+         clobbering the DOM after we switch locale (it can leave text "stuck"). -->
+    <meta name="google" content="notranslate" />
+    <meta name="theme-color" content="#8a7a6a" />
+    <!-- v2.5.0: strict CSP as a <meta>. No remote deps (vendor/ is local) and no
+         inline scripts (locale-boot / sw-register extracted to files), so
+         script-src 'self' holds without 'unsafe-inline'. style-src keeps
+         'unsafe-inline' for the dynamic <style> injected by share-card/poster/
+         video export. file://-opened pages still work: Chrome treats file:
+         as same-origin for 'self' (verified 2026-09). frame-ancestors only
+         works as an HTTP header, not in <meta>. -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; font-src 'self'; object-src 'none'; base-uri 'self'" />
+    <!-- App icons (favicon.io pack), in favicon.io's canonical order: apple-touch →
+         32 → 16 → manifest. favicon.ico kept as an explicit legacy-tab fallback
+         because it lives in assets/icons/ (no root auto-fallback). Relative paths stay
+         subpath- and file://-safe. -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png" />
+    <link rel="icon" href="assets/icons/favicon.ico" />
+    <!-- v2.0.0 #24: PWA install (works only when served over http(s), not file://) -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <title>LyricEx · 歌词鉴赏</title>
+
+    <!-- Vendored third-party assets (see scripts/fetch-assets.mjs). Everything is
+         served from ./vendor so the app runs fully offline — no cdnjs / Google
+         Fonts CDN. Re-run `node scripts/fetch-assets.mjs` to refresh. -->
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css" />
+    <script src="vendor/jszip/jszip.min.js"></script>
+
+    <!-- v1.6.4: local webfonts. Only the two weights the app renders are vendored
+         (400 regular + 700 bold) for each family — the default is one notch
+         lighter than v1.6.3, which loaded Noto at 500 only. -->
+    <link rel="stylesheet" href="vendor/fonts/noto-sans-sc.css" />
+    <link rel="stylesheet" href="vendor/fonts/m-plus-rounded-1c.css" />
+    <link rel="stylesheet" href="vendor/fonts/courier-prime.css" />
+
+    <!-- LyricEx Styles (v2.1.0: under assets/styles/ — load order matters,
+         responsive.css last so its @media overrides keep winning) -->
+    <link rel="stylesheet" href="assets/styles/base.css" />
+    <link rel="stylesheet" href="assets/styles/layout.css" />
+    <link rel="stylesheet" href="assets/styles/views.css" />
+    <link rel="stylesheet" href="assets/styles/overlays.css" />
+    <link rel="stylesheet" href="assets/styles/responsive.css" />
+</head>
+<body>
+
+<div class="app" id="app" data-theme="light">
+    <!-- v2.5.0: h1 for axe page-has-heading-one; visually hidden (WCAG 1.3.1) -->
+    <h1 class="sr-only">LyricEx · 歌词鉴赏</h1>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">Lyric<span>Ex</span></div>
+        <div class="sidebar-section">
+            <div class="sidebar-label" data-i18n="view">视图</div>
+            <button class="sidebar-btn active" data-view="lyrics" data-sidebar-item="lyrics" data-i18n-title="lyrics">
+                <span class="icon"><i class="fas fa-file-alt"></i></span>
+                <span class="label" data-i18n="lyrics">歌词</span>
+            </button>
+            <button class="sidebar-btn" data-view="study" data-sidebar-item="study" data-i18n-title="study">
+                <span class="icon"><i class="fas fa-school"></i></span>
+                <span class="label" data-i18n="study">学习</span>
+            </button>
+            <button class="sidebar-btn" data-view="mixed" data-sidebar-item="mixed" data-i18n-title="mixed">
+                <span class="icon"><i class="fas fa-table"></i></span>
+                <span class="label" data-i18n="mixed">混合</span>
+            </button>
+            <button class="sidebar-btn" data-view="editor" data-sidebar-item="editor" data-i18n-title="editor">
+                <span class="icon"><i class="fas fa-sliders-h"></i></span>
+                <span class="label" data-i18n="editor">编辑</span>
+            </button>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label" data-i18n="modes">模式</div>
+            <button class="sidebar-btn" id="cinemaBtn" data-sidebar-item="cinema" data-i18n-title="openCinema" title="进入影院模式">
+                <span class="icon"><i class="fas fa-tv"></i></span>
+                <span class="label" data-i18n="cinemaMode">影院模式</span>
+            </button>
+            <button class="sidebar-btn" id="miniBtn" data-sidebar-item="mini" data-i18n-title="miniMode" title="迷你模式">
+                <span class="icon"><i class="fas fa-window-restore"></i></span>
+                <span class="label" data-i18n="miniMode">迷你模式</span>
+            </button>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label" data-i18n="system">系统</div>
+            <button class="sidebar-btn" id="themeToggle" data-sidebar-item="theme" data-i18n-title="switchTheme" title="切换主题">
+                <span class="icon" id="themeIconWrap"><i class="fas fa-moon"></i></span>
+                <span class="label" id="themeLabel" data-i18n="darkMode">暗黑模式</span>
+            </button>
+            <button class="sidebar-btn" id="settingsBtn" data-i18n-title="settings" title="设置">
+                <span class="icon"><i class="fas fa-cog"></i></span>
+                <span class="label" data-i18n="settings">设置</span>
+            </button>
+            <!-- v2.1.1: song library (examples/manifest.json) — desktop entry;
+                 mobile has #moreLibraryBtn in the more drawer -->
+            <button class="sidebar-btn" id="librarySideBtn" data-i18n-title="songLibrary" title="歌曲库">
+                <span class="icon"><i class="fas fa-music"></i></span>
+                <span class="label" data-i18n="songLibrary">歌曲库</span>
+            </button>
+            <button class="sidebar-btn" id="aboutBtn" data-sidebar-item="about" data-i18n-title="about" title="关于">
+                <span class="icon"><i class="fas fa-address-card"></i></span>
+                <span class="label" data-i18n="about">关于</span>
+            </button>
+        </div>
+        <div class="sidebar-section" style="flex:1;justify-content:flex-end;">
+            <div class="sidebar-label" data-i18n="lyricPack">歌词包</div>
+            <div class="upload-area" id="uploadArea">
+                <span class="icon"><i class="fas fa-file-import"></i></span>
+                <span class="upload-hint" data-i18n="uploadZip">上传 .zip / .lrc</span>
+                <span class="file-name" id="uploadFileName" data-i18n="notLoaded">未加载</span>
+                <input type="file" id="fileInput" accept=".zip,.lrc" multiple />
+            </div>
+        </div>
+        <!-- v2.0.0: recent packages + multi-package queue -->
+        <div class="sidebar-section recent-section" id="recentSection" style="display:none;">
+            <div class="sidebar-label" data-i18n="recentTitle">最近打开</div>
+            <div class="recent-list" id="recentList"></div>
+        </div>
+        <div class="sidebar-section queue-section" id="queueSection" style="display:none;">
+            <div class="sidebar-label" data-i18n="queueTitle">连播队列</div>
+            <div class="queue-list" id="queueList"></div>
+        </div>
+        <div class="sidebar-status" id="sidebarStatus">
+            <span data-i18n="waitingUpload">等待上传</span>
+        </div>
+    </aside>
+
+    <!-- ABOUT MODAL (v2.0.0: side sub-nav + scrollable body, mirrors Settings) -->
+    <div class="about-overlay" id="aboutOverlay" role="dialog" aria-modal="true" data-i18n-title="about">
+        <div class="about-modal">
+            <div class="about-main">
+                <nav class="settings-subnav about-subnav" id="aboutSubnav"></nav>
+                <div class="about-body" id="aboutBody">
+                    <section class="about-section brand-section" data-nav="navAboutOverview">
+                        <span class="logo-icon"><i class="fas fa-music"></i></span>
+                        <h2>Lyric<span>Ex</span></h2>
+                        <div class="version">v2.5.0 · 2026</div>
+                        <div class="slogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
+                        <h4 data-i18n="developer">开发者</h4>
+                        <p>
+                            由 <a href="#" target="_blank">Rinkio</a> 构建<br>
+                            <span style="font-size:13px;color:var(--text-muted);">
+                                <i class="fas fa-envelope" style="margin-right:4px;"></i>
+                                <a href="mailto:limebow2@gmail.com">limebow2@gmail.com</a>
+                            </span>
+                        </p>
+                    </section>
+                    <section class="about-section" data-nav="quickStart">
+                        <h4 data-i18n="quickStart">快速上手</h4>
+                        <ul class="tech-list">
+                            <li><span class="tech-icon"><i class="fas fa-file-import"></i></span> <span data-i18n="quickUpload">上传 .zip / .lrc 歌词包</span></li>
+                            <li><span class="tech-icon"><i class="fas fa-th-large"></i></span> <span data-i18n="quickViews">侧边栏切换 歌词 / 学习 / 混合 / 编辑</span></li>
+                            <li><span class="tech-icon"><i class="fas fa-tv"></i></span> <span data-i18n="quickModes">F 影院 · V 迷你模式</span></li>
+                            <li><span class="tech-icon"><i class="fas fa-keyboard"></i></span> <span data-i18n="quickShortcuts">空格播放 · ←/→ 快退快进 · 数字键跳转</span></li>
+                            <li><span class="tech-icon"><i class="fas fa-palette"></i></span> <span data-i18n="quickCustomize">设置中调整字体 / 字重 / 主题色</span></li>
+                        </ul>
+                    </section>
+                    <section class="about-section" data-nav="techUsed">
+                        <h4 data-i18n="techUsed">使用技术</h4>
+                        <ul class="tech-list">
+                            <li><span class="tech-icon"><i class="fas fa-file-code"></i></span> Font Awesome 5 · 图标库</li>
+                            <li><span class="tech-icon"><i class="fas fa-archive"></i></span> JSZip · 解压 / 打包 ZIP</li>
+                            <li><span class="tech-icon"><i class="fas fa-wave-square"></i></span> Web Audio API · 频谱 / 变调</li>
+                            <li><span class="tech-icon"><i class="fas fa-paint-brush"></i></span> 原生 CSS · 无第三方框架</li>
+                            <li><span class="tech-icon"><i class="fab fa-js"></i></span> 原生 JavaScript · 无第三方框架</li>
+                        </ul>
+                    </section>
+                    <section class="about-section" data-nav="shortcuts">
+                        <h4 data-i18n="shortcuts">键盘快捷键</h4>
+                        <ul class="shortcut-list" id="shortcutList"></ul>
+                        <p class="small-text" data-i18n="shortcutHint">可在设置 → 快捷键中自定义</p>
+                    </section>
+                    <section class="about-section disclaimer" data-nav="openSource">
+                        <h4 data-i18n="openSource">开源与声明</h4>
+                        <p>本项目基于<a href="https://opensource.org/licenses/MIT" target="_blank"> MIT 协议</a>开源。</p>
+                        <p class="small-text">
+                            免责声明：本工具仅为前端音频播放工具，不存储、不提供任何音频文件。
+                            所有播放内容均来自用户本地设备或用户自行提供的合法文件。
+                            请支持正版音乐。
+                        </p>
+                    </section>
+                </div>
+            </div>
+            <div class="about-footer">
+                <button class="close-btn" id="watchGuideBtn" data-i18n="watchGuide">观看指引</button>
+                <button class="close-btn" id="changelogBtn" data-i18n="viewChangelog">更新日志</button>
+                <button class="close-btn" id="aboutCloseBtn" data-i18n="close">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGELOG MODAL (v2.0.0) – rendered from assets/scripts/changelog.js -->
+    <div class="about-overlay" id="changelogOverlay" role="dialog" aria-modal="true" data-i18n-title="viewChangelog">
+        <div class="about-modal changelog-modal">
+            <div class="changelog-body" id="changelogBody"></div>
+            <div class="about-footer">
+                <button class="close-btn" id="changelogCloseBtn" data-i18n="close">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="settings-overlay" id="settingsOverlay" role="dialog" aria-modal="true" data-i18n-title="settings">
+        <div class="settings-modal">
+            <div class="settings-tabs">
+                <button class="settings-tab active" data-tab="general" data-i18n="general">通用</button>
+                <button class="settings-tab" data-tab="appearance" data-i18n="appearance">外观</button>
+                <button class="settings-tab" data-tab="lyrics" data-i18n="lyricsTab">歌词</button>
+                <button class="settings-tab" data-tab="shortcuts" data-i18n="shortcutsTab">快捷键</button>
+            </div>
+            <div class="settings-main">
+                <!-- v1.6.1: vertical sub-nav (tabs inside a tab); left side is
+                     navigation only, the right body scrolls through everything -->
+                <nav class="settings-subnav hidden" id="settingsSubnav"></nav>
+                <div class="settings-body" id="settingsBody">
+                    <!-- General panel (first screen; language merged here) -->
+                    <div class="settings-panel active" data-panel="general">
+                        <h4 data-i18n="interfaceLang">界面语言</h4>
+                        <div class="setting-row lang-current-row">
+                            <label class="setting-label" id="currentLangLabel"><i class="fas fa-globe"></i>简体中文</label>
+                            <button class="lang-change-btn" id="langChangeBtn"><span data-i18n="langChange">更改</span><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <p class="settings-desc lang-not-reset" data-i18n="langNotReset">界面语言与文本方向不会被重置</p>
+                        <div id="generalControls"></div>
+                        <div id="sidebarControls"></div>
+                    </div>
+                    <!-- Appearance panel (sectioned; sub-nav on the left) -->
+                    <div class="settings-panel" data-panel="appearance">
+                        <section class="settings-section" data-nav="navTheme">
+                            <h4 data-i18n="themeColor">主题色</h4>
+                            <div class="color-grid">
+                                <button class="color-option active" data-color="default">
+                                    <span class="swatch" style="background:#8a7a6a;"></span>
+                                    <span class="swatch-label" data-i18n="default">默认</span>
+                                </button>
+                                <button class="color-option" data-color="dusty-rose">
+                                    <span class="swatch" style="background:#b8958a;"></span>
+                                    <span class="swatch-label" data-i18n="dustyRose">烟灰粉</span>
+                                </button>
+                                <button class="color-option" data-color="misty-blue">
+                                    <span class="swatch" style="background:#8a9aa8;"></span>
+                                    <span class="swatch-label" data-i18n="mistyBlue">雾灰蓝</span>
+                                </button>
+                                <button class="color-option" data-color="sage-green">
+                                    <span class="swatch" style="background:#8a9e8a;"></span>
+                                    <span class="swatch-label" data-i18n="sageGreen">鼠尾草绿</span>
+                                </button>
+                                <button class="color-option" data-color="warm-taupe">
+                                    <span class="swatch" style="background:#9a8a7a;"></span>
+                                    <span class="swatch-label" data-i18n="warmTaupe">暖灰褐</span>
+                                </button>
+                                <button class="color-option" data-color="lavender-gray">
+                                    <span class="swatch" style="background:#958aa8;"></span>
+                                    <span class="swatch-label" data-i18n="lavenderGray">薰衣草灰</span>
+                                </button>
+                                <button class="color-option" data-color="warm-apricot">
+                                    <span class="swatch" style="background:#b8957a;"></span>
+                                    <span class="swatch-label" data-i18n="warmApricot">暖杏色</span>
+                                </button>
+                                <!-- v2.1.1: high-contrast themes (a11y) -->
+                                <button class="color-option" data-color="hc-light">
+                                    <span class="swatch" style="background:#ffffff;border:1px solid #000;"></span>
+                                    <span class="swatch-label" data-i18n="hcLight">高对比 · 亮</span>
+                                </button>
+                                <button class="color-option" data-color="hc-dark">
+                                    <span class="swatch" style="background:#000000;"></span>
+                                    <span class="swatch-label" data-i18n="hcDark">高对比 · 暗</span>
+                                </button>
+                            </div>
+                        </section>
+                        <section class="settings-section" data-nav="navCustomColors">
+                            <h4 data-i18n="customColors">自定义颜色</h4>
+                            <div id="themeControls"></div>
+                        </section>
+                        <section class="settings-section" data-nav="navFonts">
+                            <h4 data-i18n="fonts">字体</h4>
+                            <div id="appearanceFonts"></div>
+                        </section>
+                        <section class="settings-section" data-nav="navSizes">
+                            <h4 data-i18n="sizes">字号</h4>
+                            <div id="appearanceSizes"></div>
+                        </section>
+                        <!-- v2.1.1: cinema backdrop + layout-pinning controls -->
+                        <section class="settings-section" data-nav="navCinema">
+                            <h4 data-i18n="cinemaSection">影院</h4>
+                            <div id="appearanceCinema"></div>
+                        </section>
+                        <section class="settings-section" data-nav="navLayout">
+                            <h4 data-i18n="layoutSection">布局</h4>
+                            <div id="appearanceLayout"></div>
+                        </section>
+                    </div>
+                    <!-- Lyrics panel -->
+                    <div class="settings-panel" data-panel="lyrics">
+                        <div id="lyricsControls"></div>
+                    </div>
+                    <!-- Shortcuts panel -->
+                    <div class="settings-panel" data-panel="shortcuts">
+                        <p class="settings-desc" data-i18n="shortcutHint">点击按键后按下新按键，Esc 取消。0-9 固定用于跳转进度。</p>
+                        <div id="shortcutControls"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button class="close-btn danger-btn" id="resetSettingsBtn"><i class="fas fa-undo"></i><span class="label" data-i18n="resetDefaults">恢复默认设置</span></button>
+                <button class="close-btn" id="settingsCloseBtn" data-i18n="close">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <main class="main">
+        <div class="view-container" id="viewContainer">
+            <div id="viewContent"></div>
+            <!-- v1.4.4: auto-follow resume pill (main views) -->
+            <button class="follow-pill" id="followPill" style="display:none;" data-i18n-title="followLyrics" title="跟随">
+                <i class="fas fa-location-arrow"></i>
+                <span class="label" data-i18n="followLyrics">跟随</span>
+            </button>
+        </div>
+
+        <!-- PLAYER -->
+        <div class="player-controls" id="playerControls">
+            <div class="spectrum-row" id="spectrumRow" style="display:none;">
+                <canvas id="spectrumCanvas"></canvas>
+            </div>
+            <div class="player-row">
+                <!-- v2.1.1: desktop cover entry — hidden on mobile (the top bar
+                     has #mobileCoverBtn there); shown by updateMobileNow() when a
+                     cover exists, opens #coverViewer -->
+                <button class="player-cover-btn" id="playerCoverBtn" data-i18n-title="coverView" title="查看封面" style="display:none;">
+                    <i class="fas fa-image"></i>
+                </button>
+                <div class="progress-wrap">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                        <div class="progress-thumb" id="progressThumb"></div>
+                    </div>
+                    <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                </div>
+            </div>
+            <div class="player-row player-main-row">
+                <div class="ctrl-group">
+                    <button class="ctrl-btn" id="prevBtn" data-i18n-title="prevLyric" title="上一句">
+                        <span class="icon"><i class="fas fa-step-backward"></i></span>
+                    </button>
+                    <button class="ctrl-btn" id="playBtn" data-i18n-title="playPause" title="播放 / 暂停">
+                        <span class="icon" id="playIconWrap"><i class="fas fa-play"></i></span>
+                    </button>
+                    <button class="ctrl-btn" id="nextBtn" data-i18n-title="nextLyric" title="下一句">
+                        <span class="icon"><i class="fas fa-step-forward"></i></span>
+                    </button>
+                    <button class="ctrl-btn" id="resetBtn" data-i18n-title="reset" title="停止">
+                        <span class="icon"><i class="fas fa-stop"></i></span>
+                    </button>
+                </div>
+                <!-- v2.1.1: the always-visible practice core stays on the bar; the
+                     rest (vol/speed/transpose/ab/marks/share) are .ext-item blocks
+                     that renderPlayerExt() pins here or folds into the ⋯ drawer
+                     according to settings.playerExt -->
+                <div class="mode-wrap">
+                    <button class="mode-btn" id="loopBtn" title="单曲循环">
+                        <i class="fas fa-redo"></i>
+                        <span class="badge" id="loopBadge" style="display:none;">1</span>
+                    </button>
+                    <button class="mode-btn" id="auditionToggleBtn" data-i18n-title="trackToggleTitle" title="播放音轨：原声 / 伴奏" style="display:none;">
+                        <i class="fas fa-music" id="auditionToggleIcon"></i>
+                        <span class="track-label" id="auditionToggleLabel">原声</span>
+                    </button>
+                </div>
+                <div class="player-ext" id="playerExt"></div>
+                <button class="player-ext-toggle" id="playerExtToggle" data-i18n-title="moreControls" title="更多控制">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <span class="badge" id="playerExtBadge" style="display:none;">0</span>
+                </button>
+            </div>
+            <!-- v2.1.1: extension-control drawer — renderPlayerExt() moves every
+                 non-pinned .ext-item here; opened by playerExtToggle -->
+            <div class="player-drawer" id="playerDrawer" style="display:none;">
+                <div class="ext-item" data-ext="vol">
+                    <div class="vol-wrap">
+                        <button class="ctrl-btn" id="muteBtn" data-i18n-title="mute" title="静音" style="width:28px;height:28px;font-size:16px;">
+                            <span class="icon" id="muteIconWrap"><i class="fas fa-volume-up"></i></span>
+                        </button>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="80" data-i18n-title="volumeLabel" title="音量" />
+                    </div>
+                </div>
+                <div class="ext-item" data-ext="speed">
+                    <div class="speed-wrap">
+                        <select id="speedSelect" data-i18n-title="speed" title="播放速度">
+                            <option value="0.5">0.5x</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1.0" selected>1.0x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2.0">2.0x</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="ext-item" data-ext="transpose">
+                    <div class="transpose-wrap" data-i18n-title="transpose" title="移调">
+                        <button class="transpose-btn" id="transposeDown" data-i18n-title="transposeDown" title="降半音"><i class="fas fa-minus"></i></button>
+                        <span class="transpose-val" id="transposeVal">+0</span>
+                        <button class="transpose-btn" id="transposeUp" data-i18n-title="transposeUp" title="升半音"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="ext-item" data-ext="ab">
+                    <button class="mode-btn" id="abToggleBtn" title="AB 循环">
+                        <i class="fas fa-sync-alt"></i>
+                        <span class="badge ab" id="abBadge" style="display:none;">AB</span>
+                    </button>
+                </div>
+                <div class="ext-item" data-ext="ab">
+                    <div class="ab-wrap" id="abWrap">
+                        <button class="ab-btn" id="abSetA" title="设置起点 A">A</button>
+                        <button class="ab-btn" id="abSetB" title="设置终点 B">B</button>
+                        <button class="ab-btn" id="abSave" title="保存为循环书签"><i class="fas fa-save"></i></button>
+                        <span class="ab-label" id="abStatus">&ndash;</span>
+                    </div>
+                </div>
+                <div class="ext-item" data-ext="marks">
+                    <button class="mode-btn" id="marksToggleBtn" data-i18n-title="loopMarks" title="循环书签">
+                        <i class="fas fa-bookmark"></i>
+                        <span class="badge" id="marksBadge" style="display:none;">0</span>
+                    </button>
+                </div>
+                <div class="ext-item" data-ext="share">
+                    <button class="mode-btn" id="shareCardBtn" data-i18n-title="shareCard" title="分享卡片">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="marks-panel" id="marksPanel" style="display:none;">
+                <div class="marks-list" id="marksList"></div>
+            </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MINI MODE BAR (v1.5.0) – inside .app so dark-theme CSS vars apply -->
+    <div class="mini-bar" id="miniBar" style="display:none;">
+        <button class="mini-drag" id="miniDrag" title="拖动"><i class="fas fa-grip-vertical"></i></button>
+        <div class="mini-info" id="miniInfo">
+            <div class="mini-title" id="miniTitle">&ndash;</div>
+            <div class="mini-line" id="miniLine" data-i18n="notLoaded">未加载</div>
+        </div>
+        <div class="mini-ctrl">
+            <button class="mini-btn" id="miniPlayBtn"><span id="miniPlayIcon"><i class="fas fa-play"></i></span></button>
+            <button class="mini-btn" id="miniPrevBtn" data-i18n-title="prevLyric"><i class="fas fa-step-backward"></i></button>
+            <button class="mini-btn" id="miniNextBtn" data-i18n-title="nextLyric"><i class="fas fa-step-forward"></i></button>
+        </div>
+        <div class="mini-progress" id="miniProgress"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
+        <button class="mini-btn mini-expand" id="miniExpandBtn" data-i18n-title="expandMini" title="还原窗口">
+            <i class="fas fa-expand"></i>
+        </button>
+    </div>
+
+    <!-- CINEMA MODE OVERLAY (inside .app so theme/font CSS vars cascade) -->
+    <div class="cinema-overlay" id="cinemaOverlay" role="dialog" aria-modal="true" data-i18n-title="cinemaMode">
+        <div class="cinema-bg"></div>
+        <button class="cinema-exit-btn" id="cinemaExitBtn" data-i18n="exitCinema" data-i18n-title="exitCinema">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="cinema-content">
+            <div class="cinema-lyrics" id="cinemaLyrics"></div>
+            <div id="cinemaPlayerSlot"></div>
+            <!-- v1.4.4: auto-follow resume pill (cinema mode) -->
+            <button class="follow-pill cinema-pill" id="cinemaFollowPill" style="display:none;" data-i18n-title="followLyrics" title="跟随">
+                <i class="fas fa-location-arrow"></i>
+                <span class="label" data-i18n="followLyrics">跟随</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- FIRST-VISIT GUIDE OVERLAY (v1.6.4) – shown once on first load, then
+         reopenable from 关于 → 观看指引. -->
+    <div class="guide-overlay" id="guideOverlay" role="dialog" aria-modal="true" data-i18n-title="guideTitle">
+        <!-- v2.3.3: first-run language switch — bottom-left of the guide -->
+        <button class="guide-globe" id="guideGlobeBtn" title="Interface language" aria-label="Interface language">
+            <i class="fas fa-globe"></i>
+        </button>
+        <div class="guide-modal">
+            <div class="guide-header">
+                <span class="guide-title" data-i18n="guideTitle">欢迎使用 LyricEx</span>
+                <span class="guide-counter" id="guideCounter">1 / 5</span>
+            </div>
+            <div class="guide-body" id="guideBody"></div>
+            <div class="guide-dots" id="guideDots"></div>
+            <div class="guide-footer">
+                <button class="guide-btn ghost" id="guidePrevBtn" data-i18n="guidePrev">上一步</button>
+                <button class="guide-btn ghost" id="guideSkipBtn" data-i18n="guideSkip">跳过</button>
+                <button class="guide-btn primary" id="guideNextBtn" data-i18n="guideNext">下一步</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEARCH OVERLAY (v1.7.0) -->
+    <div class="search-overlay" id="searchOverlay" role="dialog" aria-modal="true" data-i18n-title="searchPlaceholder">
+        <div class="search-modal">
+            <div class="search-input-row">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" autocomplete="off" spellcheck="false"
+                    data-i18n-placeholder="searchPlaceholder" placeholder="搜索歌词 / 翻译 / 罗马音 / 词性…" />
+                <span class="search-count" id="searchCount"></span>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+            <div class="search-hint"><span data-i18n="searchHint">↑↓ 选择 · Enter 跳转 · Esc 关闭</span></div>
+        </div>
+    </div>
+
+    <!-- SHARE CARD OVERLAY (v1.7.0) -->
+    <div class="share-overlay" id="shareOverlay" role="dialog" aria-modal="true" data-i18n-title="shareCard">
+        <div class="share-modal">
+            <div class="share-preview"><img id="sharePreview" alt="" /></div>
+            <div class="share-controls">
+                <div class="share-row">
+                    <label data-i18n="shareTemplate">模板</label>
+                    <select id="shareTemplate" data-i18n-title="shareTemplate">
+                        <option value="card" data-i18n="shareTemplateCard">卡片</option>
+                        <option value="gradient" data-i18n="shareTemplateGradient">渐变</option>
+                    </select>
+                </div>
+                <div class="share-row">
+                    <label data-i18n="shareAccent">主题色</label>
+                    <input type="color" id="shareAccent" value="#8a7a6a" data-i18n-title="shareAccent" />
+                </div>
+                <div class="share-row share-checks">
+                    <label class="checkbox-label"><input type="checkbox" id="shareTranslation" checked /> <span data-i18n="shareShowTranslation">显示翻译</span></label>
+                    <label class="checkbox-label"><input type="checkbox" id="shareRomaji" checked /> <span data-i18n="shareShowRomaji">显示罗马音</span></label>
+                </div>
+                <div class="share-row">
+                    <label data-i18n="shareCustomCss">自定义 CSS</label>
+                    <textarea id="shareCss" rows="6" spellcheck="false" data-i18n-title="shareCustomCss"></textarea>
+                </div>
+                <div class="share-row share-tpl-btns">
+                    <button class="close-btn small" id="shareTplExportBtn" data-i18n="tplExport">导出模板</button>
+                    <button class="close-btn small" id="shareTplImportBtn" data-i18n="tplImport">导入模板</button>
+                    <input type="file" id="shareTplFile" accept=".json" style="display:none" />
+                </div>
+            </div>
+            <div class="share-footer">
+                <button class="close-btn" id="shareCopyBtn" data-i18n="shareCopy">复制到剪贴板</button>
+                <button class="close-btn" id="shareDownloadBtn" data-i18n="shareDownload">下载 PNG</button>
+                <button class="close-btn" id="shareCloseBtn" data-i18n="close">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIDEO EXPORT OVERLAY (v1.7.0) -->
+    <div class="video-overlay" id="videoOverlay" role="dialog" aria-modal="true" data-i18n-title="exportVideo">
+        <div class="video-modal">
+            <h4 data-i18n="exportVideo">导出歌词视频</h4>
+            <p class="small-text" data-i18n="videoHint">Canvas + MediaRecorder 录制当前画面与音频，需完整播放一遍；仅支持 Chrome / Edge。</p>
+            <div class="video-progress"><div class="video-progress-fill" id="videoProgressFill"></div></div>
+            <div class="video-status" id="videoStatus"></div>
+            <div class="video-footer">
+                <button class="close-btn" id="videoCancelBtn" data-i18n="close">关闭</button>
+                <button class="close-btn" id="videoStartBtn" data-i18n="videoStart">开始录制</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- v2.1.1: MOBILE SHELL (hidden on desktop; responsive.css shows it) -->
+    <!-- top bar: logo + scrolling song title + artist + cover thumb + top drawer -->
+    <div class="mobile-topbar">
+        <div class="mobile-brand">Lyric<span>Ex</span></div>
+        <div class="mobile-now">
+            <div class="mobile-title" id="mobileTitle" data-i18n="waitingUpload">等待上传</div>
+            <div class="mobile-artist" id="mobileArtist"></div>
+        </div>
+        <button class="mobile-cover-btn" id="mobileCoverBtn" data-i18n-title="coverView" title="查看封面" style="display:none;">
+            <i class="fas fa-image"></i>
+        </button>
+        <button class="mobile-more-btn" id="mobileMoreBtn" data-i18n-title="topbarMore" title="设置与关于">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
+    </div>
+    <!-- top drawer: settings / about / theme -->
+    <div class="top-drawer" id="topDrawer" style="display:none;">
+        <button class="drawer-item" id="topThemeBtn"><i class="fas fa-moon"></i> <span data-i18n="darkMode">暗黑模式</span></button>
+        <button class="drawer-item" id="topSettingsBtn"><i class="fas fa-cog"></i> <span data-i18n="settings">设置</span></button>
+        <button class="drawer-item" id="topAboutBtn"><i class="fas fa-address-card"></i> <span data-i18n="about">关于</span></button>
+    </div>
+    <!-- bottom nav: 4 pin slots (settings → 外观 → 布局) + 更多 -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bottom-nav-slot" data-slot="0"></button>
+        <button class="bottom-nav-slot" data-slot="1"></button>
+        <button class="bottom-nav-slot" data-slot="2"></button>
+        <button class="bottom-nav-slot" data-slot="3"></button>
+        <button class="bottom-nav-more" id="bottomMoreBtn">
+            <i class="fas fa-ellipsis-h"></i>
+            <span class="nav-label" data-i18n="more">更多</span>
+        </button>
+    </nav>
+    <!-- more drawer: modes / upload / library / recent / queue -->
+    <div class="more-drawer" id="moreDrawer" style="display:none;">
+        <button class="drawer-item" id="moreCinemaBtn"><i class="fas fa-tv"></i> <span data-i18n="cinemaMode">影院模式</span></button>
+        <button class="drawer-item" id="moreMiniBtn"><i class="fas fa-window-restore"></i> <span data-i18n="miniMode">迷你模式</span></button>
+        <button class="drawer-item" id="moreUploadBtn"><i class="fas fa-file-import"></i> <span data-i18n="uploadZip">上传 .zip / .lrc</span></button>
+        <button class="drawer-item" id="moreLibraryBtn"><i class="fas fa-music"></i> <span data-i18n="songLibrary">歌曲库</span></button>
+        <div class="drawer-section">
+            <div class="drawer-label" data-i18n="recentTitle">最近打开</div>
+            <div class="recent-list mobile-recent" id="mobileRecentList"></div>
+        </div>
+        <div class="drawer-section">
+            <div class="drawer-label" data-i18n="queueTitle">连播队列</div>
+            <div class="queue-list mobile-queue" id="mobileQueueList"></div>
+        </div>
+    </div>
+
+    <!-- LANGUAGE DRAWER (v2.3.1): compact second-level picker for 界面语言 -->
+    <div class="lang-drawer" id="langDrawer" style="display:none;" role="dialog" aria-modal="true" data-i18n-title="interfaceLang">
+        <div class="lang-drawer-head">
+            <span data-i18n="interfaceLang">界面语言</span>
+            <button class="lang-drawer-close" id="langDrawerClose" data-i18n="close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="lang-list" id="langList"></div>
+    </div>
+
+    <!-- COVER VIEWER (v2.1.1): big cover modal -->
+    <div class="cover-viewer" id="coverViewer" role="dialog" aria-modal="true" data-i18n-title="coverView">
+        <button class="cover-viewer-close" id="coverViewerClose" data-i18n="close" data-i18n-title="close"><i class="fas fa-times"></i></button>
+        <img id="coverViewerImg" alt="" />
+    </div>
+
+    <!-- SONG LIBRARY OVERLAY (v2.1.1): fetches examples/manifest.json (HTTP only) -->
+    <div class="library-overlay" id="libraryOverlay" role="dialog" aria-modal="true" data-i18n-title="songLibrary">
+        <div class="library-modal">
+            <h4><i class="fas fa-music"></i> <span data-i18n="songLibrary">歌曲库</span></h4>
+            <p class="small-text" data-i18n="libraryHint">来自项目 examples/ 的示例歌词包。版权归原作者，仅供学习交流。</p>
+            <div class="library-list" id="libraryList"></div>
+            <div class="library-status" id="libraryStatus"></div>
+            <div class="library-footer">
+                <button class="close-btn" id="libraryCloseBtn" data-i18n="close">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PRINT SHEET (v2.0.0 #17): hidden on screen, shown by @media print -->
+<div class="print-sheet" id="printSheet" style="display:none;"></div>
+
+<!-- I18N: core + registry load first. The loader then pulls ONLY the current
+     locale's fallback chain (+ zh terminal) — bootstrapping every language was
+     wasteful as the list grows. Other languages are fetched on demand when
+     picked in the language drawer (app.js loadLocale). Adding a language still
+     needs NO edit here: registry line + dict file only. -->
+<script src="assets/locales/index.js"></script>
+<script src="assets/locales/languages.js"></script>
+<!-- v2.5.0: locale auto-loader extracted to a file (strict CSP, no inline scripts) -->
+<script src="assets/scripts/locale-boot.js"></script>
+
+<!-- App Logic (pure helpers → modules → app, in dependency order) -->
+<script src="assets/scripts/lib.js"></script>
+<script src="assets/scripts/changelog.js"></script>
+<script src="assets/scripts/utils/theme.js"></script>
+<script src="assets/scripts/utils/loop.js"></script>
+<script src="assets/scripts/utils/pitch.js"></script>
+<script src="assets/scripts/utils/recent.js"></script>
+<script src="assets/scripts/utils/search.js"></script>
+<script src="assets/scripts/utils/subtitles.js"></script>
+<script src="assets/scripts/utils/notes.js"></script>
+<script src="assets/scripts/utils/wordtiming.js"></script>
+<script src="assets/scripts/utils/canvas.js"></script>
+<script src="assets/scripts/utils/share-card.js"></script>
+<script src="assets/scripts/modules/pitch-shift.js"></script>
+<script src="assets/scripts/modules/audio-graph.js"></script>
+<script src="assets/scripts/modules/recent-store.js"></script>
+<script src="assets/scripts/modules/video.js"></script>
+<script src="assets/scripts/ui/video-export.js"></script>
+<script src="assets/scripts/ui/share.js"></script>
+<script src="assets/scripts/ui/editor.js"></script>
+<script src="assets/scripts/ui/search.js"></script>
+<script src="assets/scripts/ui/mini.js"></script>
+<script src="assets/scripts/ui/cinema.js"></script>
+<script src="assets/scripts/ui/about.js"></script>
+<script src="assets/scripts/ui/settings.js"></script>
+<script src="assets/scripts/app.js"></script>
+<!-- v2.1.1: universal modal focus trap (a11y) — self-inits, after app.js -->
+<script src="assets/scripts/ui/focus-trap.js"></script>
+<!-- v2.0.0 #24: register the service worker only on http(s) origins.
+     v2.5.0: extracted to a file (strict CSP, no inline scripts). -->
+<script src="assets/scripts/sw-register.js"></script>
+</body>
+</html>

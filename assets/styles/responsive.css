@@ -1,0 +1,421 @@
+/* LyricEx responsive + accessibility + print (split from styles.css, v2.0.5):
+   every @media query lives here and this file loads last, so the overrides
+   keep winning exactly as they did at the end of the monolithic file. */
+/* =========================== RESPONSIVE =========================== */
+@media (max-width: 820px) {
+    .sidebar {
+        width: 64px;
+        min-width: 64px;
+        padding: 12px 8px;
+    }
+    .sidebar-brand {
+        font-size: 14px;
+        text-align: center;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+    }
+    .sidebar-brand span {
+        display: block;
+    }
+    .sidebar-label {
+        display: none;
+    }
+    .sidebar-btn .label {
+        display: none;
+    }
+    .sidebar-btn {
+        justify-content: center;
+        padding: 10px 0;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+    }
+    .sidebar-btn.active {
+        border-left: none;
+        border-bottom-color: var(--accent);
+    }
+    .sidebar-btn .icon {
+        font-size: 22px;
+        width: auto;
+    }
+    .upload-area {
+        padding: 12px 6px;
+        font-size: 11px;
+    }
+    .upload-area .file-name {
+        display: none;
+    }
+    .upload-area .icon {
+        font-size: 24px;
+    }
+    .sidebar-status {
+        font-size: 10px;
+        min-height: 36px;
+    }
+    .sidebar-status .song-title {
+        font-size: 11px;
+    }
+    .view-container {
+        padding: 12px 14px 10px;
+    }
+    .player-controls {
+        padding: 8px 12px 10px;
+    }
+    .player-row .ctrl-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    .player-row .vol-wrap input[type="range"] {
+        width: 40px;
+    }
+    .player-row .time-display {
+        font-size: 11px;
+        min-width: 70px;
+    }
+    .player-row .speed-wrap select {
+        font-size: 11px;
+        padding: 1px 4px;
+        height: 24px;
+    }
+    .view-mixed .mixed-study {
+        padding-left: 60px;
+    }
+    .view-mixed .lyric-line {
+        font-size: 18px;
+        padding: 10px 12px;
+    }
+    .view-lyrics .lyric-line {
+        font-size: 22px;
+        padding: 12px 14px;
+    }
+    .about-modal {
+        max-width: 96%;
+    }
+    .about-body {
+        padding: 20px 18px 12px;
+        gap: 16px;
+    }
+    .about-footer {
+        padding: 10px 18px 14px;
+    }
+    .about-footer .close-btn {
+        padding: 6px 20px;
+        font-size: 13px;
+    }
+    .settings-modal {
+        max-width: 96%;
+    }
+    .settings-body {
+        padding: 18px 16px 12px;
+    }
+}
+@media (max-width: 640px) {
+    .sidebar {
+        width: 52px;
+        min-width: 52px;
+        padding: 8px 4px;
+    }
+    .sidebar-brand {
+        font-size: 12px;
+    }
+    .sidebar-btn .icon {
+        font-size: 18px;
+    }
+    .upload-area .icon {
+        font-size: 20px;
+    }
+    .view-container {
+        padding: 8px 10px 6px;
+    }
+    .player-row {
+        gap: 6px 10px;
+    }
+    .player-row .ctrl-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    .player-row .vol-wrap input[type="range"] {
+        width: 32px;
+    }
+    .player-row .time-display {
+        font-size: 10px;
+        min-width: 60px;
+    }
+    .player-row .speed-wrap select {
+        font-size: 10px;
+        padding: 1px 3px;
+        height: 20px;
+    }
+    .player-row .mode-wrap .mode-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+    .player-row .ab-wrap .ab-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+    .view-mixed .mixed-study {
+        padding-left: 44px;
+        padding-right: 8px;
+    }
+    .view-mixed .lyric-line {
+        font-size: 16px;
+        padding: 8px 10px;
+        gap: 10px;
+    }
+    .view-mixed .lyric-line .time-tag {
+        font-size: 10px;
+        min-width: 34px;
+    }
+    .view-lyrics .lyric-line {
+        font-size: 19px;
+        padding: 10px 10px;
+        gap: 10px;
+    }
+    .view-lyrics .lyric-line .time-tag {
+        font-size: 10px;
+        min-width: 38px;
+    }
+    .about-modal {
+        max-width: 100%;
+        width: 96%;
+        max-height: 90vh;
+    }
+    .about-body {
+        padding: 16px 14px 10px;
+    }
+    .about-footer {
+        padding: 8px 14px 12px;
+    }
+    .about-footer .close-btn {
+        padding: 6px 16px;
+        font-size: 12px;
+    }
+    .about-section h4 {
+        font-size: 12px;
+    }
+    .brand-section h2 {
+        font-size: 20px;
+    }
+    .shortcut-list li {
+        font-size: 12px;
+    }
+    .settings-modal {
+        max-width: 100%;
+        width: 96%;
+    }
+    .settings-tab {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+    .settings-body {
+        padding: 14px 12px 8px;
+    }
+    .color-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .lang-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .cinema-lyrics .cinema-line {
+        font-size: 24px;
+    }
+}
+/* =========================== RESPONSIVE (v1.5.0 additions) =========================== */
+@media (max-width: 820px) {
+    .mini-bar .mini-title {
+        max-width: 140px;
+    }
+    .mini-bar .mini-line {
+        max-width: 180px;
+    }
+    .mini-bar .mini-progress {
+        width: 80px;
+    }
+    .editor-offset input[type="range"] {
+        width: 120px;
+    }
+}
+@media (max-width: 640px) {
+    .setting-row {
+        flex-wrap: wrap;
+        gap: 6px 10px;
+    }
+    .setting-row .setting-label {
+        flex: 1 1 100%;
+    }
+    .mini-bar {
+        padding: 6px 8px 6px 4px;
+        gap: 4px;
+    }
+    .mini-bar .mini-title,
+    .mini-bar .mini-line {
+        max-width: 120px;
+    }
+    .mini-bar .mini-progress {
+        width: 50px;
+    }
+    .editor-row {
+        gap: 6px;
+        padding: 6px 8px;
+    }
+    .editor-row .time-input {
+        width: 70px;
+        font-size: 11px;
+    }
+    .editor-row .editor-text {
+        font-size: 13px;
+    }
+    .editor-toolbar {
+        gap: 6px;
+    }
+    .editor-group-body .editor-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+    .view-study .furigana {
+        font-size: 13px;
+    }
+}
+/* OS-level reduced motion always wins (accessibility). */
+@media (prefers-reduced-motion: reduce) {
+    #app *,
+    #app *::before,
+    #app *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+/* print study sheet — only the sheet shows on paper */
+@media print {
+    #app,
+    .about-overlay,
+    .share-overlay,
+    .video-overlay,
+    .settings-overlay,
+    .guide-overlay,
+    .changelog-overlay,
+    .cinema-overlay,
+    .mini-bar { display: none !important; }
+    #printSheet { display: block !important; background: #fff; color: #111; }
+    #printSheet h1 { font-size: 22px; margin-bottom: 12px; }
+    #printSheet .print-line { page-break-inside: avoid; margin-bottom: 18px; border-bottom: 1px solid #ddd; }
+    #printSheet .print-line h2 { font-size: 18px; color: #111; margin: 4px 0; }
+    #printSheet .print-line .pt { font-size: 13px; color: #444; }
+    #printSheet .study-table-wrap table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+    #printSheet .study-table-wrap td { border: 1px solid #999; padding: 4px 6px; font-size: 12px; color: #111; background: #fff; }
+    #printSheet .study-table-wrap td.row-label { background: #f0f0f0; font-weight: 600; }
+    #printSheet .no-analysis { font-size: 12px; color: #777; }
+}
+
+/* =========================== v2.1.1: MOBILE THREE-TIER LAYOUT ===========================
+   Sidebar is replaced by a top bar + bottom nav; the player folds into two rows
+   (progress, then the always-on core controls + ⋯ drawer). .app becomes a
+   vertical stack. The player-bar extension controls never wrap into a third
+   row: pinned ones scroll sideways, the rest live in the ⋯ drawer. */
+@media (max-width: 820px) {
+    .app {
+        flex-direction: column;
+    }
+    .sidebar {
+        display: none;
+    }
+    .player-cover-btn {
+        display: none; /* mobile uses the top-bar cover button */
+    }
+    /* the mobile shell nodes sit after <main> in the DOM, so pin them to the
+       viewport edges with fixed positioning instead of relying on flex order:
+       top bar above the viewport, bottom nav below it. The main column gets
+       matching padding so content is never hidden under either bar. */
+    .mobile-topbar {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 60;
+    }
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 60;
+    }
+    .main {
+        flex: 1;
+        min-height: 0;
+        padding-top: 51px;
+        padding-bottom: 53px;
+    }
+    /* the drawers are siblings of the bars (not children), so they have no
+       positioned ancestor; anchor them to the fixed bars explicitly */
+    .top-drawer {
+        position: fixed;
+        top: 51px;
+        right: 8px;
+    }
+    .more-drawer {
+        position: fixed;
+        bottom: calc(53px + 6px);
+        left: 8px;
+        right: 8px;
+    }
+    .view-container {
+        flex: 1;
+        min-height: 0;
+        padding: 10px 12px 8px;
+    }
+    .player-controls {
+        padding: 6px 10px 8px;
+    }
+    .player-controls .player-main-row {
+        flex-wrap: nowrap;
+    }
+    .player-controls .mode-wrap {
+        margin-left: auto;
+    }
+    .player-ext {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    .player-ext .ext-item {
+        flex-shrink: 0;
+    }
+    .player-ext-toggle {
+        flex-shrink: 0;
+        margin-left: 4px;
+    }
+    .player-drawer {
+        left: 6px;
+        right: 6px;
+    }
+}
+@media (max-width: 640px) {
+    .player-controls .player-main-row {
+        flex-wrap: wrap;
+        gap: 4px 8px;
+    }
+    .player-controls .mode-wrap {
+        margin-left: 0;
+    }
+    .player-ext {
+        order: 3;
+        width: 100%;
+        flex-basis: 100%;
+        margin-left: 0;
+    }
+    .player-ext-toggle {
+        order: 2;
+        margin-left: auto;
+    }
+}

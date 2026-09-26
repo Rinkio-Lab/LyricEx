@@ -1,0 +1,1046 @@
+﻿/* LyricEx view styles (split from styles.css, v2.0.5): lyrics / study / mixed /
+   empty views, cinema mode, karaoke + ruby, editor (+ per-word timing),
+   spectrum, mini mode, per-line CN font and the follow pill. */
+/* =========================== VIEW: LYRICS =========================== */
+.view-lyrics {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+    overscroll-behavior: contain;
+}
+.view-lyrics .lyric-line {
+    padding: 16px 20px;
+    font-size: var(--lyric-size, 26px);
+    line-height: var(--lyric-lh, 1.9);
+    font-family: var(--font-lyrics, inherit);
+    color: var(--text-secondary);
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+    margin-bottom: 2px;
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    font-weight: var(--lyric-weight, 400);
+    letter-spacing: 0.02em;
+}
+.view-lyrics .lyric-line:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+.view-lyrics .lyric-line.active {
+    background: var(--highlight-bg);
+    color: var(--text-primary);
+    border-left-color: var(--accent);
+    font-weight: 600;
+}
+.view-lyrics .lyric-line .time-tag {
+    font-size: var(--time-tag-size, 13px);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
+    min-width: 56px;
+    flex-shrink: 0;
+}
+.view-lyrics .lyric-line.active .time-tag {
+    color: var(--accent);
+}
+.view-lyrics .lyric-line .no-analysis-badge {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-left: auto;
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+/* =========================== VIEW: STUDY =========================== */
+.view-study {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+    display: flex;
+    flex-direction: column;
+}
+.view-study .study-header {
+    padding: 8px 0 14px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    transition: border-color var(--transition);
+}
+.view-study .study-header .line-ref {
+    font-size: var(--study-line-size, 22px);
+    font-weight: var(--lyric-weight, 400);
+    color: var(--text-primary);
+    line-height: 1.5;
+    font-family: var(--font-lyrics, inherit);
+}
+.view-study .study-header .line-ref .time {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 15px;
+}
+.view-study .study-table-wrap {
+    flex: 1;
+    overflow-x: auto;
+}
+.study-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--study-table-size, 14px);
+    border: 1px solid var(--table-border);
+    background: var(--bg-card);
+    transition: background var(--transition), border-color var(--transition);
+}
+.study-table td,
+.study-table th {
+    padding: 10px 14px;
+    border: 1px solid var(--table-border);
+    text-align: left;
+    vertical-align: middle;
+    transition: border-color var(--transition);
+}
+.study-table .row-label {
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--table-header-bg);
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    text-align: center;
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background var(--transition), color var(--transition);
+}
+.study-table .word-cell {
+    font-size: 15px;
+    transition: color var(--transition);
+}
+.study-table .word-cell.romaji {
+    font-style: italic;
+    color: var(--pos-romaji);
+}
+.study-table .word-cell.hiragana {
+    color: var(--pos-hiragana);
+}
+.study-table .word-cell.kanji {
+    font-weight: 600;
+    color: var(--pos-kanji);
+}
+.study-table .word-cell.pos {
+    font-size: 12px;
+    color: var(--pos-pos);
+}
+.study-table .word-cell.meaning {
+    font-weight: 500;
+    color: var(--pos-meaning);
+}
+.study-table .word-cell .sub-note {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-top: 2px;
+}
+.study-table .translation-row td {
+    background: var(--table-header-bg);
+    font-weight: 500;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    font-size: 16px;
+    transition: background var(--transition), color var(--transition);
+}
+.study-table .translation-row .label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 12px;
+    text-align: center;
+    background: var(--table-header-bg);
+    transition: background var(--transition), color var(--transition);
+}
+.study-table .translation-row .note-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 12px;
+}
+.view-study .no-analysis {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 30px 0;
+    text-align: center;
+}
+.view-study .placeholder-text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--placeholder-color);
+    font-size: 15px;
+    text-align: center;
+    flex-direction: column;
+    gap: 10px;
+}
+.view-study .placeholder-text .icon-big {
+    font-size: 44px;
+    color: var(--placeholder-color);
+}
+
+/* =========================== VIEW: MIXED =========================== */
+.view-mixed {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+    overscroll-behavior: contain;
+}
+.view-mixed .lyric-item {
+    margin-bottom: 4px;
+}
+.view-mixed .lyric-line {
+    padding: 12px 16px;
+    font-size: var(--mixed-lyric-size, 20px);
+    line-height: var(--lyric-lh, 1.8);
+    font-family: var(--font-lyrics, inherit);
+    color: var(--text-secondary);
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-weight: var(--lyric-weight, 400);
+    letter-spacing: 0.01em;
+}
+.view-mixed .lyric-line:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+.view-mixed .lyric-line.active {
+    background: var(--highlight-bg);
+    color: var(--text-primary);
+    border-left-color: var(--accent);
+    font-weight: 600;
+}
+.view-mixed .lyric-line .time-tag {
+    font-size: var(--time-tag-size, 13px);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
+    min-width: 50px;
+    flex-shrink: 0;
+}
+.view-mixed .mixed-study {
+    padding: 6px 16px 10px 80px;
+    border-left: 4px solid var(--accent);
+    background: var(--bg-card);
+    margin: 0 0 2px 0;
+    transition: background var(--transition), border-color var(--transition);
+}
+.view-mixed .mixed-study .study-table-wrap {
+    overflow-x: auto;
+}
+.view-mixed .mixed-study .study-table {
+    font-size: 13px;
+}
+.view-mixed .mixed-study .study-table td,
+.view-mixed .mixed-study .study-table th {
+    padding: 6px 10px;
+}
+.view-mixed .mixed-study .study-table .row-label {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    font-size: 11px;
+}
+.view-mixed .mixed-study .no-analysis {
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 10px 0;
+    text-align: left;
+}
+
+/* =========================== VIEW: EMPTY =========================== */
+.view-empty {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--placeholder-color);
+    text-align: center;
+    gap: 14px;
+}
+.view-empty .icon-big {
+    font-size: 56px;
+    color: var(--placeholder-color);
+}
+.view-empty .title {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+.view-empty .desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 360px;
+    line-height: 1.7;
+}
+
+/* =========================== CINEMA MODE =========================== */
+.cinema-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, background var(--transition);
+}
+.cinema-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+.cinema-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--bg-sidebar) 0%, var(--bg-primary) 100%);
+    opacity: 0.6;
+    transition: background var(--transition);
+}
+/* v2.1.1: effect layer — darkening / glass blur / border driven by
+   设置 → 外观 → 影院 via CSS variables set in app.applyCinemaEffects() */
+.cinema-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, var(--cinema-darken, 0));
+    backdrop-filter: blur(calc(var(--cinema-glass, 0) * 40px));
+    border: var(--cinema-border, 0px) solid rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+}
+/* v2.0.0 #22: cover as a blurred wallpaper behind the cinema lyrics */
+.cinema-bg.has-cover {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+    filter: blur(16px) brightness(0.55);
+    transform: scale(1.15);
+}
+.cinema-content {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* v1.6.3: no horizontal padding so the lyrics scroll container reaches the
+       far right edge and its scrollbar sits flush against the screen edge. */
+    padding: 60px 0 20px;
+}
+.cinema-lyrics {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    /* max-width removed (v1.6.3): the scrollbar now tracks the right screen edge
+       while the lines stay centered via align-items:center below. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* v1.4.4: justify-content:center + overflow made early lines unreachable
+       (browsers cannot scroll to negative offsets). Symmetric padding keeps
+       the centered look while the list stays fully scrollable. */
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 45vh 20px;
+    overscroll-behavior: contain;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+}
+.cinema-lyrics .cinema-line {
+    font-size: var(--cinema-lyric-size, 32px);
+    line-height: 1.8;
+    font-family: var(--font-lyrics, inherit);
+    font-weight: var(--lyric-weight, 400);
+    color: var(--text-muted);
+    text-align: center;
+    /* v1.4.4: emphasize via transform instead of font-size so the layout
+       (and therefore the scroll target) never shifts mid-animation */
+    transform: scale(1);
+    transform-origin: center;
+    transition: color 0.4s ease, transform 0.4s ease, opacity 0.4s ease;
+    cursor: pointer;
+    padding: 4px 0;
+    letter-spacing: 0.03em;
+    opacity: 0.45;
+    max-width: min(88%, 720px);
+}
+.cinema-lyrics .cinema-line:hover {
+    color: var(--text-secondary);
+}
+.cinema-lyrics .cinema-line.active {
+    color: var(--text-primary);
+    font-weight: 700;
+    transform: scale(1.1);
+    text-shadow: 0 0 0.5px currentColor;
+    opacity: 1;
+}
+.cinema-lyrics .cinema-line.near {
+    opacity: 0.7;
+    color: var(--text-secondary);
+}
+/* player controls when inside cinema overlay */
+#cinemaPlayerSlot {
+    flex-shrink: 0;
+    width: 100%;
+}
+.cinema-overlay .player-controls {
+    background: transparent;
+    border-top-color: var(--border-color);
+    max-width: 100%;
+}
+.cinema-exit-btn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    color: var(--text-secondary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    font-family: var(--font);
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.cinema-exit-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+
+/* =========================== V1.5.0: KARAOKE / SUB-LINE =========================== */
+.line-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.sub-line {
+    display: block;
+    font-size: var(--translation-size, 14px);
+    line-height: var(--translation-lh, 1.5);
+    color: var(--text-muted);
+    font-family: var(--font-translation, inherit);
+    margin-top: 2px;
+}
+.view-lyrics .lyric-line.active .sub-line {
+    color: var(--text-secondary);
+}
+.cinema-line .sub-line {
+    font-size: calc(var(--translation-size, 14px) * 1.05);
+    opacity: 0.85;
+}
+.cinema-line.active .sub-line {
+    color: var(--text-secondary);
+    opacity: 0.95;
+}
+.w {
+    transition: color 0.15s ease;
+}
+.w.past {
+    color: var(--accent);
+}
+.w.on {
+    color: var(--accent);
+    font-weight: 700;
+}
+.study-table .word-cell.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-weight: 600;
+}
+.view-study .furigana {
+    font-size: var(--furigana-size, 15px);
+    color: var(--pos-hiragana);
+    padding: 0 0 6px;
+    line-height: 1.6;
+}
+
+/* =========================== V1.6.0: RUBY (kanji readings) =========================== */
+.line-text ruby,
+.cinema-text ruby,
+.study-line-ref ruby,
+.editor-text ruby {
+    ruby-position: over;
+    ruby-align: center;
+}
+.line-text rt,
+.cinema-text rt,
+.study-line-ref rt,
+.editor-text rt {
+    font-size: 0.45em;
+    color: var(--pos-hiragana);
+    user-select: none;
+    letter-spacing: 0;
+}
+.cinema-text rt {
+    font-size: 0.35em;
+}
+
+/* =========================== V1.5.0: EDITOR VIEW =========================== */
+.view-editor {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+    overscroll-behavior: contain;
+}
+/* v2.0.0: the whole head (toolbar groups + hint) is one sticky block so the
+   operation hints stay pinned with the buttons while rows scroll under it. */
+.editor-head {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 6px 0 10px;
+    transition: border-color var(--transition), background var(--transition);
+}
+.editor-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.editor-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.editor-group-label {
+    flex-shrink: 0;
+    min-width: 54px;
+    padding-top: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+}
+.editor-group-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+.editor-offset {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.editor-offset input[type="range"] {
+    width: 180px;
+    accent-color: var(--accent);
+}
+.editor-offset .offset-value {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+    min-width: 70px;
+    font-size: 12px;
+}
+.editor-btn {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+.editor-btn:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+.editor-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 6px 0 0;
+    line-height: 1.6;
+}
+/* v2.0.0: package cover add / change / remove in the editor head */
+.editor-cover {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.editor-cover-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.editor-cover-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.editor-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-left: 4px solid transparent;
+    transition: background var(--transition), border-color var(--transition);
+}
+.editor-row:hover {
+    background: var(--bg-hover);
+}
+.editor-row.active {
+    background: var(--highlight-bg);
+    border-left-color: var(--accent);
+}
+.editor-row .drag-handle {
+    cursor: ns-resize;
+    color: var(--text-muted);
+    padding: 4px 2px;
+    font-size: 13px;
+    touch-action: none;
+    user-select: none;
+    flex-shrink: 0;
+}
+.editor-row .drag-handle:hover {
+    color: var(--accent);
+}
+.editor-row .time-input {
+    width: 84px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 4px 6px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    transition: border-color var(--transition);
+}
+.editor-row .time-input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+.editor-row .editor-text {
+    flex: 1;
+    font-size: var(--editor-text-size, 15px);
+    color: var(--text-secondary);
+    font-family: var(--font-lyrics, inherit);
+    font-weight: var(--lyric-weight, 400);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.editor-row.active .editor-text {
+    color: var(--text-primary);
+}
+.editor-row .editor-seek {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px;
+    flex-shrink: 0;
+    transition: color var(--transition);
+}
+.editor-row .editor-seek:hover {
+    color: var(--accent);
+}
+
+/* =========================== V1.6.0: EDITOR V2 (package editing) =========================== */
+.editor-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+.editor-meta label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.editor-meta input[type="text"] {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 4px 8px;
+    font-size: 12px;
+    font-family: var(--font);
+    width: 150px;
+    transition: border-color var(--transition);
+}
+.editor-meta input[type="text"]:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+.editor-row .editor-expand,
+.editor-row .editor-del {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 6px 4px;
+    flex-shrink: 0;
+    transition: color var(--transition);
+}
+.editor-row .editor-expand:hover {
+    color: var(--accent);
+}
+.editor-row .editor-del:hover {
+    color: #c0392b;
+}
+.editor-row .editor-tags {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+}
+.editor-row .editor-tags .tag {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 0 3px;
+    line-height: 1.5;
+    user-select: none;
+}
+.editor-edit {
+    margin: 0 6px 8px 44px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent);
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: background var(--transition), border-color var(--transition);
+}
+.ee-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+}
+.ee-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 11px;
+    color: var(--text-muted);
+    flex: 1;
+    min-width: 160px;
+}
+.ee-grid input[type="text"],
+.ee-analysis input[type="text"] {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 5px 8px;
+    font-size: 13px;
+    font-family: var(--font);
+    width: 100%;
+    transition: border-color var(--transition);
+}
+.ee-grid input[type="text"]:focus,
+.ee-analysis input[type="text"]:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+.ee-analysis {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+}
+.ee-analysis th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--border-color);
+}
+.ee-analysis td {
+    padding: 3px 4px;
+}
+.ee-analysis td:last-child {
+    width: 30px;
+    text-align: center;
+}
+.ee-analysis .ee-del-word {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 6px;
+    transition: color var(--transition);
+}
+.ee-analysis .ee-del-word:hover {
+    color: #c0392b;
+}
+.ee-footer .ee-add-word {
+    margin-top: 2px;
+}
+/* v2.0.0 #21: per-word timing editor */
+.ee-words {
+    margin-top: 10px;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 8px;
+}
+.ee-words-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+.ee-words-hint {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 10px;
+}
+.ee-word-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+}
+.ee-word-text {
+    flex: 1;
+    min-width: 80px;
+    font-size: 12px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ee-word-row .ee-w {
+    width: 76px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 3px 6px;
+    font-size: 12px;
+    font-family: var(--font);
+    transition: border-color var(--transition);
+}
+.ee-word-row .ee-w:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+.ee-w-dash {
+    color: var(--text-muted);
+    font-size: 11px;
+}
+.editor-hint .dirty-chip {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #c0392b;
+    border: 1px solid #c0392b;
+    background: rgba(192, 57, 43, 0.06);
+}
+
+/* =========================== V1.5.0: SPECTRUM =========================== */
+.spectrum-row {
+    height: 38px;
+    margin-bottom: 4px;
+}
+#spectrumCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* =========================== V1.5.0: MINI MODE =========================== */
+.app.mini-mode .sidebar {
+    display: none;
+}
+.app.mini-mode .main {
+    display: none;
+}
+.app.mini-mode {
+    background: transparent;
+}
+.mini-bar {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px 8px 6px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-hover);
+    color: var(--text-primary);
+    max-width: 92vw;
+    transition: background var(--transition), border-color var(--transition);
+}
+.mini-bar.dragging {
+    user-select: none;
+}
+.mini-bar .mini-drag {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: grab;
+    padding: 4px 2px;
+    font-size: 12px;
+    touch-action: none;
+    flex-shrink: 0;
+}
+.mini-bar.dragging .mini-drag {
+    cursor: grabbing;
+}
+.mini-bar .mini-info {
+    min-width: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.mini-bar .mini-title {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+}
+.mini-bar .mini-line {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-lyrics, inherit);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 260px;
+}
+.mini-bar .mini-ctrl {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+}
+.mini-bar .mini-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: color var(--transition);
+}
+.mini-bar .mini-btn:hover {
+    color: var(--accent);
+}
+.mini-bar .mini-progress {
+    width: 120px;
+    height: 4px;
+    background: var(--progress-bg);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background var(--transition);
+}
+.mini-bar .mini-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--progress-fill);
+}
+
+/* =========================== V1.6.2: PER-LINE CN FONT =========================== */
+/* A line detected as Chinese (ideographs without kana) gets data-lang="zh" and
+   swaps the JP-first lyric font for the SC stack, so simplified glyphs don't
+   render with Japanese shapes. Japanese/other lines keep --font-lyrics. */
+.view-lyrics .lyric-line[data-lang="zh"],
+.view-mixed .lyric-line[data-lang="zh"],
+.cinema-lyrics .cinema-line[data-lang="zh"],
+.view-study .study-header .line-ref[data-lang="zh"],
+.editor-row .editor-text[data-lang="zh"],
+.mini-bar .mini-line[data-lang="zh"] {
+    font-family: var(--font-lyrics-sc, inherit);
+}
+
+/* =========================== FOLLOW PILL (v1.4.4) =========================== */
+.follow-pill {
+    position: absolute;
+    right: 32px;
+    bottom: 18px;
+    z-index: 20;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bg-primary);
+    background: var(--text-primary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    box-shadow: var(--shadow-hover);
+    font-family: var(--font);
+    opacity: 0.92;
+    transition: opacity var(--transition);
+}
+.follow-pill:hover {
+    opacity: 1;
+}
+.follow-pill.cinema-pill {
+    bottom: auto;
+    top: 64px;
+    right: 28px;
+}
+
+/* =========================== RTL (v2.3.0) ===========================
+   Arabic and other RTL UI languages set <html dir="rtl">. The chrome
+   (sidebar/topbar/player/settings) mirrors via flexbox/bidi defaults; only the
+   lyric/study/editor CONTENT is forced back to LTR so CJK text and punctuation
+   keep their natural direction and alignment inside the RTL page. */
+[dir="rtl"] .view-lyrics .lyric-line,
+[dir="rtl"] .view-mixed .lyric-line,
+[dir="rtl"] .view-study .study-line,
+[dir="rtl"] .view-study .study-row,
+[dir="rtl"] .editor-row {
+    direction: ltr;
+}
