@@ -11,6 +11,7 @@
 ### Fixed
 - **AI 导入区间距**：「导入分析」按钮与上方粘贴结果 textarea 间隙过小（实测约 5px），补 margin 至 12px
 - **歌词框按钮组**：「上传文件 + 清空」两按钮间距为 0（`.ws-lrc-upload` 非 flex，inline-block 按钮且标记中无空白）——改 `display:flex; gap:6px`，垂直对齐；同版本内缓存名 bump 为 `lyricex-v2.9.2.1`
+- **提示词预览框字体**：`.ws-prompt-preview` 字体栈只有等宽字体（Consolas 无 CJK 字形），中文提示词落系统默认——补 Noto Sans SC / PingFang SC / Microsoft YaHei fallback；缓存名 bump 为 `lyricex-v2.9.2.2`
 
 ## v2.9.1（待发布 · 帮助中心）
 

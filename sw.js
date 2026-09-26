@@ -9,7 +9,7 @@
 // Bump this name whenever index.html or any precached asset changes: an
 // unchanged name would keep serving the stale cached document to clients that
 // have not refreshed since the deploy.
-const CACHE = 'lyricex-v2.9.2.1'; // v2.9.2.1: lyric-box upload/clear button gap — bump cache for re-fetch
+const CACHE = 'lyricex-v2.9.2.2'; // v2.9.2.2: prompt preview CJK font fallback — bump cache for re-fetch
 
 // Core assets precached at install: a CACHE bump then serves the new
 // styles/scripts/zh locale on the very next refresh (no cache-warmup lag).

@@ -1269,7 +1269,7 @@
     border-radius: 4px;
     background: var(--bg-primary);
     color: var(--text-secondary);
-    font-family: ui-monospace, Consolas, 'Courier New', monospace;
+    font-family: ui-monospace, Consolas, 'Courier New', monospace, 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; /* v2.9.2.2: CJK fallback — the prompt is Chinese and Consolas has no CJK glyphs */
     font-size: 11px;
     line-height: 1.5;
     padding: 8px;
