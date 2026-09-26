@@ -5,7 +5,8 @@
 ### Fixed
 - **系统弹窗原生统一**：全部 23 处 `alert / confirm / prompt` 替换为与设置/关于同风格的对话框——新建 `ui/dialog.js`（Promise 式 `alert/confirm/prompt`，单复用 overlay，`.open` 显隐 + focus-trap 接入）；重置设置、删除歌词行等破坏性操作确认键为红色；此前快捷键冲突、导入失败、上传提示等均为浏览器原生弹窗，风格突兀
 - **分享卡片 / 竖屏海报不可用**：SVG `<foreignObject>` 渲染路径在 Chrome 下可能 resolve 出「被污染」canvas（`drawImage` 成功但 `toDataURL/toBlob` 抛 SecurityError），既有 2D 兜底只在 SVG 路径报错时触发，导致预览空白、海报无下载——`renderHtmlToCanvas` 增加 1px `getImageData` 污染探测，污染即 reject → 自动回退纯 2D 渲染（`utils/canvas.js`）
-- **制包页空白**：本地代码已验证制包 tab 正常（e2e 覆盖）；部署站缺 `utils/*` 或 `ui/workspace.js`、或模块渲染异常时此前显示空白页——`renderWorkspaceTab` 增加守卫，缺失/异常时制包页显示明确提示（`wsModuleMissing`）而非空白（app.js `renderWorkspaceMissing`）
+- **制包页空白（真 bug，非部署问题）**：v2.7.0 引入 tab 结构时，`renderEditorView` 多拼接了一层 `</div>`——refine pane 关闭后把 `.view-editor` 提前闭合，build pane 被追加到 `.view-editor` **之外**，被 viewContent 的 overflow 裁剪容器完全裁掉 → 制包 tab 视觉空白。Playwright 可见性判定只查 bounding box 不查裁剪，e2e 漏网，用户实测抓出。修复：删除多余闭合标签，build pane 归位 `.view-editor` 内（`ui/editor.js`）；e2e 增加结构断言（build pane 必须在 `.view-editor` 内 + `.ws-wrap` 可见）防回归
+- **制包页模块缺失守卫**：部署站缺 `utils/*` 或 `ui/workspace.js`、或模块渲染异常时，`renderWorkspaceTab` 显示明确提示（`wsModuleMissing`）而非空白（app.js `renderWorkspaceMissing`）
 - **e2e 新增**：「分享卡片 PNG 预览 + 竖屏海报下载」用例（防 taint 回归）
 
 ### Changed
@@ -15,7 +16,7 @@
 - **i18n**：新增 3 键（`dialogOk / dialogCancel / wsModuleMissing`），zh/ja/en 三语同步补齐
 
 ### Notes
-- 部署提醒：部署站 `index.html` 若缺 `utils/netease.js / ai-import.js / ai-prompt.js / lyric-package.js / ui/workspace.js` 会导致制包 tab 空白（本地代码已验证正常，v2.8.1 起空白页会显示明确提示），需重新完整部署全部 assets；浏览器刷新两次（SW cache-first）
+- 部署提醒：部署站 `index.html` 若缺 `utils/netease.js / ai-import.js / ai-prompt.js / lyric-package.js / ui/workspace.js` 仍会导致制包 tab 空白（与本次修复的代码 bug 相互独立，v2.8.1 起缺失时显示 `wsModuleMissing` 明确提示），需重新完整部署全部 assets；浏览器刷新两次（SW cache-first）
 - SW CACHE 保持 `lyricex-v2.8.1`：本版本未发布过，用户端持有的仍是旧版本 SW，发布后新 CACHE 名即触发换新，无需再加补丁后缀（与 CHANGELOG 头部版本锁步）
 
 # Changelog

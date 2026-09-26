@@ -196,7 +196,11 @@
                     '</div>';
                 html += '<div class="editor-edit hidden" data-edit="' + idx + '">' + editorEditPanelHTML(line) + '</div>';
             });
-            html += '</div>'; // close .view-editor rows
+            // v2.8.1 fix: there was a stray extra `</div>` here (one closing
+            // both the refine pane AND .view-editor), so the build pane got
+            // appended OUTSIDE .view-editor — the overflow-clipped container
+            // cut it off entirely, making the whole Build tab look blank.
+            // Closing refine once keeps build inside .view-editor.
             html += '</div>'; // close refine pane
             html += '<div class="editor-pane' + (activeTab === 'build' ? '' : ' hidden') + '" data-editor-pane="build"></div>';
             html += '</div>'; // close .view-editor

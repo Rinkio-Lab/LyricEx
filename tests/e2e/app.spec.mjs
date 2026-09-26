@@ -64,6 +64,12 @@ test('workspace build tab: alternating JP/CN LRC auto-splits (v2.7.0)', async ({
     await expect(page.locator('[data-editor-tab="refine"]')).toHaveClass(/active/);
     await page.click('[data-editor-tab="build"]');
     await expect(page.locator('[data-editor-pane="build"]')).toBeVisible();
+    // v2.8.1 regression: the build pane must live INSIDE .view-editor — a stray
+    // extra `</div>` used to append it OUTSIDE, where the overflow-clipped
+    // container cut it off entirely (blank Build tab). Playwright's visibility
+    // check is bounding-box-only, so it never caught the clipped pane.
+    await expect(page.locator('.view-editor [data-editor-pane="build"]')).toHaveCount(1);
+    await expect(page.locator('[data-editor-pane="build"] .ws-wrap')).toBeVisible();
     // paste an alternating NetEase-inline LRC into the main box only
     const alt = '[00:08.55](ready set and find out[00:09.83]\n' +
                 '[00:09.83]ready set and find out[00:10.85]\n' +
