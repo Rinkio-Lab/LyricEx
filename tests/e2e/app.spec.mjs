@@ -133,6 +133,12 @@ test('file:// direct-open still boots under the strict CSP meta', async ({ brows
 test('axe-core scan finds no critical or serious violations', async ({ page }) => {
     const errors = watchErrors(page);
     await openApp(page);
+    // scan the stable state, not a mid-render one: webfonts fully loaded and
+    // the 0.25s theme transition finished (CI font/CPU timing made this flaky)
+    await page.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise((resolve) => setTimeout(resolve, 400));
+    });
     // same-origin <script src> (CSP script-src 'self' blocks inline injection)
     await page.addScriptTag({ url: '/node_modules/axe-core/axe.min.js' });
     const results = await page.evaluate(() => window.axe.run(document, { resultTypes: ['violations'] }));

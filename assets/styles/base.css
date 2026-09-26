@@ -24,9 +24,10 @@
     --bg-active: #d6d0c8;
     --text-primary: #1e1a16;
     --text-secondary: #5a524a;
-    /* v2.5.0: #8a827a failed WCAG AA (≈3.1–3.5:1 on sidebar/card surfaces);
-       #6e675e ≈4.5–5.5:1 across light themes (axe-core verified) */
-    --text-muted: #6e675e;
+    /* v2.5.0: #8a827a failed WCAG AA (≈3.1–3.5:1 on sidebar/card surfaces).
+       v2.5.1: #6e675e sat ≈4.52:1 on the sidebar (only 0.02 above AA — CI
+       rendering jitter can tip it); #6a625c ≈4.9–6.0:1 keeps a safe buffer */
+    --text-muted: #6a625c;
     --border-color: #d6d0c8;
     --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.10);

@@ -55,8 +55,6 @@
 <body>
 
 <div class="app" id="app" data-theme="light">
-    <!-- v2.5.0: h1 for axe page-has-heading-one; visually hidden (WCAG 1.3.1) -->
-    <h1 class="sr-only">LyricEx · 歌词鉴赏</h1>
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">Lyric<span>Ex</span></div>
@@ -143,9 +141,10 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v2.5.0 · 2026</div>
+                        <div class="version">v2.5.1 · 2026</div>
                         <div class="slogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
-                        <h4 data-i18n="developer">开发者</h4>
+                        <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
+                        <h3 data-i18n="developer">开发者</h3>
                         <p>
                             由 <a href="#" target="_blank">Rinkio</a> 构建<br>
                             <span style="font-size:13px;color:var(--text-muted);">
@@ -319,6 +318,8 @@
 
     <!-- MAIN -->
     <main class="main">
+        <!-- v2.5.1: sr-only h1 lives inside the main landmark (axe region) -->
+        <h1 class="sr-only">LyricEx · 歌词鉴赏</h1>
         <div class="view-container" id="viewContainer">
             <div id="viewContent"></div>
             <!-- v1.4.4: auto-follow resume pill (main views) -->

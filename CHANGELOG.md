@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.5.1（待发布）
+
+> CI 稳定性与无障碍 buffer 补丁：E2E file:// 路径跨平台化、axe 渲染稳定等待、muted 对比度 buffer、h1 移入 landmark；Actions 升级（checkout/setup-node v5、ubuntu-24.04 固定、失败上传 Playwright 报告）。
+
+### Fixed
+- **E2E file:// 测试跨平台**：硬编码的 `file:///E:/...`（开发机路径）改为 `pathToFileURL(join(ROOT,'index.html'))` 运行时推导——首次 CI 在 Linux 上 `ERR_FILE_NOT_FOUND` 即此根因
+- **axe color-contrast CI 偶发**：常规亮色主题 `--text-muted` 在侧栏背景仅 ≈4.52:1（buffer 0.02，渲染抖动即掉线），加深至 `#6a625c`（≈4.9–6.0:1）；axe 测试扫描前等 `document.fonts.ready` 与渲染稳定（不再扫中间态）
+- **heading-order / region**：关于弹窗 `developer` 标题 `h4` → `h3`（此前一次编辑未落盘）；sr-only `h1` 移入 `<main>` landmark 内
+
+### Changed
+- **CI**：`actions/checkout@v5`、`actions/setup-node@v5`（消除 Node 20 deprecation warning）、`runs-on: ubuntu-24.04`（固定，避免 runner 镜像迁移改变行为）、失败时 `upload-artifact@v4` 上传 `test-results/` 与 `playwright-report/`（7 天保留）
+- 版本锚点同步至 `lyricex-v2.5.1`（sw.js CACHE / package.json / package-lock / index.html）
+
 ## v2.5.0（待发布 · 首次 GitHub 公开）
 
 > 工程化补齐：工具链 / CI / 覆盖率 / 浏览器 E2E / 无障碍检查 / 安全策略 / 发布自检；并回填 v2.2.0–v2.4.2 的变更记录空档。
