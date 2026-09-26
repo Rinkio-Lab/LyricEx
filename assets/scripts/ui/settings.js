@@ -19,6 +19,8 @@
         var settingsBtn = ctx.settingsBtn, settingsOverlay = ctx.settingsOverlay, settingsCloseBtn = ctx.settingsCloseBtn,
             settingsTabs = ctx.settingsTabs, settingsPanels = ctx.settingsPanels, colorOptions = ctx.colorOptions,
             resetSettingsBtn = ctx.resetSettingsBtn,
+            settingsExportBtn = ctx.settingsExportBtn, settingsImportBtn = ctx.settingsImportBtn,
+            settingsImportFile = ctx.settingsImportFile,
             settingsSubnav = ctx.settingsSubnav, settingsBody = ctx.settingsBody,
             appearanceFonts = ctx.appearanceFonts, appearanceSizes = ctx.appearanceSizes,
             appearanceCinema = ctx.appearanceCinema, appearanceLayout = ctx.appearanceLayout,
@@ -523,6 +525,13 @@
                 if (e.target === settingsOverlay) closeSettings();
             });
             resetSettingsBtn.addEventListener('click', function () { ctx.resetSettings(); });
+            settingsExportBtn.addEventListener('click', function () { ctx.exportSettings(); });
+            settingsImportBtn.addEventListener('click', function () { settingsImportFile.click(); });
+            settingsImportFile.addEventListener('change', function () {
+                const f = settingsImportFile.files && settingsImportFile.files[0];
+                if (f) ctx.importSettingsFile(f);
+                settingsImportFile.value = '';
+            });
             settingsBody.addEventListener('scroll', updateSubnavActive, { passive: true });
             settingsTabs.forEach(function (tab) {
                 tab.addEventListener('click', function () {

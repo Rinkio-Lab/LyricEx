@@ -141,7 +141,7 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v2.7.0 · 2026</div>
+                        <div class="version">v2.8.0 · 2026</div>
                         <div class="slogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
                         <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
                         <h3 data-i18n="developer">开发者</h3>
@@ -310,6 +310,9 @@
                 </div>
             </div>
             <div class="settings-footer">
+                <button class="close-btn" id="settingsExportBtn" title=""><i class="fas fa-download"></i><span class="label" data-i18n="settingsExport">导出设置</span></button>
+                <button class="close-btn" id="settingsImportBtn" title=""><i class="fas fa-upload"></i><span class="label" data-i18n="settingsImport">导入设置</span></button>
+                <input type="file" id="settingsImportFile" accept=".json,application/json" style="display:none">
                 <button class="close-btn danger-btn" id="resetSettingsBtn"><i class="fas fa-undo"></i><span class="label" data-i18n="resetDefaults">恢复默认设置</span></button>
                 <button class="close-btn" id="settingsCloseBtn" data-i18n="close">关闭</button>
             </div>

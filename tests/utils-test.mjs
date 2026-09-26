@@ -271,5 +271,18 @@ const jpOnly = lib.splitMixedLrc(lib.parseLRC('[00:01.00]こんにちは世界\n
 ok('splitMixedLrc pure Japanese no trans', jpOnly.trans.length === 0);
 eq('splitMixedLrc pure Japanese keeps all', jpOnly.main.length, 2);
 
+// ---- lib.sanitizeSettings (v2.8.0) ----
+const dflt = lib.SETTINGS_DEFAULTS;
+const san = lib.sanitizeSettings({ lyricSize: '50', theme: 123, posColors: { romaji: 'x' }, shortcuts: { playPause: null }, hack: true }, dflt);
+eq('sanitize reverts wrong scalar type', san.lyricSize, dflt.lyricSize);
+eq('sanitize reverts wrong theme type', san.theme, dflt.theme);
+eq('sanitize keeps valid nested value', san.posColors.romaji, 'x');
+eq('sanitize reverts null shortcut', san.shortcuts.playPause, dflt.shortcuts.playPause);
+ok('sanitize filters unknown keys', !('hack' in san));
+const sanOk = lib.sanitizeSettings({ theme: 'dark', volume: 55 }, dflt);
+eq('sanitize keeps valid values', sanOk.theme, 'dark');
+eq('sanitize keeps valid volume', sanOk.volume, 55);
+eq('sanitize defaults remain intact', sanOk.lyricSize, dflt.lyricSize);
+
 console.log(failures === 0 ? 'UTILS TESTS PASSED' : `${failures} FAILURES`);
 process.exit(failures === 0 ? 0 : 1);

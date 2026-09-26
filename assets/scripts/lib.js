@@ -459,6 +459,29 @@
         return JSON.stringify(settings) !== JSON.stringify(defaults);
     };
 
+    // v2.8.0: import-time settings sanitizer. mergeSettings already whitelists
+    // keys, but NOT value types — a hand-edited or hostile JSON could smuggle
+    // a string into `lyricSize` and corrupt the CSS. Walk the merged result
+    // against defaults and revert any scalar whose typeof differs.
+    lib.sanitizeSettings = function (stored, defaults) {
+        var merged = lib.mergeSettings(stored, defaults);
+        Object.keys(defaults).forEach(function (k) {
+            var d = defaults[k];
+            if (d && typeof d === 'object' && !Array.isArray(d)) {
+                Object.keys(d).forEach(function (sk) {
+                    if (merged[k][sk] === undefined || typeof merged[k][sk] !== typeof d[sk]) {
+                        merged[k][sk] = d[sk];
+                    }
+                });
+            } else {
+                if (merged[k] === undefined || typeof merged[k] !== typeof d) {
+                    merged[k] = d;
+                }
+            }
+        });
+        return merged;
+    };
+
     // =========================== PACKAGE MANIFEST ===========================
     // LyricEx package format v1/v2: zip with manifest.json + lyrics.json + audio.
     // v2 adds optional `cover`, `instrumental`, and per-line `lang` (folder paths

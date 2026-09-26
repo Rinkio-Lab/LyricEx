@@ -120,6 +120,9 @@
     const currentLangLabel = document.getElementById('currentLangLabel');
     const guideGlobeBtn = document.getElementById('guideGlobeBtn');
     const resetSettingsBtn = document.getElementById('resetSettingsBtn');
+    const settingsExportBtn = document.getElementById('settingsExportBtn');
+    const settingsImportBtn = document.getElementById('settingsImportBtn');
+    const settingsImportFile = document.getElementById('settingsImportFile');
     const settingsSubnav = document.getElementById('settingsSubnav');
     const settingsBody = document.getElementById('settingsBody');
     const appearanceFonts = document.getElementById('appearanceFonts');
@@ -415,6 +418,50 @@
         renderShortcutControls();
         renderView();
         if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
+    }
+
+    // =========================== SETTINGS EXPORT / IMPORT (v2.8.0) ===========================
+    // Export: download the whole settings object as JSON for backup or moving
+    // between browsers. Import: parse → sanitize (whitelist keys + revert wrong
+    // value types) → keep the current locale/direction (user picked them on
+    // purpose; importing a zh snapshot must not yank an ar user back) → apply.
+    function exportSettings() {
+        try {
+            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+            const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            downloadBlob(blob, 'lyricex-settings-' + stamp + '.json');
+            return true;
+        } catch (_) { /* noop */ }
+        return false;
+    }
+
+    function importSettingsFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onerror = function () { alert(t('settingsImportFail')); };
+        reader.onload = function () {
+            let parsed = null;
+            try { parsed = JSON.parse(String(reader.result)); } catch (_) { /* noop */ }
+            if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+                alert(t('settingsImportBad'));
+                return;
+            }
+            const keepLocale = settings.locale;
+            const keepDirection = settings.directionMode || 'auto';
+            settings = L.sanitizeSettings(parsed, L.SETTINGS_DEFAULTS);
+            settings.locale = keepLocale;
+            settings.directionMode = keepDirection;
+            saveSettings();
+            applySettings();
+            lyrics.forEach(function (l) { delete l._words; });
+            settingsApi.renderControls();
+            settingsApi.applySidebarVisibility();
+            renderShortcutControls();
+            renderView();
+            if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
+            alert(t('settingsImportOk'));
+        };
+        reader.readAsText(file);
     }
 
     // =========================== I18N ===========================
@@ -2704,6 +2751,7 @@
         downloadBlob: downloadBlob, safePackageName: safePackageName,
         handleFile: handleFile, loadAudioFromUrl: loadAudioFromUrl,
         renderShortcutControls: renderShortcutControls, resetSettings: resetSettings,
+        exportSettings: exportSettings, importSettingsFile: importSettingsFile,
         getSetting: getSetting, setSetting: setSetting, saveSettings: saveSettings,
         applySettings: applySettings, applyPosColors: applyPosColors,
         // late-bound cross-module couplings (resolved after the factories below)
@@ -2743,6 +2791,7 @@
         settingsBtn: settingsBtn, settingsOverlay: settingsOverlay, settingsCloseBtn: settingsCloseBtn,
         settingsTabs: settingsTabs, settingsPanels: settingsPanels, colorOptions: colorOptions,
         langList: langList, resetSettingsBtn: resetSettingsBtn,
+        settingsExportBtn: settingsExportBtn, settingsImportBtn: settingsImportBtn, settingsImportFile: settingsImportFile,
         settingsSubnav: settingsSubnav, settingsBody: settingsBody,
         appearanceFonts: appearanceFonts, appearanceSizes: appearanceSizes,
         appearanceCinema: document.getElementById('appearanceCinema'),

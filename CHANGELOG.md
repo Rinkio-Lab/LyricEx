@@ -1,5 +1,22 @@
 # Changelog
 
+## v2.8.0（待发布 · 设置导出/导入）
+
+> 补全与群友工具的最后一项功能差距：设置备份。导出当前全部偏好为 JSON，导入时白名单过滤 + 值类型回退，保留界面语言与文本方向。
+
+### Added
+- **设置导出**：设置面板 footer 新增「导出设置」——把当前 `settings` 全部偏好下载为 `lyricex-settings-YYYYMMDD.json`（备份 / 换浏览器迁移）
+- **设置导入**：「导入设置」读取 JSON 文件 → `lib.sanitizeSettings` 白名单合并（未知键丢弃、标量类型不符自动回退默认值，防手工编辑/恶意 JSON 污染 CSS）→ **保留当前界面语言与文本方向**（与重置逻辑一致，AGENTS.md 规范）→ 应用并刷新渲染
+- **防御**：`lib.sanitizeSettings(parsed, defaults)`——mergeSettings 只挡键、不挡类型，故新增值类型校验层，可独立单测
+
+### Changed
+- **i18n**：新增 6 个键（`settingsExport / settingsImport / settingsImportOk / settingsImportFail / settingsImportBad`），zh/ja/en 三语同步补齐
+- **测试**：`utils-test.mjs` 新增 8 条 sanitizeSettings 断言（类型回退/嵌套保留/未知键过滤/合法值透传）；e2e 新增「设置导出/导入控件存在 + 导出下载 JSON」用例
+
+### Notes
+- 至此与群友工具功能差距清零：制包主链路（输入→AI 分析→编辑→导出）全覆盖且多数环节更优，偏好备份补齐
+- 用户语言键值清单（ko/fr/es/de/pt-br/ru/ar）：本次 +6 键，累计 49 键待用户手动维护
+
 ## v2.7.0（待发布 · AI 分析 · 交替 LRC）
 
 > AI 逐词分析走「复制提示词 → 任意大模型 → 粘贴结果」手动流（纯静态，不引 API）；交替双语 LRC（网易云内联格式）自动拆分；LRC 支持直接上传文件（与粘贴并存）；逐字歌词链路确认无需引第三方库。

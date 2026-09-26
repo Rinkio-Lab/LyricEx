@@ -82,6 +82,25 @@ test('workspace build tab: alternating JP/CN LRC auto-splits (v2.7.0)', async ({
     expect(errors).toEqual([]);
 });
 
+test('settings export/import controls exist and export downloads JSON (v2.8.0)', async ({ page }) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    await page.click('#settingsBtn');
+    await expect(page.locator('#settingsOverlay')).toBeVisible();
+    // controls present in the footer
+    await expect(page.locator('#settingsExportBtn')).toBeVisible();
+    await expect(page.locator('#settingsImportBtn')).toBeVisible();
+    await expect(page.locator('#settingsImportFile')).toBeAttached();
+    // export triggers a JSON download
+    const dl = page.waitForEvent('download');
+    await page.click('#settingsExportBtn');
+    const download = await dl;
+    expect(download.suggestedFilename()).toMatch(/^lyricex-settings-\d{8}\.json$/);
+    await page.click('#settingsCloseBtn');
+    await expect(page.locator('#settingsOverlay')).not.toHaveClass(/open/);
+    expect(errors).toEqual([]);
+});
+
 test('uploads an example package and renders lyrics + views', async ({ page }) => {
     const errors = watchErrors(page);
     await openApp(page);
