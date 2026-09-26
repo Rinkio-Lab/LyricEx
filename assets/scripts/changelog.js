@@ -10,6 +10,14 @@
 
     root.__lyricexChangelog = [
         {
+            version: '2.9.0',
+            date: '待发布',
+            changes: [
+                { type: 'fixed', text: '分享卡片 / 竖屏海报防溢出：SVG 路径加 -webkit-line-clamp 行数截断（分享卡歌词 5 行 / 翻译 3 / 罗马字 2；竖屏海报歌词 6 / 翻译 3 / 罗马字 2），2D 兜底渲染器原已有换行省略；视频导出复核无回归（v2.0.1 起已有逐字符换行 + 限行省略）' },
+                { type: 'changed', text: '学习笔记 HTML 导出加内联样式表（.wrap 容器 / section 边框 / .notes-table 表格样式 / 打印分页避让）；打印样式补 @page 边距与表格行 page-break-inside:avoid' },
+            ]
+        },
+        {
             version: '2.8.4',
             date: '待发布',
             changes: [

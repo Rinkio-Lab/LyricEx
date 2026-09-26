@@ -25,7 +25,7 @@
             rows.push(cols.map(function (k) { return esc(a[k] || ''); }));
         }
         if (html) {
-            var h = '<table border="1" cellspacing="0" cellpadding="4"><thead><tr>' +
+            var h = '<table class="notes-table"><thead><tr>' +
                 heads.map(function (x) { return '<th>' + esc(x) + '</th>'; }).join('') +
                 '</tr></thead><tbody>' +
                 rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') +
@@ -48,7 +48,8 @@
         var parts = [];
 
         if (html) {
-            parts.push('<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + esc(head) + '</title></head><body>');
+            parts.push('<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + esc(head) + '</title>' +
+            '<style>' + "body{margin:0;padding:32px 24px;font-family:\"Noto Sans SC\",\"PingFang SC\",\"Microsoft YaHei\",sans-serif;color:#1e1a16;line-height:1.6;background:#fff;}\n.wrap{max-width:860px;margin:0 auto;}\nh1{font-size:26px;margin:0 0 24px;padding-bottom:12px;border-bottom:2px solid #8a7a6a;}\nsection{margin:0 0 22px;padding:14px 18px;border-left:4px solid #8a7a6a;background:#faf8f4;border-radius:6px;}\nsection h2{margin:0 0 8px;font-size:17px;}\nsection h2 time{color:#8a827a;font-size:13px;font-weight:400;margin-right:8px;}\nul{margin:0 0 10px;padding-left:20px;color:#5a524a;}\n.notes-table{border-collapse:collapse;width:100%;margin:6px 0;font-size:13px;}\n.notes-table th{background:#efe9e0;color:#1e1a16;text-align:left;padding:6px 8px;border:1px solid #d8d2c8;}\n.notes-table td{padding:5px 8px;border:1px solid #d8d2c8;color:#3a342e;}\n@media print{body{padding:0;}section{page-break-inside:avoid;background:#fff;border-left-color:#8a7a6a;}h1{page-break-after:avoid;}}" + '</style></head><body><div class="wrap">');
             if (head) parts.push('<h1>' + esc(head) + '</h1>');
             lyrics.forEach(function (line, _i) {
                 parts.push('<section><h2><time>' + fmtTime(line.time) + '</time> ' + esc(line.text || '') + '</h2>');
@@ -61,7 +62,7 @@
                 if (table) parts.push(table);
                 parts.push('</section>');
             });
-            parts.push('</body></html>');
+            parts.push('</div></body></html>');
         } else {
             if (head) parts.push('# ' + head + '\n');
             lyrics.forEach(function (line) {
