@@ -3,7 +3,7 @@
    the actual file input, view switching, zh/ja/ar locale switching with RTL
    direction, modal focus trapping, axe-core a11y scan, and a clean console. */
 import { test, expect } from '@playwright/test';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { join, dirname } from 'node:path';
 
 const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
@@ -120,7 +120,9 @@ test('modal focus trap keeps Tab inside the settings dialog', async ({ page }) =
 test('file:// direct-open still boots under the strict CSP meta', async ({ browser }) => {
     const page = await browser.newPage();
     const errors = watchErrors(page);
-    await openApp(page, 'file:///E:/Projects/LyricEx/index.html');
+    // pathToFileURL derives the file:// URL from ROOT at runtime, so the path
+    // stays correct on every platform (CI runs Linux, dev machines run Windows)
+    await openApp(page, pathToFileURL(join(ROOT, 'index.html')).href);
     // CSP meta must NOT break the double-click workflow (Chrome treats file:
     // as same-origin for 'self'); boot must expose the app API
     await page.waitForFunction(() => window.__lyricex !== undefined, null, { timeout: 15000 });
