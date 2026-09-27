@@ -8,7 +8,9 @@
 (function () {
     var langs = window.__lyricexLanguages || [];
     var byCode = {};
-    langs.forEach(function (l) { byCode[l.code] = l; });
+    langs.forEach(function (l) {
+        byCode[l.code] = l;
+    });
     function load(code) {
         var s = document.createElement('script');
         s.async = false; // keep dict registration ordered before app.js init
@@ -19,12 +21,22 @@
     // current locale: stored choice first, else browser language via the
     // same BCP 47 walk (full tag → lowercase → shorter prefixes) as _detect
     var cur = null;
-    try { cur = localStorage.getItem('lyricex-locale'); } catch (_) { /* storage unavailable */ }
+    try {
+        cur = localStorage.getItem('lyricex-locale');
+    } catch (_) {
+        /* storage unavailable */
+    }
     if (!cur || !byCode[cur]) {
         var tag = navigator.language || 'zh';
         while (tag) {
-            if (byCode[tag]) { cur = tag; break; }
-            if (byCode[tag.toLowerCase()]) { cur = tag.toLowerCase(); break; }
+            if (byCode[tag]) {
+                cur = tag;
+                break;
+            }
+            if (byCode[tag.toLowerCase()]) {
+                cur = tag.toLowerCase();
+                break;
+            }
             var i = tag.lastIndexOf('-');
             if (i < 0) break;
             tag = tag.slice(0, i);

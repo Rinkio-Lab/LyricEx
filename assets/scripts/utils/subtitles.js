@@ -1,27 +1,43 @@
 /* LyricEx v1.7.0 – subtitle export builders (pure; no DOM) */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
 
-    function clamp(v) { return isFinite(v) && v > 0 ? v : 0; }
+    function clamp(v) {
+        return isFinite(v) && v > 0 ? v : 0;
+    }
 
     // HH:MM:SS,mmm for SRT.
     u.formatSrtTime = function (seconds) {
         var t = clamp(seconds);
-        var h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = Math.floor(t % 60);
+        var h = Math.floor(t / 3600),
+            m = Math.floor((t % 3600) / 60),
+            s = Math.floor(t % 60);
         var ms = Math.round((t - Math.floor(t)) * 1000);
-        if (ms >= 1000) { ms = 0; s++; }
-        function p(n, w) { return String(n).padStart(w, '0'); }
+        if (ms >= 1000) {
+            ms = 0;
+            s++;
+        }
+        function p(n, w) {
+            return String(n).padStart(w, '0');
+        }
         return p(h, 2) + ':' + p(m, 2) + ':' + p(s, 2) + ',' + p(ms, 3);
     };
 
     // H:MM:SS.cc for ASS (centiseconds).
     u.formatAssTime = function (seconds) {
         var t = clamp(seconds);
-        var h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = Math.floor(t % 60);
+        var h = Math.floor(t / 3600),
+            m = Math.floor((t % 3600) / 60),
+            s = Math.floor(t % 60);
         var cs = Math.round((t - Math.floor(t)) * 100);
-        if (cs >= 100) { cs = 0; s++; }
-        function p(n, w) { return String(n).padStart(w, '0'); }
+        if (cs >= 100) {
+            cs = 0;
+            s++;
+        }
+        function p(n, w) {
+            return String(n).padStart(w, '0');
+        }
         return h + ':' + p(m, 2) + ':' + p(s, 2) + '.' + p(cs, 2);
     };
 
@@ -31,21 +47,26 @@
         var pad = (opts && opts.endPad) || 3;
         return lyrics.map(function (l, i) {
             var start = clamp(Number(l.time) - offset);
-            var end = (i + 1 < lyrics.length)
-                ? clamp(Number(lyrics[i + 1].time) - offset)
-                : start + pad;
+            var end = i + 1 < lyrics.length ? clamp(Number(lyrics[i + 1].time) - offset) : start + pad;
             if (end <= start) end = start + pad;
             return { start: start, end: end, line: l };
         });
     }
 
-    function lineText(l) { return (l && l.text) ? String(l.text) : ''; }
-    function lineTranslation(l) { return (l && l.translation) ? String(l.translation) : ''; }
+    function lineText(l) {
+        return l && l.text ? String(l.text) : '';
+    }
+    function lineTranslation(l) {
+        return l && l.translation ? String(l.translation) : '';
+    }
 
     // WebVTT-style escaping isn't needed for SRT/ASS, but strip control chars
     // and blank-out empty text so players don't choke.
     function clean(s) {
-        return String(s == null ? '' : s).replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
+        return String(s == null ? '' : s)
+            .replace(/[\r\n]+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
     }
 
     // Build a SubRip (.srt) document. opts.includeTranslation appends the
@@ -54,10 +75,10 @@
         var out = [];
         spans(lyrics, offset, opts).forEach(function (sp, i) {
             var text = clean(lineText(sp.line));
-            var tr = (opts && opts.includeTranslation) ? clean(lineTranslation(sp.line)) : '';
+            var tr = opts && opts.includeTranslation ? clean(lineTranslation(sp.line)) : '';
             out.push(String(i + 1));
             out.push(u.formatSrtTime(sp.start) + ' --> ' + u.formatSrtTime(sp.end));
-            out.push(tr ? text + '\n' + tr : (text || '♪'));
+            out.push(tr ? text + '\n' + tr : text || '♪');
             out.push('');
         });
         return out.join('\n').replace(/\n+$/, '') + '\n';
@@ -88,12 +109,20 @@
 
         var events = spans(lyrics, offset, opts).map(function (sp) {
             var text = karaokeText(sp.line, opts);
-            var rows = ['Dialogue: 0,' + u.formatAssTime(sp.start) + ',' + u.formatAssTime(sp.end) +
-                ',Lyric,,0,0,0,,' + text];
+            var rows = [
+                'Dialogue: 0,' + u.formatAssTime(sp.start) + ',' + u.formatAssTime(sp.end) + ',Lyric,,0,0,0,,' + text
+            ];
             if (incTr) {
                 var tr = clean(lineTranslation(sp.line));
-                if (tr) rows.push('Dialogue: 0,' + u.formatAssTime(sp.start) + ',' + u.formatAssTime(sp.end) +
-                    ',Translation,,0,0,0,,' + tr);
+                if (tr)
+                    rows.push(
+                        'Dialogue: 0,' +
+                            u.formatAssTime(sp.start) +
+                            ',' +
+                            u.formatAssTime(sp.end) +
+                            ',Translation,,0,0,0,,' +
+                            tr
+                    );
             }
             return rows.join('\n');
         });
@@ -119,10 +148,15 @@
         var out = [];
         line.words.forEach(function (w) {
             if (!w || typeof w.text !== 'string' || !w.text) return;
-            var s = Number(w.start), e = Number(w.end);
+            var s = Number(w.start),
+                e = Number(w.end);
             if (!isFinite(s) || !isFinite(e) || e <= s) return;
             out.push({ text: w.text, start: s, end: e });
         });
-        return out.length >= 2 ? out.sort(function (a, b) { return a.start - b.start; }) : null;
+        return out.length >= 2
+            ? out.sort(function (a, b) {
+                  return a.start - b.start;
+              })
+            : null;
     };
 })(typeof window !== 'undefined' ? window : globalThis);

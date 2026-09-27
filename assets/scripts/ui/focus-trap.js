@@ -10,7 +10,8 @@
     'use strict';
 
     var FOCUSABLE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
-    var OVERLAY_SELECTOR = '.about-overlay, .settings-overlay, .share-overlay, .video-overlay, .guide-overlay, .search-overlay, .cinema-overlay, .cover-viewer, .library-overlay, .dialog-overlay';
+    var OVERLAY_SELECTOR =
+        '.about-overlay, .settings-overlay, .share-overlay, .video-overlay, .guide-overlay, .search-overlay, .cinema-overlay, .cover-viewer, .library-overlay, .dialog-overlay';
 
     function visible(el) {
         return el && (el.offsetParent !== null || el === root.document.activeElement);
@@ -24,15 +25,23 @@
         if (e.key !== 'Tab') return;
         var els = focusableWithin(overlay);
         if (!els.length) return;
-        var first = els[0], last = els[els.length - 1];
+        var first = els[0],
+            last = els[els.length - 1];
         var active = root.document.activeElement;
-        if (e.shiftKey && (active === first || active === overlay)) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus(); }
+        if (e.shiftKey && (active === first || active === overlay)) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && active === last) {
+            e.preventDefault();
+            first.focus();
+        }
     }
 
     function bindOverlay(overlay) {
         var returnFocus = null;
-        var keyHandler = function (e) { onKeydown(overlay, e); };
+        var keyHandler = function (e) {
+            onKeydown(overlay, e);
+        };
         new MutationObserver(function () {
             if (overlay.classList.contains('open')) {
                 returnFocus = root.document.activeElement;

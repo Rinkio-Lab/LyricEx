@@ -6,9 +6,9 @@ window.__i18n = window.__i18n || {};
 
 (function (i18n) {
     i18n._dicts = {};
-    i18n._config = {};   // code -> { code, native, maintainedBy, fallback }
+    i18n._config = {}; // code -> { code, native, maintainedBy, fallback }
     i18n._current = 'zh';
-    i18n._dirOverride = null;  // v2.3.1: 'auto' | 'rtl' | 'ltr' force-override
+    i18n._dirOverride = null; // v2.3.1: 'auto' | 'rtl' | 'ltr' force-override
 
     /** register a dictionary for a locale */
     i18n.register = function (locale, dict) {
@@ -18,12 +18,14 @@ window.__i18n = window.__i18n || {};
     /** register the language configuration list (from languages.js) */
     i18n.registerConfig = function (list) {
         i18n._config = {};
-        (list || []).forEach(function (c) { i18n._config[c.code] = c; });
+        (list || []).forEach(function (c) {
+            i18n._config[c.code] = c;
+        });
     };
 
     /** resolve the fallback locale for a given one; chain-safe against cycles */
     i18n._resolveFallback = function (locale, seen) {
-        if (seen[locale]) return null;              // cycle guard
+        if (seen[locale]) return null; // cycle guard
         seen[locale] = true;
         const cfg = i18n._config[locale] || {};
         if (!cfg.fallback) return null;
@@ -51,10 +53,14 @@ window.__i18n = window.__i18n || {};
         i18n._current = locale;
         const cfg = i18n._config[locale] || {};
         if (document.documentElement) {
-            document.documentElement.lang = locale;          // BCP 47 tag as-is
+            document.documentElement.lang = locale; // BCP 47 tag as-is
             document.documentElement.dir = i18n._dirFor(locale);
         }
-        try { localStorage.setItem('lyricex-locale', locale); } catch (_) { /* noop */ }
+        try {
+            localStorage.setItem('lyricex-locale', locale);
+        } catch (_) {
+            /* noop */
+        }
         i18n._apply();
         if (typeof window.__onLocaleChange === 'function') window.__onLocaleChange(locale);
     };
@@ -66,7 +72,7 @@ window.__i18n = window.__i18n || {};
         while (loc) {
             const dict = i18n._dicts[loc];
             if (dict && dict[key] !== undefined) return dict[key];
-            if (loc === 'zh') break;                // zh is the terminal fallback
+            if (loc === 'zh') break; // zh is the terminal fallback
             loc = i18n._resolveFallback(loc, seen) || 'zh';
         }
         const zh = i18n._dicts['zh'];
@@ -116,7 +122,9 @@ window.__i18n = window.__i18n || {};
         try {
             const stored = localStorage.getItem('lyricex-locale');
             if (stored && i18n._config[stored]) return stored;
-        } catch (_) { /* noop */ }
+        } catch (_) {
+            /* noop */
+        }
         // BCP 47: try the full tag, then lowercase, then progressively shorter
         // prefixes (pt-BR → pt-br → pt → …) before giving up on zh.
         let tag = navigator.language || 'zh';
@@ -135,7 +143,7 @@ window.__i18n = window.__i18n || {};
         i18n.registerConfig(window.__lyricexLanguages);
         i18n._current = i18n._detect();
         if (document.documentElement) {
-            document.documentElement.lang = i18n._current;  // BCP 47 tag as-is
+            document.documentElement.lang = i18n._current; // BCP 47 tag as-is
             document.documentElement.dir = i18n._dirFor(i18n._current);
         }
         i18n._apply();

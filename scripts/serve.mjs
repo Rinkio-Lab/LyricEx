@@ -30,7 +30,11 @@ http.createServer(async (req, res) => {
         if (path.endsWith('/')) path += 'index.html';
         const file = normalize(join(root, path));
         // path-traversal guard: served files must stay under the project root
-        if (!file.startsWith(root)) { res.writeHead(403); res.end('forbidden'); return; }
+        if (!file.startsWith(root)) {
+            res.writeHead(403);
+            res.end('forbidden');
+            return;
+        }
         const body = await readFile(file);
         res.writeHead(200, {
             'Content-Type': MIME[extname(file).toLowerCase()] || 'application/octet-stream',

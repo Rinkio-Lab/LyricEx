@@ -30,7 +30,7 @@
     --text-muted: #6a625c;
     --border-color: #d6d0c8;
     --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.10);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.1);
     --accent: #8a7a6a;
     --accent-hover: #6a5a4a;
     --accent-bg: #e8e0d8;
@@ -48,7 +48,8 @@
     --transition: 0.25s ease;
     --font: 'Noto Sans SC', 'M PLUS Rounded 1c', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
     /* v1.6.2: fixed per-line override stacks (not user-configurable) */
-    --font-lyrics-sc: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Hiragino Sans GB', sans-serif;
+    --font-lyrics-sc:
+        'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Hiragino Sans GB', sans-serif;
     --font-mono: 'Courier Prime', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace;
     /* v1.6.0: per-POS study-table colors (customizable in settings; inline
        vars on #app override these when set) */
@@ -58,7 +59,7 @@
     --pos-pos: var(--text-muted);
     --pos-meaning: #6a8a5a;
 }
-[data-theme="dark"] {
+[data-theme='dark'] {
     --bg-primary: #181614;
     --bg-secondary: #1e1c18;
     --bg-sidebar: #141210;
@@ -94,7 +95,7 @@
 
 /* =========================== MORANDI COLOR THEMES =========================== */
 /* 烟灰粉 Dusty Rose */
-[data-color-theme="dusty-rose"] {
+[data-color-theme='dusty-rose'] {
     --accent: #b8958a;
     --accent-hover: #9a7a6e;
     --accent-bg: #f0e6e2;
@@ -118,7 +119,7 @@
     --placeholder-color: #c0b0aa;
 }
 /* 雾灰蓝 Misty Blue */
-[data-color-theme="misty-blue"] {
+[data-color-theme='misty-blue'] {
     --accent: #8a9aa8;
     --accent-hover: #6e7e8c;
     --accent-bg: #e2e8ee;
@@ -142,7 +143,7 @@
     --placeholder-color: #b0bac2;
 }
 /* 鼠尾草绿 Sage Green */
-[data-color-theme="sage-green"] {
+[data-color-theme='sage-green'] {
     --accent: #8a9e8a;
     --accent-hover: #6e826e;
     --accent-bg: #e2e8e2;
@@ -166,7 +167,7 @@
     --placeholder-color: #b0baa8;
 }
 /* 暖灰褐 Warm Taupe */
-[data-color-theme="warm-taupe"] {
+[data-color-theme='warm-taupe'] {
     --accent: #9a8a7a;
     --accent-hover: #7a6a5a;
     --accent-bg: #e8e0d8;
@@ -190,7 +191,7 @@
     --placeholder-color: #b8b0a8;
 }
 /* 薰衣草灰 Lavender Gray */
-[data-color-theme="lavender-gray"] {
+[data-color-theme='lavender-gray'] {
     --accent: #958aa8;
     --accent-hover: #7a6e8c;
     --accent-bg: #e8e4f0;
@@ -214,7 +215,7 @@
     --placeholder-color: #b4aec0;
 }
 /* 暖杏色 Warm Apricot */
-[data-color-theme="warm-apricot"] {
+[data-color-theme='warm-apricot'] {
     --accent: #b8957a;
     --accent-hover: #9a7a5e;
     --accent-bg: #f0e6da;
@@ -241,7 +242,7 @@
    deep accent; secondary text stays black, muted text darkened to pass
    WCAG AA on white. Sits after [data-theme] so it wins over the light/dark
    cycle regardless of the current 亮/暗/跟随系统 state. */
-[data-color-theme="hc-light"] {
+[data-color-theme='hc-light'] {
     --accent: #0057a0;
     --accent-hover: #003c70;
     --accent-bg: #dbe9f7;
@@ -273,7 +274,7 @@
 }
 /* 高对比 · 暗 High Contrast Dark (v2.2.0, a11y) — pure white on pure black,
    bright accent; muted text lightened to pass WCAG AA on black. */
-[data-color-theme="hc-dark"] {
+[data-color-theme='hc-dark'] {
     --accent: #4cc9f0;
     --accent-hover: #8ce0ff;
     --accent-bg: #002a3d;
@@ -315,15 +316,17 @@ body {
        browser text-zoom. */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    transition: background var(--transition), color var(--transition);
+    transition:
+        background var(--transition),
+        color var(--transition);
 }
 /* v2.2.0 (mobile): no double-tap/double-tap-hold zoom delays on interactive
    controls — zoom gestures on the page itself still work. */
 button,
 select,
-input[type="range"],
-input[type="color"],
-input[type="text"],
+input[type='range'],
+input[type='color'],
+input[type='text'],
 textarea {
     touch-action: manipulation;
 }
@@ -385,13 +388,19 @@ textarea {
     animation: view-in 0.28s ease;
 }
 @keyframes view-in {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 /* User toggle off → freeze every transition/animation. */
-#app[data-motion="off"] *,
-#app[data-motion="off"] *::before,
-#app[data-motion="off"] *::after {
+#app[data-motion='off'] *,
+#app[data-motion='off'] *::before,
+#app[data-motion='off'] *::after {
     transition: none !important;
     animation: none !important;
 }

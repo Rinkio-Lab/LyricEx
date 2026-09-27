@@ -1,7 +1,7 @@
 /* LyricEx v1.7.0 – DOM/HTML → canvas rasterizer (zero-dependency) */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
 
     // Rasterize an HTML string to a canvas via SVG <foreignObject>. The HTML
     // runs as its own document, so @font-face webfonts from the host page are
@@ -11,14 +11,22 @@
     // service worker; not worth a dependency for a static image.
     u.renderHtmlToCanvas = function (html, width, height) {
         return new Promise(function (resolve, reject) {
-            var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
+            var svg =
+                '<svg xmlns="http://www.w3.org/2000/svg" width="' +
+                width +
+                '" height="' +
+                height +
+                '">' +
                 '<foreignObject width="100%" height="100%">' +
                 '<div xmlns="http://www.w3.org/1999/xhtml" style="margin:0;padding:0;width:100%;height:100%;box-sizing:border-box;">' +
                 html +
                 '</div></foreignObject></svg>';
             var blob;
-            try { blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }); }
-            catch (_) { blob = new Blob([svg], { type: 'image/svg+xml' }); }
+            try {
+                blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+            } catch (_) {
+                blob = new Blob([svg], { type: 'image/svg+xml' });
+            }
             var url = root.URL.createObjectURL(blob);
             var img = new root.Image();
             img.onload = function () {
@@ -34,8 +42,12 @@
                 // broke share-card previews and poster export. Probe 1px — on a
                 // tainted canvas getImageData throws — and reject so callers
                 // (renderShareCard/renderPoster) fall back to the 2D renderer.
-                try { ctx.getImageData(0, 0, 1, 1); }
-                catch (e) { reject(e); return; }
+                try {
+                    ctx.getImageData(0, 0, 1, 1);
+                } catch (e) {
+                    reject(e);
+                    return;
+                }
                 resolve(canvas);
             };
             img.onerror = function (e) {

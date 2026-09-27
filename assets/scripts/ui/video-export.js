@@ -13,8 +13,10 @@
 
     root.__lyricexVideoExport = function (appCtx) {
         var t = appCtx.t;
-        var videoOverlay = appCtx.videoOverlay, videoStatus = appCtx.videoStatus,
-            videoProgressFill = appCtx.videoProgressFill, videoStartBtn = appCtx.videoStartBtn,
+        var videoOverlay = appCtx.videoOverlay,
+            videoStatus = appCtx.videoStatus,
+            videoProgressFill = appCtx.videoProgressFill,
+            videoStartBtn = appCtx.videoStartBtn,
             videoCancelBtn = appCtx.videoCancelBtn;
 
         var videoRecording = false;
@@ -24,8 +26,14 @@
 
         function openVideoOverlay() {
             if (!appCtx.lyrics.length) return;
-            if (!window.__lyricexVideo.supported()) { window.__lyricexDialog.alert(t('videoUnsupported')); return; }
-            if (!appCtx.audio) { window.__lyricexDialog.alert(t('pleaseUpload')); return; }
+            if (!window.__lyricexVideo.supported()) {
+                window.__lyricexDialog.alert(t('videoUnsupported'));
+                return;
+            }
+            if (!appCtx.audio) {
+                window.__lyricexDialog.alert(t('pleaseUpload'));
+                return;
+            }
             videoOverlay.classList.add('open');
             videoStatus.textContent = '';
             videoProgressFill.style.width = '0%';
@@ -35,8 +43,10 @@
         }
 
         function closeVideoOverlay() {
-            if (videoRecording && videoHandle) { videoDiscard = true; videoHandle.stop(); }
-            else videoOverlay.classList.remove('open');
+            if (videoRecording && videoHandle) {
+                videoDiscard = true;
+                videoHandle.stop();
+            } else videoOverlay.classList.remove('open');
         }
 
         // Wrap text into lines that fit maxWidth. Char-level greedy wrap: correct
@@ -49,8 +59,10 @@
             let cur = '';
             for (let i = 0; i < s.length; i++) {
                 const test = cur + s[i];
-                if (cur && g.measureText(test).width > maxWidth) { lines.push(cur); cur = s[i]; }
-                else cur = test;
+                if (cur && g.measureText(test).width > maxWidth) {
+                    lines.push(cur);
+                    cur = s[i];
+                } else cur = test;
             }
             if (cur) lines.push(cur);
             return lines;
@@ -82,10 +94,14 @@
                 { key: 'meaning', label: t('meaning') }
             ];
             const items = line.analysis.slice(0, 5);
-            const labelW = 118, gap = 8, pad = 10;
+            const labelW = 118,
+                gap = 8,
+                pad = 10;
             const colW = Math.max(56, Math.floor((width - labelW - gap) / items.length));
-            const headerH = 34, rowH = 40;
-            const grid = 'rgba(0,0,0,0.14)', text = '#1e1a16';
+            const headerH = 34,
+                rowH = 40;
+            const grid = 'rgba(0,0,0,0.14)',
+                text = '#1e1a16';
             const cellFont = '19px "M PLUS Rounded 1c", "Noto Sans SC", sans-serif';
             const headFont = '19px "Noto Sans SC", "PingFang SC", sans-serif';
 
@@ -145,7 +161,8 @@
         // Draw one video frame (study-table lyric video). `g` is the 2D context,
         // `rawTime` the audio time WITHOUT the offset (findLyricIndex adds it).
         function drawVideoFrame(g, rawTime) {
-            const W = videoCanvas.width, H = videoCanvas.height;
+            const W = videoCanvas.width,
+                H = videoCanvas.height;
             const bg = getComputedStyle(appCtx.app).getPropertyValue('--bg-primary').trim() || '#f6f4f0';
             const accent = getComputedStyle(appCtx.app).getPropertyValue('--accent').trim() || '#8a7a6a';
             g.textAlign = 'left';
@@ -156,7 +173,9 @@
             // header
             g.fillStyle = '#8a827a';
             g.font = '24px "Noto Sans SC", "PingFang SC", sans-serif';
-            const head = appCtx.songData ? ((appCtx.songData.title || '') + (appCtx.songData.artist ? '  \u00b7  ' + appCtx.songData.artist : '')) : '';
+            const head = appCtx.songData
+                ? (appCtx.songData.title || '') + (appCtx.songData.artist ? '  \u00b7  ' + appCtx.songData.artist : '')
+                : '';
             g.fillText(head || '\u2013', 80, 52);
             if (idx < 0) return;
             const line = appCtx.lyrics[idx];
@@ -168,7 +187,10 @@
             g.fillRect(80, 116, 10, lyricLines.length * 58);
             g.fillStyle = '#1e1a16';
             let cy = 124;
-            lyricLines.forEach(function (l) { g.fillText(l, 112, cy); cy += 58; });
+            lyricLines.forEach(function (l) {
+                g.fillText(l, 112, cy);
+                cy += 58;
+            });
             // wrapped translation (up to 2 lines)
             let ty = cy + 6;
             if (line.translation) {
@@ -211,23 +233,36 @@
                 audio: appCtx.audio,
                 canvas: videoCanvas,
                 draw: drawVideoFrame,
-                onProgress: function (p) { videoProgressFill.style.width = (p * 100) + '%'; },
+                onProgress: function (p) {
+                    videoProgressFill.style.width = p * 100 + '%';
+                },
                 onDone: function (blob) {
                     videoRecording = false;
                     videoHandle = null;
-                    if (videoCanvas) { videoCanvas.remove(); videoCanvas = null; }
+                    if (videoCanvas) {
+                        videoCanvas.remove();
+                        videoCanvas = null;
+                    }
                     videoStartBtn.disabled = false;
                     videoStartBtn.textContent = t('videoStart');
                     videoCancelBtn.textContent = t('close');
                     videoProgressFill.style.width = '100%';
-                    if (videoDiscard) { videoStatus.textContent = t('videoCancelled'); videoDiscard = false; }
-                    else { appCtx.downloadBlob(blob, appCtx.safePackageName() + '.webm'); videoStatus.textContent = t('videoDone'); }
+                    if (videoDiscard) {
+                        videoStatus.textContent = t('videoCancelled');
+                        videoDiscard = false;
+                    } else {
+                        appCtx.downloadBlob(blob, appCtx.safePackageName() + '.webm');
+                        videoStatus.textContent = t('videoDone');
+                    }
                     videoOverlay.classList.remove('open');
                 },
                 onError: function (err) {
                     videoRecording = false;
                     videoHandle = null;
-                    if (videoCanvas) { videoCanvas.remove(); videoCanvas = null; }
+                    if (videoCanvas) {
+                        videoCanvas.remove();
+                        videoCanvas = null;
+                    }
                     videoStartBtn.disabled = false;
                     videoStartBtn.textContent = t('videoStart');
                     videoCancelBtn.textContent = t('close');
@@ -238,14 +273,17 @@
         }
 
         function onVideoStartBtn() {
-            if (videoRecording) { if (videoHandle) videoHandle.stop(); }
-            else startVideoExport();
+            if (videoRecording) {
+                if (videoHandle) videoHandle.stop();
+            } else startVideoExport();
         }
 
         function bind() {
             videoStartBtn.addEventListener('click', onVideoStartBtn);
             videoCancelBtn.addEventListener('click', closeVideoOverlay);
-            videoOverlay.addEventListener('click', function (e) { if (e.target === videoOverlay) closeVideoOverlay(); });
+            videoOverlay.addEventListener('click', function (e) {
+                if (e.target === videoOverlay) closeVideoOverlay();
+            });
         }
 
         return {

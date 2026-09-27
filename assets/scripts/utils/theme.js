@@ -1,7 +1,7 @@
 /* LyricEx v1.7.0 – theme helpers (pure; no DOM) */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
 
     // light → dark → system → light …
     u.THEME_CYCLE = ['light', 'dark', 'system'];
@@ -11,8 +11,11 @@
     };
 
     u.systemPrefersDark = function () {
-        try { return !!(root.matchMedia && root.matchMedia('(prefers-color-scheme: dark)').matches); }
-        catch (_) { return false; }
+        try {
+            return !!(root.matchMedia && root.matchMedia('(prefers-color-scheme: dark)').matches);
+        } catch (_) {
+            return false;
+        }
     };
 
     // 'system' resolves to the live OS preference; anything else passes through.

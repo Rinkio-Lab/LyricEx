@@ -39,5 +39,5 @@ window.__lyricexLanguages = [
     { code: 'de', native: 'Deutsch', maintainedBy: 'user', fallback: 'en' },
     { code: 'pt-br', native: 'Português (Brasil)', maintainedBy: 'user', fallback: 'en' },
     { code: 'ru', native: 'Русский', maintainedBy: 'user', fallback: 'en' },
-    { code: 'ar', native: 'العربية', maintainedBy: 'user', fallback: 'en', rtl: true },
+    { code: 'ar', native: 'العربية', maintainedBy: 'user', fallback: 'en', rtl: true }
 ];

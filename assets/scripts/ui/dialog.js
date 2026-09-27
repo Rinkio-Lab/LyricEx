@@ -45,13 +45,33 @@
         inputRow.style.display = kind === 'prompt' ? '' : 'none';
         if (kind === 'prompt') inputEl.value = defaultValue == null ? '' : String(defaultValue);
         if (kind === 'alert') {
-            footerEl.appendChild(makeButton(t('dialogOk'), 'dialog-primary', function () { close(undefined); }));
+            footerEl.appendChild(
+                makeButton(t('dialogOk'), 'dialog-primary', function () {
+                    close(undefined);
+                })
+            );
         } else if (kind === 'confirm') {
-            footerEl.appendChild(makeButton(t('dialogCancel'), '', function () { close(false); }));
-            footerEl.appendChild(makeButton(t('dialogOk'), opts.danger ? 'dialog-danger' : 'dialog-primary', function () { close(true); }));
+            footerEl.appendChild(
+                makeButton(t('dialogCancel'), '', function () {
+                    close(false);
+                })
+            );
+            footerEl.appendChild(
+                makeButton(t('dialogOk'), opts.danger ? 'dialog-danger' : 'dialog-primary', function () {
+                    close(true);
+                })
+            );
         } else if (kind === 'prompt') {
-            footerEl.appendChild(makeButton(t('dialogCancel'), '', function () { close(null); }));
-            footerEl.appendChild(makeButton(t('dialogOk'), 'dialog-primary', function () { close(inputEl.value); }));
+            footerEl.appendChild(
+                makeButton(t('dialogCancel'), '', function () {
+                    close(null);
+                })
+            );
+            footerEl.appendChild(
+                makeButton(t('dialogOk'), 'dialog-primary', function () {
+                    close(inputEl.value);
+                })
+            );
         }
         overlay.classList.add('open');
         if (kind === 'prompt') inputEl.focus();
@@ -59,7 +79,9 @@
             var first = footerEl.querySelector('button');
             if (first) first.focus();
         }
-        return new Promise(function (resolve) { currentResolve = resolve; });
+        return new Promise(function (resolve) {
+            currentResolve = resolve;
+        });
     }
 
     function init() {
@@ -69,14 +91,22 @@
         inputRow = overlay.querySelector('.dialog-input-row');
         inputEl = overlay.querySelector('#dialogInput');
         footerEl = overlay.querySelector('.dialog-footer');
-        overlay.addEventListener('click', function (e) { if (e.target === overlay) close(null); });
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) close(null);
+        });
         overlay.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') { e.stopPropagation(); close(null); }
+            if (e.key === 'Escape') {
+                e.stopPropagation();
+                close(null);
+            }
         });
         inputEl.addEventListener('keydown', function (e) {
             // isComposing guard: IME (zh/ja) Enter-to-commit must not confirm
             // the dialog before the composition finishes
-            if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); close(inputEl.value); }
+            if (e.key === 'Enter' && !e.isComposing) {
+                e.preventDefault();
+                close(inputEl.value);
+            }
         });
     }
 
@@ -84,9 +114,17 @@
     else init();
 
     root.__lyricexDialog = {
-        alert: function (message, opts) { return open('alert', message, null, opts); },
-        confirm: function (message, opts) { return open('confirm', message, null, opts); },
-        prompt: function (message, defaultValue) { return open('prompt', message, defaultValue); },
-        closeAll: function () { close(null); }
+        alert: function (message, opts) {
+            return open('alert', message, null, opts);
+        },
+        confirm: function (message, opts) {
+            return open('confirm', message, null, opts);
+        },
+        prompt: function (message, defaultValue) {
+            return open('prompt', message, defaultValue);
+        },
+        closeAll: function () {
+            close(null);
+        }
     };
 })(typeof window !== 'undefined' ? window : globalThis);

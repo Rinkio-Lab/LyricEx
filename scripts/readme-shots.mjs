@@ -19,7 +19,11 @@ async function main() {
     const browser = await chromium.launch();
     const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
     await page.addInitScript(() => {
-        try { localStorage.setItem('lyricex-guide-seen', '1'); } catch (_) { /* noop */ }
+        try {
+            localStorage.setItem('lyricex-guide-seen', '1');
+        } catch (_) {
+            /* noop */
+        }
     });
     await page.goto(`${BASE}/index.html`);
     await page.waitForFunction(() => window.__lyricex !== undefined, null, { timeout: 15000 });
@@ -55,7 +59,11 @@ async function main() {
     await page.waitForTimeout(400);
     await page.setInputFiles('#libDirInput', join(ROOT, 'tests', 'e2e', 'fixtures', 'library'));
     await page.waitForSelector('.lib-row', { timeout: 15000 });
-    await page.locator('#dialogOverlay .dialog-primary').first().click().catch(() => {});
+    await page
+        .locator('#dialogOverlay .dialog-primary')
+        .first()
+        .click()
+        .catch(() => {});
     await page.waitForTimeout(500);
     await page.screenshot({ path: join(OUT, 'library.png') });
 
@@ -64,4 +72,8 @@ async function main() {
     console.log('SHOTS OK →', OUT);
 }
 
-main().catch((e) => { console.error(e); server.kill(); process.exit(1); });
+main().catch((e) => {
+    console.error(e);
+    server.kill();
+    process.exit(1);
+});

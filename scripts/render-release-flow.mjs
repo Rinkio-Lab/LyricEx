@@ -31,9 +31,12 @@ const LANGS = {
             ['git safety sweep', 'no *.keystore / secrets; status clean'],
             ['commit → push → deploy → refresh ×2 → test', 'then release']
         ],
-        allGreen: 'All green?', allSub: 'lint / tests / e2e / check',
-        yes: 'YES', no: 'NO',
-        release: 'Release', releaseSub: 'vX.Y.Z'
+        allGreen: 'All green?',
+        allSub: 'lint / tests / e2e / check',
+        yes: 'YES',
+        no: 'NO',
+        release: 'Release',
+        releaseSub: 'vX.Y.Z'
     },
     zh: {
         file: 'release-flow-zh.png',
@@ -46,9 +49,12 @@ const LANGS = {
             ['git 安全核对', '无 *.keystore / 密钥；status 干净'],
             ['commit → push → 部署 → 刷新两次 → 实测', '然后发布']
         ],
-        allGreen: '全部通过？', allSub: 'lint / tests / e2e / check',
-        yes: '是', no: '否',
-        release: '发布', releaseSub: 'vX.Y.Z'
+        allGreen: '全部通过？',
+        allSub: 'lint / tests / e2e / check',
+        yes: '是',
+        no: '否',
+        release: '发布',
+        releaseSub: 'vX.Y.Z'
     },
     ja: {
         file: 'release-flow-ja.png',
@@ -61,34 +67,47 @@ const LANGS = {
             ['git 安全確認', '*.keystore / 秘密情報なし; status クリーン'],
             ['commit → push → デプロイ → 再読込 ×2 → 検証', 'そしてリリース']
         ],
-        allGreen: '全て合格？', allSub: 'lint / tests / e2e / check',
-        yes: 'はい', no: 'いいえ',
-        release: 'リリース', releaseSub: 'vX.Y.Z'
+        allGreen: '全て合格？',
+        allSub: 'lint / tests / e2e / check',
+        yes: 'はい',
+        no: 'いいえ',
+        release: 'リリース',
+        releaseSub: 'vX.Y.Z'
     }
 };
 
-const STEP_W = 400, STEP_H = 54, X = 60, CX = X + STEP_W / 2;
+const STEP_W = 400,
+    STEP_H = 54,
+    X = 60,
+    CX = X + STEP_W / 2;
 const ys = [40, 110, 180, 250, 320, 390, 460]; // 7 rows (bottom of #7 = 514)
 const DIAMOND = { cx: CX, cy: 590, hw: 92, hh: 45 };
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 function buildSvg(lang) {
-    const stepBoxes = lang.steps.map(([cmd, note], i) => {
-        const y = ys[i], n = i + 1;
-        return [
-            `<g>`,
-            `<rect x="${X}" y="${y}" width="${STEP_W}" height="${STEP_H}" rx="6" fill="#fff" stroke="#d8d0c8" stroke-width="1.4"/>`,
-            `<circle cx="${X + 22}" cy="${y + STEP_H / 2}" r="12" fill="#8a7a6a"/>`,
-            `<text x="${X + 22}" y="${y + STEP_H / 2 + 4}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${n}</text>`,
-            `<text x="${X + 44}" y="${y + 22}" font-size="13" font-weight="600" fill="#3a3530" font-family="'Cascadia Mono','JetBrains Mono',Consolas,monospace">${esc(cmd)}</text>`,
-            `<text x="${X + 44}" y="${y + 40}" font-size="11" fill="#8b837a">${esc(note)}</text>`,
-            `</g>`
-        ].join('');
-    }).join('');
-    const stepArrows = ys.slice(0, -1).map((y, i) =>
-        `<line x1="${CX}" y1="${y + STEP_H}" x2="${CX}" y2="${ys[i + 1]}" stroke="#b8b0a8" stroke-width="1.4" marker-end="url(#arr)"/>`
-    ).join('');
+    const stepBoxes = lang.steps
+        .map(([cmd, note], i) => {
+            const y = ys[i],
+                n = i + 1;
+            return [
+                `<g>`,
+                `<rect x="${X}" y="${y}" width="${STEP_W}" height="${STEP_H}" rx="6" fill="#fff" stroke="#d8d0c8" stroke-width="1.4"/>`,
+                `<circle cx="${X + 22}" cy="${y + STEP_H / 2}" r="12" fill="#8a7a6a"/>`,
+                `<text x="${X + 22}" y="${y + STEP_H / 2 + 4}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${n}</text>`,
+                `<text x="${X + 44}" y="${y + 22}" font-size="13" font-weight="600" fill="#3a3530" font-family="'Cascadia Mono','JetBrains Mono',Consolas,monospace">${esc(cmd)}</text>`,
+                `<text x="${X + 44}" y="${y + 40}" font-size="11" fill="#8b837a">${esc(note)}</text>`,
+                `</g>`
+            ].join('');
+        })
+        .join('');
+    const stepArrows = ys
+        .slice(0, -1)
+        .map(
+            (y, i) =>
+                `<line x1="${CX}" y1="${y + STEP_H}" x2="${CX}" y2="${ys[i + 1]}" stroke="#b8b0a8" stroke-width="1.4" marker-end="url(#arr)"/>`
+        )
+        .join('');
     return [
         `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="700" font-family="'Segoe UI','Noto Sans SC',sans-serif">`,
         `<defs>`,

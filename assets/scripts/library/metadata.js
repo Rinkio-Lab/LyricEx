@@ -8,7 +8,9 @@
     'use strict';
 
     function norm(s) {
-        return String(s == null ? '' : s).toLowerCase().trim();
+        return String(s == null ? '' : s)
+            .toLowerCase()
+            .trim();
     }
 
     // Decode an ID3 text frame payload: leading byte selects the charset
@@ -19,15 +21,20 @@
         const body = bytes.subarray(offset + 1);
         if (enc === 1 || enc === 2) {
             let raw = body;
-            if (body.length >= 2 && ((body[0] === 0xff && body[1] === 0xfe) ||
-                (body[0] === 0xfe && body[1] === 0xff))) raw = body.subarray(2);
+            if (body.length >= 2 && ((body[0] === 0xff && body[1] === 0xfe) || (body[0] === 0xfe && body[1] === 0xff)))
+                raw = body.subarray(2);
             try {
                 return new TextDecoder(enc === 2 ? 'utf-16be' : 'utf-16le').decode(raw).split('\u0000').join('');
-            } catch (_) { return ''; }
+            } catch (_) {
+                return '';
+            }
         }
         if (enc === 3) {
-            try { return new TextDecoder('utf-8').decode(body).split('\u0000').join(''); }
-            catch (_) { return ''; }
+            try {
+                return new TextDecoder('utf-8').decode(body).split('\u0000').join('');
+            } catch (_) {
+                return '';
+            }
         }
         // enc 0: ISO-8859-1 → keep code points (Latin-1 is a single-byte map)
         let s = '';
@@ -37,8 +44,9 @@
 
     // ID3v2 sync-safe integer (4 bytes, 7 bits each)
     function syncSafe(u8, off) {
-        return ((u8[off] & 0x7f) << 21) | ((u8[off + 1] & 0x7f) << 14) |
-            ((u8[off + 2] & 0x7f) << 7) | (u8[off + 3] & 0x7f);
+        return (
+            ((u8[off] & 0x7f) << 21) | ((u8[off + 1] & 0x7f) << 14) | ((u8[off + 2] & 0x7f) << 7) | (u8[off + 3] & 0x7f)
+        );
     }
 
     // APIC frame layout: [enc 1b][mime null-term][pictureType 1b][desc null-term][image]
@@ -68,8 +76,10 @@
         let p = 10;
         while (p + 10 <= end) {
             const id = String.fromCharCode(u8[p], u8[p + 1], u8[p + 2], u8[p + 3]);
-            const size = ver === 4 ? syncSafe(u8, p + 4) :
-                ((u8[p + 4] << 24) | (u8[p + 5] << 16) | (u8[p + 6] << 8) | u8[p + 7]) >>> 0;
+            const size =
+                ver === 4
+                    ? syncSafe(u8, p + 4)
+                    : ((u8[p + 4] << 24) | (u8[p + 5] << 16) | (u8[p + 6] << 8) | u8[p + 7]) >>> 0;
             p += 10;
             if (p + size > end) break;
             const frame = u8.subarray(p, p + size);
@@ -106,23 +116,28 @@
                 const srIdx = (u8[i + 2] >> 2) & 0x03;
                 const kbps = rates[brIdx];
                 if (!kbps || srIdx === 3) continue;
-                const secs = u8.length * 8 / (kbps * 1000);
-                return (secs > 0 && secs < 7200) ? secs : null;
+                const secs = (u8.length * 8) / (kbps * 1000);
+                return secs > 0 && secs < 7200 ? secs : null;
             }
         }
         return null;
     }
 
     // Dedupe keys: same file (relative path + size) vs same song (title + artist).
-    function fileKey(path, size) { return norm(path) + '|' + (Number(size) || 0); }
-    function songKey(title, artist) { return norm(title) + '|' + norm(artist); }
+    function fileKey(path, size) {
+        return norm(path) + '|' + (Number(size) || 0);
+    }
+    function songKey(title, artist) {
+        return norm(title) + '|' + norm(artist);
+    }
 
     // Full-text search across title / artist / album / genre / tags / lyrics.
     function matchesQuery(song, q) {
         const needle = norm(q);
         if (!needle) return true;
         const hay = [song.title, song.artist, song.album, song.genre, (song.tags || []).join(' '), song.lyricsText]
-            .map(norm).join(' ');
+            .map(norm)
+            .join(' ');
         return hay.indexOf(needle) !== -1;
     }
 
@@ -138,7 +153,13 @@
         if (!eq(song.album, f.album)) return false;
         if (!eq(song.genre, f.genre)) return false;
         if (!eq(String(song.year || ''), String(f.year || ''))) return false;
-        if (f.tag && !(song.tags || []).some(function (t) { return norm(t) === norm(f.tag); })) return false;
+        if (
+            f.tag &&
+            !(song.tags || []).some(function (t) {
+                return norm(t) === norm(f.tag);
+            })
+        )
+            return false;
         return true;
     }
 
@@ -149,8 +170,9 @@
         if (key === 'duration' || key === 'addedAt' || key === 'playCount') {
             r = (Number(a[key]) || 0) - (Number(b[key]) || 0);
         } else {
-            r = String(a[key] == null ? '' : a[key]).localeCompare(
-                String(b[key] == null ? '' : b[key]), 'zh-Hans-CN', { sensitivity: 'base' });
+            r = String(a[key] == null ? '' : a[key]).localeCompare(String(b[key] == null ? '' : b[key]), 'zh-Hans-CN', {
+                sensitivity: 'base'
+            });
         }
         return r * dir;
     }
@@ -163,22 +185,34 @@
             if (s.album) out.albums[s.album] = true;
             if (s.genre) out.genres[s.genre] = true;
             if (s.year) out.years[String(s.year)] = true;
-            (s.tags || []).forEach(function (t) { out.tags[t] = true; });
+            (s.tags || []).forEach(function (t) {
+                out.tags[t] = true;
+            });
         });
         const sorted = function (obj) {
-            return Object.keys(obj).sort(function (a, b) { return a.localeCompare(b, 'zh-Hans-CN'); });
+            return Object.keys(obj).sort(function (a, b) {
+                return a.localeCompare(b, 'zh-Hans-CN');
+            });
         };
         return {
-            artists: sorted(out.artists), albums: sorted(out.albums),
-            genres: sorted(out.genres), years: sorted(out.years), tags: sorted(out.tags)
+            artists: sorted(out.artists),
+            albums: sorted(out.albums),
+            genres: sorted(out.genres),
+            years: sorted(out.years),
+            tags: sorted(out.tags)
         };
     }
 
     root.__lyricexMetadata = {
-        norm: norm, decodeText: decodeText, parseId3: parseId3,
+        norm: norm,
+        decodeText: decodeText,
+        parseId3: parseId3,
         estimateMp3Duration: estimateMp3Duration,
-        fileKey: fileKey, songKey: songKey,
-        matchesQuery: matchesQuery, matchesFilter: matchesFilter,
-        compareSongs: compareSongs, facets: facets
+        fileKey: fileKey,
+        songKey: songKey,
+        matchesQuery: matchesQuery,
+        matchesFilter: matchesFilter,
+        compareSongs: compareSongs,
+        facets: facets
     };
 })(typeof window !== 'undefined' ? window : globalThis);

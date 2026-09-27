@@ -11,8 +11,10 @@
 
     root.__lyricexSearch = function (ctx) {
         var t = ctx.t;
-        var searchOverlay = ctx.searchOverlay, searchInput = ctx.searchInput,
-            searchResults = ctx.searchResults, searchCount = ctx.searchCount;
+        var searchOverlay = ctx.searchOverlay,
+            searchInput = ctx.searchInput,
+            searchResults = ctx.searchResults,
+            searchCount = ctx.searchCount;
 
         var searchIndex = [];
         var searchSel = -1;
@@ -31,7 +33,13 @@
             searchSel = -1;
             searchCount.textContent = '';
             renderSearchResults('');
-            setTimeout(function () { try { searchInput.focus(); } catch (_) { /* noop */ } }, 0);
+            setTimeout(function () {
+                try {
+                    searchInput.focus();
+                } catch (_) {
+                    /* noop */
+                }
+            }, 0);
         }
 
         function closeSearch() {
@@ -51,8 +59,15 @@
             hits.forEach(function (h, i) {
                 const line = ctx.lyrics[h.lineIndex];
                 const tr = line.translation ? window.__lyricexUtils.highlight(line.translation, query) : '';
-                html += '<div class="search-result' + (i === 0 ? ' selected' : '') + '" data-index="' + h.lineIndex + '">' +
-                    '<span class="sr-line">' + window.__lyricexUtils.highlight(line.text || '', query) + '</span>' +
+                html +=
+                    '<div class="search-result' +
+                    (i === 0 ? ' selected' : '') +
+                    '" data-index="' +
+                    h.lineIndex +
+                    '">' +
+                    '<span class="sr-line">' +
+                    window.__lyricexUtils.highlight(line.text || '', query) +
+                    '</span>' +
                     (tr ? '<span class="sr-trans">' + tr + '</span>' : '') +
                     '</div>';
             });
@@ -63,7 +78,9 @@
             const items = searchResults.querySelectorAll('.search-result');
             if (!items.length) return;
             searchSel = Math.max(0, Math.min(items.length - 1, searchSel + delta));
-            items.forEach(function (el, i) { el.classList.toggle('selected', i === searchSel); });
+            items.forEach(function (el, i) {
+                el.classList.toggle('selected', i === searchSel);
+            });
             const el = items[searchSel];
             if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
         }
@@ -92,8 +109,12 @@
         }
 
         function bind() {
-            searchInput.addEventListener('input', function () { renderSearchResults(searchInput.value); });
-            searchOverlay.addEventListener('click', function (e) { if (e.target === searchOverlay) closeSearch(); });
+            searchInput.addEventListener('input', function () {
+                renderSearchResults(searchInput.value);
+            });
+            searchOverlay.addEventListener('click', function (e) {
+                if (e.target === searchOverlay) closeSearch();
+            });
         }
 
         return {
@@ -102,7 +123,9 @@
             select: searchSelect,
             jump: searchJump,
             render: renderSearchResults,
-            isOpen: function () { return searchOpen; },
+            isOpen: function () {
+                return searchOpen;
+            },
             bind: bind
         };
     };

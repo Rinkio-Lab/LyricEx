@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "lyricex",
   "version": "3.2.0",
   "private": true,
@@ -9,10 +9,12 @@
     "test:cov": "c8 node tests/run-tests.mjs",
     "e2e": "playwright test",
     "e2e:install": "playwright install chromium",
-    "release-check": "node scripts/release-check.mjs"
+    "release-check": "node scripts/release-check.mjs",
+    "format": "prettier --write \"assets/**/*.js\" \"tests/**/*.mjs\" \"scripts/**/*.mjs\" \"*.mjs\" \"assets/**/*.css\" \"*.json\"",
+    "precommit": "npm run format \u0026\u0026 npm run lint \u0026\u0026 npm test"
   },
   "engines": {
-    "node": ">=18"
+    "node": "\u003e=18"
   },
   "license": "MIT",
   "devDependencies": {
@@ -21,6 +23,7 @@
     "axe-core": "^4.13.0",
     "c8": "^12.0.0",
     "eslint": "^10.11.0",
-    "globals": "^17.12.0"
+    "globals": "^17.12.0",
+    "prettier": "^3.9.9"
   }
 }

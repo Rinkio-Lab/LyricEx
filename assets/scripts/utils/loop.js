@@ -1,7 +1,7 @@
 /* LyricEx v1.7.0 – loop helpers (pure; no DOM) */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
 
     // loopMode: none → single (整曲) → line (当前句) → none …
     u.nextLoopMode = function (mode) {
@@ -16,7 +16,7 @@
         var start = Math.max(0, Number(lyrics[idx].time) - offset);
         var end;
         if (idx + 1 < lyrics.length) end = Number(lyrics[idx + 1].time) - offset;
-        else end = (duration > 0 ? duration : start + 3);
+        else end = duration > 0 ? duration : start + 3;
         if (!isFinite(end) || end <= start) end = start + 3;
         return { start: start, end: end };
     };
@@ -32,10 +32,11 @@
         for (var i = 0; i < marks.length; i++) {
             var m = marks[i];
             if (!m || !m.active) continue;
-            var s = Number(m.start), e = Number(m.end);
+            var s = Number(m.start),
+                e = Number(m.end);
             if (!isFinite(s) || !isFinite(e) || e <= s) continue;
             if (t >= s && t < e) {
-                if (!best || (e - s) < (best.end - best.start)) best = m;
+                if (!best || e - s < best.end - best.start) best = m;
             }
         }
         return best;

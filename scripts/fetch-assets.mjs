@@ -22,24 +22,27 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VENDOR = path.resolve(__dirname, '..', 'vendor');
 
 const UA = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+    'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'
 };
 
 function get(url, headers = {}) {
     return new Promise((resolve, reject) => {
-        https.get(url, { headers }, (res) => {
-            if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-                res.resume();
-                return resolve(get(new URL(res.headers.location, url).toString(), headers));
-            }
-            if (res.statusCode !== 200) {
-                res.resume();
-                return reject(new Error(`HTTP ${res.statusCode} for ${url}`));
-            }
-            const chunks = [];
-            res.on('data', (c) => chunks.push(c));
-            res.on('end', () => resolve(Buffer.concat(chunks)));
-        }).on('error', reject);
+        https
+            .get(url, { headers }, (res) => {
+                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                    res.resume();
+                    return resolve(get(new URL(res.headers.location, url).toString(), headers));
+                }
+                if (res.statusCode !== 200) {
+                    res.resume();
+                    return reject(new Error(`HTTP ${res.statusCode} for ${url}`));
+                }
+                const chunks = [];
+                res.on('data', (c) => chunks.push(c));
+                res.on('end', () => resolve(Buffer.concat(chunks)));
+            })
+            .on('error', reject);
     });
 }
 
@@ -51,8 +54,12 @@ function write(dir, name, buf) {
 
 async function fetchGoogleFont(family, spec, slug) {
     console.log('Google Font:', family, spec);
-    const cssUrl = 'https://fonts.googleapis.com/css2?family=' +
-        encodeURIComponent(family).replace(/%20/g, '+') + ':' + spec + '&display=swap';
+    const cssUrl =
+        'https://fonts.googleapis.com/css2?family=' +
+        encodeURIComponent(family).replace(/%20/g, '+') +
+        ':' +
+        spec +
+        '&display=swap';
     let css = (await get(cssUrl, UA)).toString('utf8');
 
     const urls = [...css.matchAll(/url\((https:\/\/[^)]+)\)/g)].map((m) => m[1]);

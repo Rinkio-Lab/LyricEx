@@ -15,7 +15,7 @@
 
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
 
     function AiImportError(message, details) {
         var e = new Error(message);
@@ -35,7 +35,9 @@
         var start = s.indexOf('{');
         if (start < 0) return null;
         // balance braces so a trailing "好的" or notes after `}` are ignored
-        var depth = 0, inStr = false, esc = false;
+        var depth = 0,
+            inStr = false,
+            esc = false;
         for (var i = start; i < s.length; i++) {
             var ch = s[i];
             if (inStr) {
@@ -46,7 +48,10 @@
             }
             if (ch === '"') inStr = true;
             else if (ch === '{') depth++;
-            else if (ch === '}') { depth--; if (depth === 0) return s.slice(start, i + 1); }
+            else if (ch === '}') {
+                depth--;
+                if (depth === 0) return s.slice(start, i + 1);
+            }
         }
         return null;
     }
@@ -74,14 +79,23 @@
         var out = [];
         str.split('|').forEach(function (raw, i) {
             var parts = raw.split(',');
-            if (parts.length !== 5 || parts.some(function (p) { return !String(p).trim(); })) {
-                throw AiImportError(label + '的第 ' + (i + 1) + ' 个词条必须包含 5 个非空字段（罗马音,假名,汉字,词性,释义）', [
-                    label + '的第 ' + (i + 1) + ' 个词条格式错误'
-                ]);
+            if (
+                parts.length !== 5 ||
+                parts.some(function (p) {
+                    return !String(p).trim();
+                })
+            ) {
+                throw AiImportError(
+                    label + '的第 ' + (i + 1) + ' 个词条必须包含 5 个非空字段（罗马音,假名,汉字,词性,释义）',
+                    [label + '的第 ' + (i + 1) + ' 个词条格式错误']
+                );
             }
             out.push({
-                romaji: parts[0].trim(), hiragana: parts[1].trim(), kanji: parts[2].trim(),
-                partOfSpeech: parts[3].trim(), meaning: parts[4].trim()
+                romaji: parts[0].trim(),
+                hiragana: parts[1].trim(),
+                kanji: parts[2].trim(),
+                partOfSpeech: parts[3].trim(),
+                meaning: parts[4].trim()
             });
         });
         return out;
@@ -94,8 +108,11 @@
         var json = extractJson(text);
         if (!json) throw AiImportError('未找到 JSON 对象，请确认粘贴的是 AI 返回的分析结果', ['未找到 JSON 对象']);
         var data;
-        try { data = JSON.parse(json); }
-        catch (e) { throw AiImportError('JSON 解析失败：' + e.message, ['JSON 语法错误']); }
+        try {
+            data = JSON.parse(json);
+        } catch (e) {
+            throw AiImportError('JSON 解析失败：' + e.message, ['JSON 语法错误']);
+        }
         if (!data || typeof data !== 'object' || Array.isArray(data)) {
             throw AiImportError('返回内容必须是 JSON 对象', ['返回内容必须是 JSON 对象']);
         }
@@ -107,14 +124,17 @@
                 throw AiImportError(label + ' 必须是对象', [label + ' 必须是对象']);
             }
             var time = parseEntryTime(o.time);
-            if (time === null) throw AiImportError(label + '的 time 字段无效（需要秒数或 mm:ss）', [label + '的 time 无效']);
+            if (time === null)
+                throw AiImportError(label + '的 time 字段无效（需要秒数或 mm:ss）', [label + '的 time 无效']);
             if (typeof o.text !== 'string' || !o.text.trim()) {
                 throw AiImportError(label + '的 text 字段必须是非空字符串', [label + '的 text 为空']);
             }
             var entry = { time: time, text: o.text };
             if (o.translation !== undefined) {
                 if (typeof o.translation !== 'string') {
-                    throw AiImportError(label + '的 translation 字段必须是字符串', [label + '的 translation 必须是字符串']);
+                    throw AiImportError(label + '的 translation 字段必须是字符串', [
+                        label + '的 translation 必须是字符串'
+                    ]);
                 }
                 entry.translation = o.translation;
             }
@@ -130,9 +150,14 @@
     // text match on unused results. Lines without a confident match are left
     // WITHOUT analysis and listed in unmatched for the UI to surface.
     var TIME_TOLERANCE = 0.1;
-    function normText(s) { return String(s == null ? '' : s).replace(/\s+/g, '').trim(); }
+    function normText(s) {
+        return String(s == null ? '' : s)
+            .replace(/\s+/g, '')
+            .trim();
+    }
     u.matchAnalysisToLyrics = function (lyrics, results) {
-        var byTime = {}, used = {};
+        var byTime = {},
+            used = {};
         results.forEach(function (r, i) {
             var key = Math.round(r.time * 10);
             (byTime[key] = byTime[key] || []).push({ r: r, i: i });
@@ -144,7 +169,10 @@
             var pick = null;
             for (var j = 0; j < pool.length; j++) {
                 if (used[pool[j].i]) continue;
-                if (normText(pool[j].r.text) === normText(line.text)) { pick = pool[j]; break; }
+                if (normText(pool[j].r.text) === normText(line.text)) {
+                    pick = pool[j];
+                    break;
+                }
             }
             if (!pick) {
                 // tolerance pass: same text within ±0.1s of this line
@@ -152,8 +180,13 @@
                     var p2 = byTime[k] || [];
                     for (var m = 0; m < p2.length; m++) {
                         if (used[p2[m].i]) continue;
-                        if (Math.abs(p2[m].r.time - line.time) <= TIME_TOLERANCE &&
-                            normText(p2[m].r.text) === normText(line.text)) { pick = p2[m]; break; }
+                        if (
+                            Math.abs(p2[m].r.time - line.time) <= TIME_TOLERANCE &&
+                            normText(p2[m].r.text) === normText(line.text)
+                        ) {
+                            pick = p2[m];
+                            break;
+                        }
                     }
                     if (pick) break;
                 }
@@ -168,7 +201,10 @@
             // from hand-built results — normalize defensively.
             var analysis = pick.r.analysis;
             if (typeof analysis === 'string') analysis = parseAnalysis(analysis, '第 ' + (pick.i + 1) + ' 条结果');
-            if (Array.isArray(analysis) && analysis.length) copy.analysis = analysis.map(function (a) { return Object.assign({}, a); });
+            if (Array.isArray(analysis) && analysis.length)
+                copy.analysis = analysis.map(function (a) {
+                    return Object.assign({}, a);
+                });
             if (pick.r.translation !== undefined) copy.translation = pick.r.translation;
             copy.analysisSource = 'ai';
             return copy;

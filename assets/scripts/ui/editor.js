@@ -12,8 +12,11 @@
     'use strict';
 
     root.__lyricexEditor = function (ctx) {
-        var t = ctx.t, esc = ctx.esc, L = ctx.L;
-        var viewContent = ctx.viewContent, fileInput = ctx.fileInput;
+        var t = ctx.t,
+            esc = ctx.esc,
+            L = ctx.L;
+        var viewContent = ctx.viewContent,
+            fileInput = ctx.fileInput;
         var editorDirtyFlag = false;
         // v2.6.0: workspace tabs — 'refine' (timeline/export, the historical
         // editor) and 'build' (pack builder, owned by ui/workspace.js).
@@ -48,57 +51,134 @@
         // them onto the current lyrics by time proximity.
         function importWordTimings(file) {
             if (!file) return;
-            file.text().then(function (text) {
-                const isAss = /\.ass$/i.test(file.name);
-                const isYrc = /\.(yrc|klyric)$/i.test(file.name);
-                const parsed = isAss
-                    ? { lines: window.__lyricexUtils.parseAssKaraoke(text) }
-                    : isYrc
-                        ? { lines: window.__lyricexUtils.parseYrcLines(text) }
-                        : window.__lyricexUtils.parseLrcWordLines(text);
-                if (!parsed.lines.length) { window.__lyricexDialog.alert(t('importWordTimingEmpty')); return; }
-                const matched = window.__lyricexUtils.mergeWordTimings(ctx.lyrics, parsed.lines, 1.5);
-                const count = matched.filter(function (l) { return l.words && l.words.length; }).length;
-                ctx.lyrics.forEach(function (l) { delete l._words; });
-                markEditorDirty();
-                if (ctx.currentView === 'editor') renderEditorView();
-                else ctx.renderView();
-                ctx.updateSidebarStatus();
-                if (count === 0) window.__lyricexDialog.alert(t('importWordTimingEmpty'));
-            }).catch(function () { window.__lyricexDialog.alert(t('importWordTimingEmpty')); });
+            file.text()
+                .then(function (text) {
+                    const isAss = /\.ass$/i.test(file.name);
+                    const isYrc = /\.(yrc|klyric)$/i.test(file.name);
+                    const parsed = isAss
+                        ? { lines: window.__lyricexUtils.parseAssKaraoke(text) }
+                        : isYrc
+                          ? { lines: window.__lyricexUtils.parseYrcLines(text) }
+                          : window.__lyricexUtils.parseLrcWordLines(text);
+                    if (!parsed.lines.length) {
+                        window.__lyricexDialog.alert(t('importWordTimingEmpty'));
+                        return;
+                    }
+                    const matched = window.__lyricexUtils.mergeWordTimings(ctx.lyrics, parsed.lines, 1.5);
+                    const count = matched.filter(function (l) {
+                        return l.words && l.words.length;
+                    }).length;
+                    ctx.lyrics.forEach(function (l) {
+                        delete l._words;
+                    });
+                    markEditorDirty();
+                    if (ctx.currentView === 'editor') renderEditorView();
+                    else ctx.renderView();
+                    ctx.updateSidebarStatus();
+                    if (count === 0) window.__lyricexDialog.alert(t('importWordTimingEmpty'));
+                })
+                .catch(function () {
+                    window.__lyricexDialog.alert(t('importWordTimingEmpty'));
+                });
         }
 
         function editorEditPanelHTML(line) {
-            let h = '<div class="ee-grid">' +
-                '<label>' + t('editorText') + '<input type="text" class="ee-text" value="' + esc(line.text || '') + '"></label>' +
-                '<label>' + t('translation') + '<input type="text" class="ee-translation" value="' + esc(line.translation || '') + '"></label>' +
-                '<label>' + t('editorNote') + '<input type="text" class="ee-note" value="' + esc(line.note || '') + '"></label>' +
+            let h =
+                '<div class="ee-grid">' +
+                '<label>' +
+                t('editorText') +
+                '<input type="text" class="ee-text" value="' +
+                esc(line.text || '') +
+                '"></label>' +
+                '<label>' +
+                t('translation') +
+                '<input type="text" class="ee-translation" value="' +
+                esc(line.translation || '') +
+                '"></label>' +
+                '<label>' +
+                t('editorNote') +
+                '<input type="text" class="ee-note" value="' +
+                esc(line.note || '') +
+                '"></label>' +
                 '</div>';
-            h += '<table class="ee-analysis"><thead><tr><th>' + t('romaji') + '</th><th>' + t('hiragana') +
-                '</th><th>' + t('kanji') + '</th><th>' + t('pos') + '</th><th>' + t('meaning') + '</th><th></th></tr></thead><tbody>';
+            h +=
+                '<table class="ee-analysis"><thead><tr><th>' +
+                t('romaji') +
+                '</th><th>' +
+                t('hiragana') +
+                '</th><th>' +
+                t('kanji') +
+                '</th><th>' +
+                t('pos') +
+                '</th><th>' +
+                t('meaning') +
+                '</th><th></th></tr></thead><tbody>';
             if (line.analysis && line.analysis.length) {
                 line.analysis.forEach(function (a, ai) {
-                    h += '<tr>' +
-                        '<td><input type="text" class="ee-a" data-ai="' + ai + '" data-f="romaji" value="' + esc(a.romaji || '') + '"></td>' +
-                        '<td><input type="text" class="ee-a" data-ai="' + ai + '" data-f="hiragana" value="' + esc(a.hiragana || '') + '"></td>' +
-                        '<td><input type="text" class="ee-a" data-ai="' + ai + '" data-f="kanji" value="' + esc(a.kanji || '') + '"></td>' +
-                        '<td><input type="text" class="ee-a" data-ai="' + ai + '" data-f="partOfSpeech" value="' + esc(a.partOfSpeech || '') + '"></td>' +
-                        '<td><input type="text" class="ee-a" data-ai="' + ai + '" data-f="meaning" value="' + esc(a.meaning || '') + '"></td>' +
-                        '<td><button class="ee-del-word" data-ai="' + ai + '" title="' + t('editorRemoveWord') + '"><i class="fas fa-times"></i></button></td>' +
+                    h +=
+                        '<tr>' +
+                        '<td><input type="text" class="ee-a" data-ai="' +
+                        ai +
+                        '" data-f="romaji" value="' +
+                        esc(a.romaji || '') +
+                        '"></td>' +
+                        '<td><input type="text" class="ee-a" data-ai="' +
+                        ai +
+                        '" data-f="hiragana" value="' +
+                        esc(a.hiragana || '') +
+                        '"></td>' +
+                        '<td><input type="text" class="ee-a" data-ai="' +
+                        ai +
+                        '" data-f="kanji" value="' +
+                        esc(a.kanji || '') +
+                        '"></td>' +
+                        '<td><input type="text" class="ee-a" data-ai="' +
+                        ai +
+                        '" data-f="partOfSpeech" value="' +
+                        esc(a.partOfSpeech || '') +
+                        '"></td>' +
+                        '<td><input type="text" class="ee-a" data-ai="' +
+                        ai +
+                        '" data-f="meaning" value="' +
+                        esc(a.meaning || '') +
+                        '"></td>' +
+                        '<td><button class="ee-del-word" data-ai="' +
+                        ai +
+                        '" title="' +
+                        t('editorRemoveWord') +
+                        '"><i class="fas fa-times"></i></button></td>' +
                         '</tr>';
                 });
             }
             h += '</tbody></table>';
-            h += '<div class="ee-footer"><button class="ee-add-word editor-btn"><i class="fas fa-plus"></i> ' + t('editorAddWord') + '</button></div>';
+            h +=
+                '<div class="ee-footer"><button class="ee-add-word editor-btn"><i class="fas fa-plus"></i> ' +
+                t('editorAddWord') +
+                '</button></div>';
             if (line.words && line.words.length) {
-                h += '<div class="ee-words"><div class="ee-words-title">' + t('wordTiming') +
-                    ' <span class="ee-words-hint">' + t('wordTimingHint') + '</span></div>';
+                h +=
+                    '<div class="ee-words"><div class="ee-words-title">' +
+                    t('wordTiming') +
+                    ' <span class="ee-words-hint">' +
+                    t('wordTimingHint') +
+                    '</span></div>';
                 line.words.forEach(function (w, wi) {
-                    h += '<div class="ee-word-row">' +
-                        '<span class="ee-word-text">' + esc(w.text || '') + '</span>' +
-                        '<input type="text" class="ee-w" data-wi="' + wi + '" data-f="start" value="' + (w.start != null ? L.formatTimePrecise(w.start) : '') + '" placeholder="start">' +
+                    h +=
+                        '<div class="ee-word-row">' +
+                        '<span class="ee-word-text">' +
+                        esc(w.text || '') +
+                        '</span>' +
+                        '<input type="text" class="ee-w" data-wi="' +
+                        wi +
+                        '" data-f="start" value="' +
+                        (w.start != null ? L.formatTimePrecise(w.start) : '') +
+                        '" placeholder="start">' +
                         '<span class="ee-w-dash">\u2013</span>' +
-                        '<input type="text" class="ee-w" data-wi="' + wi + '" data-f="end" value="' + (w.end != null ? L.formatTimePrecise(w.end) : '') + '" placeholder="end">' +
+                        '<input type="text" class="ee-w" data-wi="' +
+                        wi +
+                        '" data-f="end" value="' +
+                        (w.end != null ? L.formatTimePrecise(w.end) : '') +
+                        '" placeholder="end">' +
                         '</div>';
                 });
                 h += '</div>';
@@ -115,93 +195,200 @@
             // build pane is a placeholder filled by ui/workspace.js via
             // ctx.renderWorkspaceTab when the tab is active.
             const activeTab = editorTab || 'refine';
-            let html = '<div class="view-editor"><div class="editor-tabs">' +
-                '<button class="editor-tab' + (activeTab === 'refine' ? ' active' : '') + '" data-editor-tab="refine">' + t('editorTabRefine') + '</button>' +
-                '<button class="editor-tab' + (activeTab === 'build' ? ' active' : '') + '" data-editor-tab="build">' + t('editorTabBuild') + '</button>' +
+            let html =
+                '<div class="view-editor"><div class="editor-tabs">' +
+                '<button class="editor-tab' +
+                (activeTab === 'refine' ? ' active' : '') +
+                '" data-editor-tab="refine">' +
+                t('editorTabRefine') +
+                '</button>' +
+                '<button class="editor-tab' +
+                (activeTab === 'build' ? ' active' : '') +
+                '" data-editor-tab="build">' +
+                t('editorTabBuild') +
+                '</button>' +
                 '</div>';
-            html += '<div class="editor-pane' + (activeTab === 'refine' ? '' : ' hidden') + '" data-editor-pane="refine">';
+            html +=
+                '<div class="editor-pane' + (activeTab === 'refine' ? '' : ' hidden') + '" data-editor-pane="refine">';
             if (!hasLyrics) {
-                html += '<div class="editor-empty-hint"><i class="fas fa-tools"></i> ' + t('editorEmptyHint') + '</div>';
+                html +=
+                    '<div class="editor-empty-hint"><i class="fas fa-tools"></i> ' + t('editorEmptyHint') + '</div>';
             }
             if (hasLyrics) {
-            html += '<div class="editor-head"><div class="editor-toolbar">';
-            // ---- group: 歌曲信息 (metadata + cover + offset) ----
-            html += '<div class="editor-group">' +
-                '<div class="editor-group-label">' + t('editorMeta') + '</div>' +
-                '<div class="editor-group-body">' +
-                '<div class="editor-meta">' +
-                '<label>' + t('metaTitle') + '<input type="text" id="metaTitle" value="' + esc((ctx.songData && ctx.songData.title) || '') + '"></label>' +
-                '<label>' + t('metaArtist') + '<input type="text" id="metaArtist" value="' + esc((ctx.songData && ctx.songData.artist) || '') + '"></label>' +
-                '<label>' + t('metaAlbum') + '<input type="text" id="metaAlbum" value="' + esc((ctx.songData && ctx.songData.album) || '') + '"></label>' +
-                '</div>' +
-                '<div class="editor-cover">' +
-                '<span class="editor-cover-thumb" id="editorCoverThumb">' + (ctx.coverUrl ? '<img src="' + ctx.coverUrl + '" alt="">' : '<i class="fas fa-image"></i>') + '</span>' +
-                '<button class="editor-btn" id="editorCoverBtn"><i class="fas fa-upload"></i> ' + (ctx.coverUrl ? t('editorCoverChange') : t('editorCoverAdd')) + '</button>' +
-                (ctx.coverUrl ? '<button class="editor-btn" id="editorCoverRemoveBtn"><i class="fas fa-trash-alt"></i> ' + t('editorCoverRemove') + '</button>' : '') +
-                '<input type="file" id="editorCoverFile" accept="image/*" style="display:none">' +
-                '</div>' +
-                // v2.0.0 #13: off-vocal (instrumental) track — add / change / remove,
-                // mirroring the cover entry; audition buttons reuse ctx.instrumentalUrl.
-                '<div class="editor-cover">' +
-                '<span class="editor-cover-thumb" id="editorInstThumb"' + (ctx.instrumentalUrl ? ' style="color:var(--accent)"' : '') + '><i class="fas fa-music"></i></span>' +
-                '<button class="editor-btn" id="editorInstBtn"><i class="fas fa-upload"></i> ' + (ctx.instrumentalUrl ? t('editorInstChange') : t('editorInstAdd')) + '</button>' +
-                (ctx.instrumentalUrl ? '<button class="editor-btn" id="editorInstRemoveBtn"><i class="fas fa-trash-alt"></i> ' + t('editorInstRemove') + '</button>' : '') +
-                '<input type="file" id="editorInstFile" accept="audio/*" style="display:none">' +
-                '</div>' +
-                '<div class="editor-offset">' +
-                '<label data-i18n="editorOffset">' + t('editorOffset') + '</label>' +
-                '<input type="range" id="editorOffsetRange" min="-2000" max="2000" step="10" value="' + Math.round(ctx.offset * 1000) + '">' +
-                '<span class="offset-value" id="editorOffsetValue">' + Math.round(ctx.offset * 1000) + ' ms</span>' +
-                '</div>' +
-                '</div></div>';
-            // ---- group: 编辑 ----
-            html += '<div class="editor-group">' +
-                '<div class="editor-group-label">' + t('editorGroupEdit') + '</div>' +
-                '<div class="editor-group-body">' +
-                '<button class="editor-btn" id="editorAddLineBtn"><i class="fas fa-plus"></i> ' + t('editorAddLine') + '</button>' +
-                '<button class="editor-btn" id="editorReloadBtn"><i class="fas fa-undo-alt"></i> ' + t('editorReload') + '</button>' +
-                '<button class="editor-btn" id="importWordsBtn"><i class="fas fa-clock"></i> ' + t('importWordTiming') + '</button>' +
-                '<input type="file" id="importWordsFile" accept=".lrc,.ass,.yrc,.klyric" style="display:none">' +
-                '<button class="editor-btn" id="editorSeekStartBtn"><i class="fas fa-undo"></i> ' + t('backToStart') + '</button>' +
-                '</div></div>';
-            // ---- group: 导出 ----
-            html += '<div class="editor-group">' +
-                '<div class="editor-group-label">' + t('editorGroupExport') + '</div>' +
-                '<div class="editor-group-body">' +
-                '<button class="editor-btn" id="exportPackageBtn"><i class="fas fa-archive"></i> ' + t('exportPackage') + '</button>' +
-                '<button class="editor-btn" id="exportLrcBtn"><i class="fas fa-file-alt"></i> ' + t('exportLrc') + '</button>' +
-                '<button class="editor-btn" id="exportSrtBtn"><i class="fas fa-closed-captioning"></i> ' + t('exportSrt') + '</button>' +
-                '<button class="editor-btn" id="exportAssBtn"><i class="fas fa-closed-captioning"></i> ' + t('exportAss') + '</button>' +
-                '<button class="editor-btn" id="exportVideoBtn"><i class="fas fa-video"></i> ' + t('exportVideo') + '</button>' +
-                '<button class="editor-btn" id="printStudyBtn"><i class="fas fa-print"></i> ' + t('printStudy') + '</button>' +
-                '<button class="editor-btn" id="exportNotesBtn"><i class="fas fa-file-code"></i> ' + t('exportNotesMd') + '</button>' +
-                '<button class="editor-btn" id="exportNotesHtmlBtn"><i class="fas fa-file-code"></i> ' + t('exportNotesHtml') + '</button>' +
-                '<button class="editor-btn" id="posterBtn"><i class="fas fa-mobile-alt"></i> ' + t('exportPoster') + '</button>' +
-                '</div></div>';
-            html += '</div>'; // close editor-toolbar
-            html += '<div class="editor-hint">' + t('editorHint') +
-                (editorDirtyFlag ? '<span class="dirty-chip">' + t('editorDirty') + '</span>' : '') + '</div>';
-            html += '</div>'; // close editor-head
-            ctx.lyrics.forEach(function (line, idx) {
-                const isActive = idx === ctx.activeLineIndex;
-                const tags = [];
-                if (line.analysis && line.analysis.length) {
-                    tags.push('<span class="tag tag-a" title="' + t('editorHasAnalysis') + '">A</span>');
-                }
-                if (L.wordSpans(line)) {
-                    tags.push('<span class="tag tag-w" title="' + t('editorHasWords') + '">W</span>');
-                }
-                html += '<div class="editor-row' + (isActive ? ' active' : '') + '" data-index="' + idx + '">' +
-                    '<span class="drag-handle" title="' + t('dragToAdjust') + '"><i class="fas fa-grip-vertical"></i></span>' +
-                    '<input type="text" class="time-input" value="' + L.formatTimePrecise(line.time) + '" spellcheck="false">' +
-                    '<button class="editor-expand" title="' + t('editorEdit') + '"><i class="fas fa-pen"></i></button>' +
-                    '<span class="editor-text"' + ctx.langAttr(line) + '>' + ctx.lineTextHTML(line, idx) + '</span>' +
-                    (tags.length ? '<span class="editor-tags">' + tags.join('') + '</span>' : '') +
-                    '<button class="editor-seek" title="' + t('jumpToLine') + '"><i class="fas fa-play"></i></button>' +
-                    '<button class="editor-del" title="' + t('editorDeleteLine') + '"><i class="fas fa-trash-alt"></i></button>' +
+                html += '<div class="editor-head"><div class="editor-toolbar">';
+                // ---- group: 歌曲信息 (metadata + cover + offset) ----
+                html +=
+                    '<div class="editor-group">' +
+                    '<div class="editor-group-label">' +
+                    t('editorMeta') +
+                    '</div>' +
+                    '<div class="editor-group-body">' +
+                    '<div class="editor-meta">' +
+                    '<label>' +
+                    t('metaTitle') +
+                    '<input type="text" id="metaTitle" value="' +
+                    esc((ctx.songData && ctx.songData.title) || '') +
+                    '"></label>' +
+                    '<label>' +
+                    t('metaArtist') +
+                    '<input type="text" id="metaArtist" value="' +
+                    esc((ctx.songData && ctx.songData.artist) || '') +
+                    '"></label>' +
+                    '<label>' +
+                    t('metaAlbum') +
+                    '<input type="text" id="metaAlbum" value="' +
+                    esc((ctx.songData && ctx.songData.album) || '') +
+                    '"></label>' +
+                    '</div>' +
+                    '<div class="editor-cover">' +
+                    '<span class="editor-cover-thumb" id="editorCoverThumb">' +
+                    (ctx.coverUrl ? '<img src="' + ctx.coverUrl + '" alt="">' : '<i class="fas fa-image"></i>') +
+                    '</span>' +
+                    '<button class="editor-btn" id="editorCoverBtn"><i class="fas fa-upload"></i> ' +
+                    (ctx.coverUrl ? t('editorCoverChange') : t('editorCoverAdd')) +
+                    '</button>' +
+                    (ctx.coverUrl
+                        ? '<button class="editor-btn" id="editorCoverRemoveBtn"><i class="fas fa-trash-alt"></i> ' +
+                          t('editorCoverRemove') +
+                          '</button>'
+                        : '') +
+                    '<input type="file" id="editorCoverFile" accept="image/*" style="display:none">' +
+                    '</div>' +
+                    // v2.0.0 #13: off-vocal (instrumental) track — add / change / remove,
+                    // mirroring the cover entry; audition buttons reuse ctx.instrumentalUrl.
+                    '<div class="editor-cover">' +
+                    '<span class="editor-cover-thumb" id="editorInstThumb"' +
+                    (ctx.instrumentalUrl ? ' style="color:var(--accent)"' : '') +
+                    '><i class="fas fa-music"></i></span>' +
+                    '<button class="editor-btn" id="editorInstBtn"><i class="fas fa-upload"></i> ' +
+                    (ctx.instrumentalUrl ? t('editorInstChange') : t('editorInstAdd')) +
+                    '</button>' +
+                    (ctx.instrumentalUrl
+                        ? '<button class="editor-btn" id="editorInstRemoveBtn"><i class="fas fa-trash-alt"></i> ' +
+                          t('editorInstRemove') +
+                          '</button>'
+                        : '') +
+                    '<input type="file" id="editorInstFile" accept="audio/*" style="display:none">' +
+                    '</div>' +
+                    '<div class="editor-offset">' +
+                    '<label data-i18n="editorOffset">' +
+                    t('editorOffset') +
+                    '</label>' +
+                    '<input type="range" id="editorOffsetRange" min="-2000" max="2000" step="10" value="' +
+                    Math.round(ctx.offset * 1000) +
+                    '">' +
+                    '<span class="offset-value" id="editorOffsetValue">' +
+                    Math.round(ctx.offset * 1000) +
+                    ' ms</span>' +
+                    '</div>' +
+                    '</div></div>';
+                // ---- group: 编辑 ----
+                html +=
+                    '<div class="editor-group">' +
+                    '<div class="editor-group-label">' +
+                    t('editorGroupEdit') +
+                    '</div>' +
+                    '<div class="editor-group-body">' +
+                    '<button class="editor-btn" id="editorAddLineBtn"><i class="fas fa-plus"></i> ' +
+                    t('editorAddLine') +
+                    '</button>' +
+                    '<button class="editor-btn" id="editorReloadBtn"><i class="fas fa-undo-alt"></i> ' +
+                    t('editorReload') +
+                    '</button>' +
+                    '<button class="editor-btn" id="importWordsBtn"><i class="fas fa-clock"></i> ' +
+                    t('importWordTiming') +
+                    '</button>' +
+                    '<input type="file" id="importWordsFile" accept=".lrc,.ass,.yrc,.klyric" style="display:none">' +
+                    '<button class="editor-btn" id="editorSeekStartBtn"><i class="fas fa-undo"></i> ' +
+                    t('backToStart') +
+                    '</button>' +
+                    '</div></div>';
+                // ---- group: 导出 ----
+                html +=
+                    '<div class="editor-group">' +
+                    '<div class="editor-group-label">' +
+                    t('editorGroupExport') +
+                    '</div>' +
+                    '<div class="editor-group-body">' +
+                    '<button class="editor-btn" id="exportPackageBtn"><i class="fas fa-archive"></i> ' +
+                    t('exportPackage') +
+                    '</button>' +
+                    '<button class="editor-btn" id="exportLrcBtn"><i class="fas fa-file-alt"></i> ' +
+                    t('exportLrc') +
+                    '</button>' +
+                    '<button class="editor-btn" id="exportSrtBtn"><i class="fas fa-closed-captioning"></i> ' +
+                    t('exportSrt') +
+                    '</button>' +
+                    '<button class="editor-btn" id="exportAssBtn"><i class="fas fa-closed-captioning"></i> ' +
+                    t('exportAss') +
+                    '</button>' +
+                    '<button class="editor-btn" id="exportVideoBtn"><i class="fas fa-video"></i> ' +
+                    t('exportVideo') +
+                    '</button>' +
+                    '<button class="editor-btn" id="printStudyBtn"><i class="fas fa-print"></i> ' +
+                    t('printStudy') +
+                    '</button>' +
+                    '<button class="editor-btn" id="exportNotesBtn"><i class="fas fa-file-code"></i> ' +
+                    t('exportNotesMd') +
+                    '</button>' +
+                    '<button class="editor-btn" id="exportNotesHtmlBtn"><i class="fas fa-file-code"></i> ' +
+                    t('exportNotesHtml') +
+                    '</button>' +
+                    '<button class="editor-btn" id="posterBtn"><i class="fas fa-mobile-alt"></i> ' +
+                    t('exportPoster') +
+                    '</button>' +
+                    '</div></div>';
+                html += '</div>'; // close editor-toolbar
+                html +=
+                    '<div class="editor-hint">' +
+                    t('editorHint') +
+                    (editorDirtyFlag ? '<span class="dirty-chip">' + t('editorDirty') + '</span>' : '') +
                     '</div>';
-                html += '<div class="editor-edit hidden" data-edit="' + idx + '">' + editorEditPanelHTML(line) + '</div>';
-            });
+                html += '</div>'; // close editor-head
+                ctx.lyrics.forEach(function (line, idx) {
+                    const isActive = idx === ctx.activeLineIndex;
+                    const tags = [];
+                    if (line.analysis && line.analysis.length) {
+                        tags.push('<span class="tag tag-a" title="' + t('editorHasAnalysis') + '">A</span>');
+                    }
+                    if (L.wordSpans(line)) {
+                        tags.push('<span class="tag tag-w" title="' + t('editorHasWords') + '">W</span>');
+                    }
+                    html +=
+                        '<div class="editor-row' +
+                        (isActive ? ' active' : '') +
+                        '" data-index="' +
+                        idx +
+                        '">' +
+                        '<span class="drag-handle" title="' +
+                        t('dragToAdjust') +
+                        '"><i class="fas fa-grip-vertical"></i></span>' +
+                        '<input type="text" class="time-input" value="' +
+                        L.formatTimePrecise(line.time) +
+                        '" spellcheck="false">' +
+                        '<button class="editor-expand" title="' +
+                        t('editorEdit') +
+                        '"><i class="fas fa-pen"></i></button>' +
+                        '<span class="editor-text"' +
+                        ctx.langAttr(line) +
+                        '>' +
+                        ctx.lineTextHTML(line, idx) +
+                        '</span>' +
+                        (tags.length ? '<span class="editor-tags">' + tags.join('') + '</span>' : '') +
+                        '<button class="editor-seek" title="' +
+                        t('jumpToLine') +
+                        '"><i class="fas fa-play"></i></button>' +
+                        '<button class="editor-del" title="' +
+                        t('editorDeleteLine') +
+                        '"><i class="fas fa-trash-alt"></i></button>' +
+                        '</div>';
+                    html +=
+                        '<div class="editor-edit hidden" data-edit="' +
+                        idx +
+                        '">' +
+                        editorEditPanelHTML(line) +
+                        '</div>';
+                });
             } // end if (hasLyrics): empty state shows only the hint (no toolbar, no overflow)
             // v2.8.1 fix: there was a stray extra `</div>` here (one closing
             // both the refine pane AND .view-editor), so the build pane got
@@ -209,7 +396,10 @@
             // cut it off entirely, making the whole Build tab look blank.
             // Closing refine once keeps build inside .view-editor.
             html += '</div>'; // close refine pane
-            html += '<div class="editor-pane' + (activeTab === 'build' ? '' : ' hidden') + '" data-editor-pane="build"></div>';
+            html +=
+                '<div class="editor-pane' +
+                (activeTab === 'build' ? '' : ' hidden') +
+                '" data-editor-pane="build"></div>';
             html += '</div>'; // close .view-editor
             viewContent.innerHTML = html;
             if (activeTab === 'build' && ctx.renderWorkspaceTab) ctx.renderWorkspaceTab();
@@ -277,7 +467,10 @@
 
         async function reloadEditorFile() {
             const f = fileInput.files && fileInput.files[0];
-            if (!f) { window.__lyricexDialog.alert(t('editorNoFile')); return; }
+            if (!f) {
+                window.__lyricexDialog.alert(t('editorNoFile'));
+                return;
+            }
             if (!(await window.__lyricexDialog.confirm(t('editorReloadConfirm'), { danger: true }))) return;
             ctx.handleFile(f);
         }
@@ -291,7 +484,10 @@
         }
 
         function removeEditorCover() {
-            if (ctx.coverUrl) { URL.revokeObjectURL(ctx.coverUrl); ctx.coverUrl = null; }
+            if (ctx.coverUrl) {
+                URL.revokeObjectURL(ctx.coverUrl);
+                ctx.coverUrl = null;
+            }
             markEditorDirty();
             renderEditorView();
         }
@@ -369,31 +565,73 @@
                     const idx = panel ? parseInt(panel.dataset.edit, 10) : -1;
                     if (idx >= 0 && ctx.lyrics[idx]) {
                         ctx.lyrics[idx].analysis = ctx.lyrics[idx].analysis || [];
-                        ctx.lyrics[idx].analysis.push({ romaji: '', hiragana: '', kanji: '', partOfSpeech: '', meaning: '' });
+                        ctx.lyrics[idx].analysis.push({
+                            romaji: '',
+                            hiragana: '',
+                            kanji: '',
+                            partOfSpeech: '',
+                            meaning: ''
+                        });
                         markEditorDirty();
                         panel.innerHTML = editorEditPanelHTML(ctx.lyrics[idx]);
                         updateEditorRowText(idx);
                     }
                     return;
                 }
-                if (e.target.closest('#editorAddLineBtn')) { addEditorLine(); return; }
-                if (e.target.closest('#editorReloadBtn')) { reloadEditorFile(); return; }
-                if (e.target.closest('#exportPackageBtn')) { actions.exportPackage(); return; }
-                if (e.target.closest('#exportLrcBtn')) { actions.exportLrc(); return; }
-                if (e.target.closest('#exportSrtBtn')) { actions.exportSrt(); return; }
-                if (e.target.closest('#exportAssBtn')) { actions.exportAss(); return; }
-                if (e.target.closest('#exportVideoBtn')) { actions.openVideo(); return; }
-                if (e.target.closest('#printStudyBtn')) { actions.printStudy(); return; }
-                if (e.target.closest('#exportNotesBtn')) { actions.exportNotes('md'); return; }
-                if (e.target.closest('#exportNotesHtmlBtn')) { actions.exportNotes('html'); return; }
-                if (e.target.closest('#posterBtn')) { actions.exportPoster(); return; }
+                if (e.target.closest('#editorAddLineBtn')) {
+                    addEditorLine();
+                    return;
+                }
+                if (e.target.closest('#editorReloadBtn')) {
+                    reloadEditorFile();
+                    return;
+                }
+                if (e.target.closest('#exportPackageBtn')) {
+                    actions.exportPackage();
+                    return;
+                }
+                if (e.target.closest('#exportLrcBtn')) {
+                    actions.exportLrc();
+                    return;
+                }
+                if (e.target.closest('#exportSrtBtn')) {
+                    actions.exportSrt();
+                    return;
+                }
+                if (e.target.closest('#exportAssBtn')) {
+                    actions.exportAss();
+                    return;
+                }
+                if (e.target.closest('#exportVideoBtn')) {
+                    actions.openVideo();
+                    return;
+                }
+                if (e.target.closest('#printStudyBtn')) {
+                    actions.printStudy();
+                    return;
+                }
+                if (e.target.closest('#exportNotesBtn')) {
+                    actions.exportNotes('md');
+                    return;
+                }
+                if (e.target.closest('#exportNotesHtmlBtn')) {
+                    actions.exportNotes('html');
+                    return;
+                }
+                if (e.target.closest('#posterBtn')) {
+                    actions.exportPoster();
+                    return;
+                }
                 if (e.target.closest('#importWordsBtn')) {
                     const f = document.getElementById('importWordsFile');
                     if (f) f.click();
                     return;
                 }
                 if (e.target.closest('#editorSeekStartBtn')) {
-                    if (ctx.audio) { ctx.audio.currentTime = 0; ctx.updatePlayState(); }
+                    if (ctx.audio) {
+                        ctx.audio.currentTime = 0;
+                        ctx.updatePlayState();
+                    }
                     return;
                 }
                 if (e.target.closest('#editorCoverBtn')) {
@@ -401,13 +639,19 @@
                     if (f) f.click();
                     return;
                 }
-                if (e.target.closest('#editorCoverRemoveBtn')) { removeEditorCover(); return; }
+                if (e.target.closest('#editorCoverRemoveBtn')) {
+                    removeEditorCover();
+                    return;
+                }
                 if (e.target.closest('#editorInstBtn')) {
                     const f = document.getElementById('editorInstFile');
                     if (f) f.click();
                     return;
                 }
-                if (e.target.closest('#editorInstRemoveBtn')) { removeEditorInstrumental(); return; }
+                if (e.target.closest('#editorInstRemoveBtn')) {
+                    removeEditorInstrumental();
+                    return;
+                }
                 // row body click (not on a control/input) toggles the edit panel
                 const row = e.target.closest('.editor-row');
                 if (row && !e.target.closest('input')) {
@@ -469,7 +713,10 @@
                     const idx = row ? parseInt(row.dataset.index, 10) : -1;
                     if (idx < 0) return;
                     const t = L.parseTimePrecise(el.value);
-                    if (isNaN(t)) { el.value = L.formatTimePrecise(ctx.lyrics[idx].time); return; }
+                    if (isNaN(t)) {
+                        el.value = L.formatTimePrecise(ctx.lyrics[idx].time);
+                        return;
+                    }
                     setLineTime(idx, t, true);
                     ctx.enableFollow();
                     return;
@@ -537,9 +784,15 @@
         return {
             render: renderEditorView,
             bind: bindEditorDelegation,
-            setDirty: function (v) { editorDirtyFlag = v; },
-            getDirty: function () { return editorDirtyFlag; },
-            getTab: function () { return editorTab; },
+            setDirty: function (v) {
+                editorDirtyFlag = v;
+            },
+            getDirty: function () {
+                return editorDirtyFlag;
+            },
+            getTab: function () {
+                return editorTab;
+            },
             switchTab: switchEditorTab
         };
     };

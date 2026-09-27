@@ -56,14 +56,18 @@
                 var data = await res.json();
                 if (data && data.tag_name) return { tag: String(data.tag_name) };
             }
-        } catch (_) { /* fall through to raw CHANGELOG */ }
+        } catch (_) {
+            /* fall through to raw CHANGELOG */
+        }
         try {
             var raw = await root.fetch(RAW_URL);
             if (raw.ok) {
                 var ver = parseChangelogVersion(await raw.text());
                 if (ver) return { tag: ver };
             }
-        } catch (_) { /* both channels failed */ }
+        } catch (_) {
+            /* both channels failed */
+        }
         return null;
     }
 
@@ -77,7 +81,11 @@
             var last = Number(root.localStorage.getItem(STORAGE_KEY) || 0);
             if (Date.now() - last < THROTTLE_MS) return; // silent throttle
         }
-        try { root.localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (_) { /* noop */ }
+        try {
+            root.localStorage.setItem(STORAGE_KEY, String(Date.now()));
+        } catch (_) {
+            /* noop */
+        }
 
         var current = getCurrentVersion();
         var latest = await fetchLatest();
@@ -88,7 +96,9 @@
         }
         if (current && compareVersions(latestParsed, current) > 0) {
             if (!dialog) return;
-            var openIt = await dialog.confirm(t('updateFound') + ' v' + latestParsed.join('.') + '。' + t('updateOpen'));
+            var openIt = await dialog.confirm(
+                t('updateFound') + ' v' + latestParsed.join('.') + '。' + t('updateOpen')
+            );
             if (openIt) openReleases(latest.tag);
         } else if (manual && dialog) {
             await dialog.alert(t('updateLatest') + (current ? ' v' + current.join('.') : ''));
@@ -97,13 +107,20 @@
 
     function init(ctx) {
         var btn = ctx && ctx.checkUpdateBtn;
-        if (btn) btn.addEventListener('click', function () { check(true); });
+        if (btn)
+            btn.addEventListener('click', function () {
+                check(true);
+            });
         // silent startup check after a short delay, never blocking first paint
-        setTimeout(function () { check(false); }, 3000);
+        setTimeout(function () {
+            check(false);
+        }, 3000);
     }
 
     root.__lyricexUpdates = {
-        check: check, parseVersion: parseVersion, compareVersions: compareVersions,
+        check: check,
+        parseVersion: parseVersion,
+        compareVersions: compareVersions,
         parseChangelogVersion: parseChangelogVersion
     };
     root.__lyricexUpdatesInit = init;

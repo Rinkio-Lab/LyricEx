@@ -12,11 +12,21 @@
     'use strict';
 
     root.__lyricexMini = function (ctx) {
-        var t = ctx.t, L = ctx.L;
-        var miniBtn = ctx.miniBtn, miniBar = ctx.miniBar, miniDrag = ctx.miniDrag, miniInfo = ctx.miniInfo,
-            miniTitle = ctx.miniTitle, miniLine = ctx.miniLine, miniPlayBtn = ctx.miniPlayBtn,
-            miniPlayIcon = ctx.miniPlayIcon, miniPrevBtn = ctx.miniPrevBtn, miniNextBtn = ctx.miniNextBtn,
-            miniProgress = ctx.miniProgress, miniProgressFill = ctx.miniProgressFill, miniExpandBtn = ctx.miniExpandBtn;
+        var t = ctx.t,
+            L = ctx.L;
+        var miniBtn = ctx.miniBtn,
+            miniBar = ctx.miniBar,
+            miniDrag = ctx.miniDrag,
+            miniInfo = ctx.miniInfo,
+            miniTitle = ctx.miniTitle,
+            miniLine = ctx.miniLine,
+            miniPlayBtn = ctx.miniPlayBtn,
+            miniPlayIcon = ctx.miniPlayIcon,
+            miniPrevBtn = ctx.miniPrevBtn,
+            miniNextBtn = ctx.miniNextBtn,
+            miniProgress = ctx.miniProgress,
+            miniProgressFill = ctx.miniProgressFill,
+            miniExpandBtn = ctx.miniExpandBtn;
 
         var miniOn = false;
 
@@ -45,10 +55,13 @@
 
         function updateMiniBar() {
             if (!miniOn) return;
-            const title = ctx.songData ? (ctx.songData.title || t('unknownSong')) : '\u2013';
-            miniTitle.textContent = (ctx.songData && ctx.songData.artist) ? title + ' \u00b7 ' + ctx.songData.artist : title;
+            const title = ctx.songData ? ctx.songData.title || t('unknownSong') : '\u2013';
+            miniTitle.textContent =
+                ctx.songData && ctx.songData.artist ? title + ' \u00b7 ' + ctx.songData.artist : title;
             const activeLine =
-                ctx.activeLineIndex >= 0 && ctx.activeLineIndex < ctx.lyrics.length ? ctx.lyrics[ctx.activeLineIndex] : null;
+                ctx.activeLineIndex >= 0 && ctx.activeLineIndex < ctx.lyrics.length
+                    ? ctx.lyrics[ctx.activeLineIndex]
+                    : null;
             const miniText = activeLine ? activeLine.text : t('notLoaded');
             miniLine.textContent = miniText;
             // v2.2.0: explicit per-line lang wins over the heuristic (matches
@@ -57,7 +70,8 @@
             if (lang === 'zh' || lang === 'ja' || lang === 'en') miniLine.dataset.lang = lang;
             else if (L.isChinese(miniText)) miniLine.dataset.lang = 'zh';
             else delete miniLine.dataset.lang;
-            const pct = (ctx.audio && ctx.audio.duration) ? Math.min(100, (ctx.getCurrentTime() / ctx.audio.duration) * 100) : 0;
+            const pct =
+                ctx.audio && ctx.audio.duration ? Math.min(100, (ctx.getCurrentTime() / ctx.audio.duration) * 100) : 0;
             miniProgressFill.style.width = pct + '%';
             miniPlayIcon.innerHTML = ctx.isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
         }
@@ -115,7 +129,9 @@
             enter: enterMini,
             exit: exitMini,
             updateBar: updateMiniBar,
-            isOn: function () { return miniOn; },
+            isOn: function () {
+                return miniOn;
+            },
             bind: bindMiniEvents
         };
     };

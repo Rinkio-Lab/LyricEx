@@ -1,0 +1,8 @@
+# Prettier ignore — third-party, generated, or version-controlled-by-tooling files.
+vendor/
+node_modules/
+examples/
+coverage/
+test-results/
+playwright-report/
+package-lock.json

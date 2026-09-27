@@ -7,13 +7,18 @@ await import('../assets/scripts/library/metadata.js');
 const m = globalThis.__lyricexMetadata;
 let failures = 0;
 function eq(name, got, want) {
-    const g = JSON.stringify(got), w = JSON.stringify(want);
-    if (g !== w) { failures++; console.error(`FAIL ${name}: got ${g} want ${w}`); }
-    else console.log(`ok ${name}`);
+    const g = JSON.stringify(got),
+        w = JSON.stringify(want);
+    if (g !== w) {
+        failures++;
+        console.error(`FAIL ${name}: got ${g} want ${w}`);
+    } else console.log(`ok ${name}`);
 }
 function ok(name, cond) {
-    if (!cond) { failures++; console.error(`FAIL ${name}`); }
-    else console.log(`ok ${name}`);
+    if (!cond) {
+        failures++;
+        console.error(`FAIL ${name}`);
+    } else console.log(`ok ${name}`);
 }
 
 // ---- norm ----
@@ -22,7 +27,11 @@ eq('norm null-safe', m.norm(null), '');
 
 // ---- decodeText ----
 eq('decode latin1 (enc 0)', m.decodeText(Uint8Array.from([0, 0x43, 0x61, 0x66, 0xe9]), 0), 'Café');
-eq('decode utf-8 (enc 3)', m.decodeText(new TextEncoder().encode([3].map(c => String.fromCharCode(c)).join('') + 'テスト'), 0), 'テスト');
+eq(
+    'decode utf-8 (enc 3)',
+    m.decodeText(new TextEncoder().encode([3].map((c) => String.fromCharCode(c)).join('') + 'テスト'), 0),
+    'テスト'
+);
 ok('decode empty', m.decodeText(Uint8Array.from([0]), 0) === '');
 
 // ---- parseId3 (hand-built v2.3 tag) ----
@@ -34,8 +43,21 @@ function buildTag(frames) {
     let body = [];
     for (const [id, payload] of frames) {
         const size = payload.length;
-        body = body.concat([id.charCodeAt(0), id.charCodeAt(1), id.charCodeAt(2), id.charCodeAt(3),
-            (size >>> 24) & 0xff, (size >>> 16) & 0xff, (size >>> 8) & 0xff, size & 0xff, 0, 0], payload);
+        body = body.concat(
+            [
+                id.charCodeAt(0),
+                id.charCodeAt(1),
+                id.charCodeAt(2),
+                id.charCodeAt(3),
+                (size >>> 24) & 0xff,
+                (size >>> 16) & 0xff,
+                (size >>> 8) & 0xff,
+                size & 0xff,
+                0,
+                0
+            ],
+            payload
+        );
     }
     const head = [0x49, 0x44, 0x33, 3, 0, 0].concat(syncSafe(body.length));
     return Uint8Array.from(head.concat(body));
@@ -44,7 +66,7 @@ const t = buildTag([
     ['TIT2', [3].concat(Array.from(new TextEncoder().encode('Lemon')))],
     ['TPE1', [0, 0x59, 0x6f, 0x6e, 0x65, 0x7a, 0x75, 0x20, 0x4b, 0x65, 0x6e, 0x73, 0x68, 0x69]], // latin1 "Yonezu Kenshi"
     ['TLEN', [3].concat(Array.from(new TextEncoder().encode('240000')))],
-    ['APIC', [0].concat(Array.from(new TextEncoder().encode('image/jpeg')), [0, 3, 0, 0xff, 0xd8, 0xff])],
+    ['APIC', [0].concat(Array.from(new TextEncoder().encode('image/jpeg')), [0, 3, 0, 0xff, 0xd8, 0xff])]
 ]);
 const parsed = m.parseId3(t);
 eq('id3 title', parsed.title, 'Lemon');
@@ -66,8 +88,15 @@ ok('fileKey differs by size', m.fileKey('a.mp3', 100) !== m.fileKey('a.mp3', 101
 eq('songKey trims title', m.songKey('  Lemon ', '米津玄師'), m.songKey('Lemon', '米津玄師'));
 
 // ---- search / filter ----
-const song = { title: 'Lemon', artist: '米津玄師', album: 'Lemon', genre: 'J-Pop', year: '2018',
-    tags: ['jpop', 'ost'], lyricsText: 'あの日の悲しみ' };
+const song = {
+    title: 'Lemon',
+    artist: '米津玄師',
+    album: 'Lemon',
+    genre: 'J-Pop',
+    year: '2018',
+    tags: ['jpop', 'ost'],
+    lyricsText: 'あの日の悲しみ'
+};
 ok('query hits lyrics', m.matchesQuery(song, '悲しみ'));
 ok('query hits tag', m.matchesQuery(song, 'ost'));
 ok('query empty matches all', m.matchesQuery(song, ''));
@@ -89,7 +118,11 @@ ok('sort plays desc', m.compareSongs(a, b, 'playCount', -1) > 0);
 ok('sort title asc', m.compareSongs(a, b, 'title', 1) < 0);
 
 // ---- facets ----
-const fs = m.facets([song, { ...song, artist: '米津玄師', tags: ['jpop'] }, { title: 'X', artist: '某人', album: 'Z' }]);
+const fs = m.facets([
+    song,
+    { ...song, artist: '米津玄師', tags: ['jpop'] },
+    { title: 'X', artist: '某人', album: 'Z' }
+]);
 eq('facet artists deduped', fs.artists, ['米津玄師', '某人']);
 eq('facet tags deduped', fs.tags, ['jpop', 'ost']);
 eq('facet years', fs.years, ['2018']);

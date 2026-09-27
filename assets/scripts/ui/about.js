@@ -12,21 +12,34 @@
     'use strict';
 
     root.__lyricexAbout = function (ctx) {
-        var t = ctx.t, esc = ctx.esc;
-        var aboutBtn = ctx.aboutBtn, aboutOverlay = ctx.aboutOverlay, aboutCloseBtn = ctx.aboutCloseBtn,
-            aboutSubnav = ctx.aboutSubnav, aboutBody = ctx.aboutBody,
-            changelogBtn = ctx.changelogBtn, changelogOverlay = ctx.changelogOverlay,
-            changelogBody = ctx.changelogBody, changelogCloseBtn = ctx.changelogCloseBtn,
-            guideOverlay = ctx.guideOverlay, guideBody = ctx.guideBody, guideDots = ctx.guideDots,
-            guideCounter = ctx.guideCounter, guidePrevBtn = ctx.guidePrevBtn,
-            guideNextBtn = ctx.guideNextBtn, guideSkipBtn = ctx.guideSkipBtn, watchGuideBtn = ctx.watchGuideBtn;
+        var t = ctx.t,
+            esc = ctx.esc;
+        var aboutBtn = ctx.aboutBtn,
+            aboutOverlay = ctx.aboutOverlay,
+            aboutCloseBtn = ctx.aboutCloseBtn,
+            aboutSubnav = ctx.aboutSubnav,
+            aboutBody = ctx.aboutBody,
+            changelogBtn = ctx.changelogBtn,
+            changelogOverlay = ctx.changelogOverlay,
+            changelogBody = ctx.changelogBody,
+            changelogCloseBtn = ctx.changelogCloseBtn,
+            guideOverlay = ctx.guideOverlay,
+            guideBody = ctx.guideBody,
+            guideDots = ctx.guideDots,
+            guideCounter = ctx.guideCounter,
+            guidePrevBtn = ctx.guidePrevBtn,
+            guideNextBtn = ctx.guideNextBtn,
+            guideSkipBtn = ctx.guideSkipBtn,
+            watchGuideBtn = ctx.watchGuideBtn;
 
         function openAbout() {
             ctx.closeSettings();
             aboutOverlay.classList.add('open');
             buildAboutSubnav();
         }
-        function closeAbout() { aboutOverlay.classList.remove('open'); }
+        function closeAbout() {
+            aboutOverlay.classList.remove('open');
+        }
 
         // Vertical sub-nav for the about page — same interaction as the settings
         // appearance sub-nav: clicking scrolls to the section, scrolling highlights
@@ -40,9 +53,11 @@
                 btn.className = 'settings-subnav-item';
                 btn.textContent = t(sec.dataset.nav || '');
                 btn.addEventListener('click', function () {
-                    const top = sec.getBoundingClientRect().top -
+                    const top =
+                        sec.getBoundingClientRect().top -
                         aboutBody.getBoundingClientRect().top +
-                        aboutBody.scrollTop - 8;
+                        aboutBody.scrollTop -
+                        8;
                     aboutBody.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
                 });
                 aboutSubnav.appendChild(btn);
@@ -59,37 +74,56 @@
             for (let i = 0; i < sections.length; i++) {
                 if (sections[i].getBoundingClientRect().top - bodyTop <= 96) activeIdx = i;
             }
-            items.forEach(function (it, i) { it.classList.toggle('active', i === activeIdx); });
+            items.forEach(function (it, i) {
+                it.classList.toggle('active', i === activeIdx);
+            });
         }
 
         const CHANGELOG_TYPE_LABELS = {
-            added: 'clAdded', changed: 'clChanged', fixed: 'clFixed',
-            test: 'clTest', removed: 'clRemoved', breaking: 'clBreaking'
+            added: 'clAdded',
+            changed: 'clChanged',
+            fixed: 'clFixed',
+            test: 'clTest',
+            removed: 'clRemoved',
+            breaking: 'clBreaking'
         };
 
         function renderChangelog() {
             const entries = window.__lyricexChangelog || [];
             let html = '';
             entries.forEach(function (entry) {
-                html += '<div class="cl-entry">' +
-                    '<div class="cl-head"><span class="cl-version">' + esc(entry.version || '') + '</span>' +
-                    '<span class="cl-date">' + esc(entry.date || '') + '</span></div>' +
+                html +=
+                    '<div class="cl-entry">' +
+                    '<div class="cl-head"><span class="cl-version">' +
+                    esc(entry.version || '') +
+                    '</span>' +
+                    '<span class="cl-date">' +
+                    esc(entry.date || '') +
+                    '</span></div>' +
                     '<ul class="cl-list">';
                 (entry.changes || []).forEach(function (c) {
                     const key = CHANGELOG_TYPE_LABELS[c.type] || 'clChanged';
-                    html += '<li class="cl-item"><span class="cl-tag ' + esc(c.type || 'changed') + '">' +
-                        t(key) + '</span><span class="cl-text">' + esc(c.text || '') + '</span></li>';
+                    html +=
+                        '<li class="cl-item"><span class="cl-tag ' +
+                        esc(c.type || 'changed') +
+                        '">' +
+                        t(key) +
+                        '</span><span class="cl-text">' +
+                        esc(c.text || '') +
+                        '</span></li>';
                 });
                 html += '</ul></div>';
             });
-            changelogBody.innerHTML = html || ('<div class="cl-empty">' + t('changelogEmpty') + '</div>');
+            changelogBody.innerHTML = html || '<div class="cl-empty">' + t('changelogEmpty') + '</div>';
         }
 
         function openChangelog() {
             renderChangelog();
             changelogOverlay.classList.add('open');
         }
-        function closeChangelog() { changelogOverlay.classList.remove('open'); }
+        function closeChangelog() {
+            changelogOverlay.classList.remove('open');
+        }
 
         // Shown once on the first load; reopenable anytime from 关于 → 观看指引.
         // Each step is a (icon, title key, desc key) triple rendered with the live
@@ -107,13 +141,19 @@
         function renderGuideStep() {
             const s = GUIDE_STEPS[guideStep];
             guideBody.innerHTML =
-                '<div class="guide-icon"><i class="fas ' + s.icon + '"></i></div>' +
-                '<div class="guide-step-title">' + esc(t(s.titleKey)) + '</div>' +
-                '<div class="guide-step-desc">' + esc(t(s.descKey)) + '</div>';
+                '<div class="guide-icon"><i class="fas ' +
+                s.icon +
+                '"></i></div>' +
+                '<div class="guide-step-title">' +
+                esc(t(s.titleKey)) +
+                '</div>' +
+                '<div class="guide-step-desc">' +
+                esc(t(s.descKey)) +
+                '</div>';
             guideDots.innerHTML = GUIDE_STEPS.map(function (_, i) {
                 return '<span class="dot' + (i === guideStep ? ' active' : '') + '"></span>';
             }).join('');
-            guideCounter.textContent = (guideStep + 1) + ' / ' + GUIDE_STEPS.length;
+            guideCounter.textContent = guideStep + 1 + ' / ' + GUIDE_STEPS.length;
             guidePrevBtn.style.display = guideStep === 0 ? 'none' : '';
             guideNextBtn.textContent = guideStep === GUIDE_STEPS.length - 1 ? t('guideDone') : t('guideNext');
         }
@@ -125,14 +165,23 @@
         }
         function closeGuide() {
             guideOverlay.classList.remove('open');
-            try { localStorage.setItem('lyricex-guide-seen', '1'); } catch (_) { /* noop */ }
+            try {
+                localStorage.setItem('lyricex-guide-seen', '1');
+            } catch (_) {
+                /* noop */
+            }
         }
         function nextGuide() {
-            if (guideStep < GUIDE_STEPS.length - 1) { guideStep++; renderGuideStep(); }
-            else closeGuide();
+            if (guideStep < GUIDE_STEPS.length - 1) {
+                guideStep++;
+                renderGuideStep();
+            } else closeGuide();
         }
         function prevGuide() {
-            if (guideStep > 0) { guideStep--; renderGuideStep(); }
+            if (guideStep > 0) {
+                guideStep--;
+                renderGuideStep();
+            }
         }
 
         function bind() {
@@ -163,8 +212,12 @@
             closeGuide: closeGuide,
             openChangelog: openChangelog,
             closeChangelog: closeChangelog,
-            renderGuideIfOpen: function () { if (guideOverlay.classList.contains('open')) renderGuideStep(); },
-            renderChangelogIfOpen: function () { if (changelogOverlay.classList.contains('open')) renderChangelog(); },
+            renderGuideIfOpen: function () {
+                if (guideOverlay.classList.contains('open')) renderGuideStep();
+            },
+            renderChangelogIfOpen: function () {
+                if (changelogOverlay.classList.contains('open')) renderChangelog();
+            },
             bind: bind
         };
     };

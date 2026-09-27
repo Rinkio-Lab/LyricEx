@@ -39,49 +39,69 @@
     // Supports multiple timestamps per line, [offset:±ms], [ti:]/[ar:]/[al:] tags.
     // [offset:+] shifts lyrics earlier: effective time = raw - offset/1000.
     lib.parseLRC = function (text) {
-        var title = '', artist = '', offsetMs = 0, lines = [];
-        String(text || '').split(/\r?\n/).forEach(function (raw) {
-            var meta = /^\[(ti|ar|al|offset):(.+?)\]$/i.exec(raw.trim());
-            if (meta) {
-                var tag = meta[1].toLowerCase(), val = meta[2].trim();
-                if (tag === 'ti') title = val;
-                else if (tag === 'ar') artist = val;
-                else if (tag === 'offset') {
-                    var n = parseFloat(val);
-                    if (!isNaN(n)) offsetMs = n;
+        var title = '',
+            artist = '',
+            offsetMs = 0,
+            lines = [];
+        String(text || '')
+            .split(/\r?\n/)
+            .forEach(function (raw) {
+                var meta = /^\[(ti|ar|al|offset):(.+?)\]$/i.exec(raw.trim());
+                if (meta) {
+                    var tag = meta[1].toLowerCase(),
+                        val = meta[2].trim();
+                    if (tag === 'ti') title = val;
+                    else if (tag === 'ar') artist = val;
+                    else if (tag === 'offset') {
+                        var n = parseFloat(val);
+                        if (!isNaN(n)) offsetMs = n;
+                    }
+                    return;
                 }
-                return;
-            }
-            var tags = [];
-            var re = /\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g, m, last = 0, matched = false;
-            while ((m = re.exec(raw)) !== null) {
-                matched = true;
-                tags.push(parseInt(m[1], 10) * 60 + parseInt(m[2], 10) +
-                    (m[3] ? parseInt(String(m[3]).padEnd(3, '0'), 10) / 1000 : 0));
-                // re.lastIndex resets to 0 when exec returns null, so remember it here
-                last = re.lastIndex;
-            }
-            if (!matched) return;
-            var body = raw.slice(last).trim();
-            if (!body) {
-                // v2.7.0: NetEase inline variant - "[t1]text[t2]" where t2 is
-                // the NEXT line's start (row ends with a timestamp). Standard
-                // LRC semantics (body after the LAST timestamp) yield empty
-                // here, so such lines were silently dropped. Take t1 as the
-                // row time and the text between the timestamps as the body.
-                if (tags.length > 1) {
-                    var stripped = raw
-                        .replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]\s*$/, '') // trailing ts
-                        .replace(/^\[[^\]]*\]\s*/, '').trim(); // leading ts
-                    if (stripped) lines.push({ time: tags[0], text: stripped });
+                var tags = [];
+                var re = /\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g,
+                    m,
+                    last = 0,
+                    matched = false;
+                while ((m = re.exec(raw)) !== null) {
+                    matched = true;
+                    tags.push(
+                        parseInt(m[1], 10) * 60 +
+                            parseInt(m[2], 10) +
+                            (m[3] ? parseInt(String(m[3]).padEnd(3, '0'), 10) / 1000 : 0)
+                    );
+                    // re.lastIndex resets to 0 when exec returns null, so remember it here
+                    last = re.lastIndex;
                 }
-                return; // timing-only line
-            }
-            tags.forEach(function (tm) { lines.push({ time: tm, text: body }); });
-        });
+                if (!matched) return;
+                var body = raw.slice(last).trim();
+                if (!body) {
+                    // v2.7.0: NetEase inline variant - "[t1]text[t2]" where t2 is
+                    // the NEXT line's start (row ends with a timestamp). Standard
+                    // LRC semantics (body after the LAST timestamp) yield empty
+                    // here, so such lines were silently dropped. Take t1 as the
+                    // row time and the text between the timestamps as the body.
+                    if (tags.length > 1) {
+                        var stripped = raw
+                            .replace(/\[\d{1,3}:\d{2}(?:[.:]\d{1,3})?\]\s*$/, '') // trailing ts
+                            .replace(/^\[[^\]]*\]\s*/, '')
+                            .trim(); // leading ts
+                        if (stripped) lines.push({ time: tags[0], text: stripped });
+                    }
+                    return; // timing-only line
+                }
+                tags.forEach(function (tm) {
+                    lines.push({ time: tm, text: body });
+                });
+            });
         var off = offsetMs / 1000;
-        if (off) lines.forEach(function (l) { l.time -= off; });
-        lines.sort(function (a, b) { return a.time - b.time; });
+        if (off)
+            lines.forEach(function (l) {
+                l.time -= off;
+            });
+        lines.sort(function (a, b) {
+            return a.time - b.time;
+        });
         return { title: title, artist: artist, offsetMs: offsetMs, lines: lines };
     };
 
@@ -96,12 +116,15 @@
         var out = [];
         line.words.forEach(function (w) {
             if (!w || typeof w.text !== 'string' || !w.text) return;
-            var start = Number(w.start), end = Number(w.end);
+            var start = Number(w.start),
+                end = Number(w.end);
             if (!isFinite(start) || !isFinite(end) || end <= start) return;
             out.push({ text: w.text, start: start, end: end });
         });
         if (out.length < 2) return null;
-        out.sort(function (a, b) { return a.start - b.start; });
+        out.sort(function (a, b) {
+            return a.start - b.start;
+        });
         return out;
     };
 
@@ -118,11 +141,13 @@
     lib.annotateRuby = function (text, analysis) {
         if (!Array.isArray(analysis) || analysis.length === 0) return null;
         var s = String(text == null ? '' : text);
-        var out = [], cursor = 0, used = false;
+        var out = [],
+            cursor = 0,
+            used = false;
         for (var i = 0; i < analysis.length; i++) {
             var item = analysis[i];
-            var kanji = (item && item.kanji != null) ? String(item.kanji) : '';
-            var reading = (item && item.hiragana != null) ? String(item.hiragana) : '';
+            var kanji = item && item.kanji != null ? String(item.kanji) : '';
+            var reading = item && item.hiragana != null ? String(item.hiragana) : '';
             if (!kanji) continue;
             if (!/[\u3400-\u4dbf\u4e00-\u9fff]/.test(kanji)) continue; // no ideographs
             // v2.0.0: an explicit per-char furigana array carries its own readings
@@ -150,7 +175,7 @@
         var out = '';
         for (var i = 0; i < s.length; i++) {
             var c = s.charCodeAt(i);
-            out += (c >= 0x30a1 && c <= 0x30f6) ? String.fromCharCode(c - 0x60) : s[i];
+            out += c >= 0x30a1 && c <= 0x30f6 ? String.fromCharCode(c - 0x60) : s[i];
         }
         return out;
     };
@@ -182,8 +207,9 @@
         var r = String(reading == null ? '' : reading);
         if (!w || !r) return null;
         if (!/[\u3400-\u4dbf\u4e00-\u9fff]/.test(w)) return null; // no kanji: nothing to split
-        if (/[\u3400-\u4dbf\u4e00-\u9fff]/.test(r)) return null;  // reading isn't kana
-        var wf = lib.foldKana(w), rf = lib.foldKana(r);
+        if (/[\u3400-\u4dbf\u4e00-\u9fff]/.test(r)) return null; // reading isn't kana
+        var wf = lib.foldKana(w),
+            rf = lib.foldKana(r);
         if (wf === rf) return null; // surface already equals reading (kana-only)
 
         // Classify word chars into runs: kanji / kana / other (digits, spaces…
@@ -192,8 +218,13 @@
         function kindOf(i) {
             var c = wf.charCodeAt(i);
             if ((c >= 0x4e00 && c <= 0x9fff) || (c >= 0x3400 && c <= 0x4dbf) || c === 0x3005) return 'kanji';
-            if ((c >= 0x3041 && c <= 0x3096) || (c >= 0x309d && c <= 0x309e) ||
-                (c >= 0x30a1 && c <= 0x30f6) || c === 0x30fc) return 'kana';
+            if (
+                (c >= 0x3041 && c <= 0x3096) ||
+                (c >= 0x309d && c <= 0x309e) ||
+                (c >= 0x30a1 && c <= 0x30f6) ||
+                c === 0x30fc
+            )
+                return 'kana';
             return 'other';
         }
         for (var i = 0; i < w.length; i++) {
@@ -202,10 +233,14 @@
             runs[runs.length - 1].chars.push(w[i]);
         }
 
-        var ri = 0, out = [];
+        var ri = 0,
+            out = [];
         for (var s = 0; s < runs.length; s++) {
             var run = runs[s];
-            if (run.k === 'other') { out.push({ t: run.chars.join('') }); continue; }
+            if (run.k === 'other') {
+                out.push({ t: run.chars.join('') });
+                continue;
+            }
             if (run.k === 'kana') {
                 var ktext = run.chars.join('');
                 var kfold = lib.foldKana(ktext);
@@ -216,7 +251,8 @@
             }
             // kanji run: absorb the reading up to the next kana anchor (or end).
             // Consecutive kanji share one ruby block — kana is never annotated.
-            var end = rf.length, s2;
+            var end = rf.length,
+                s2;
             for (s2 = s + 1; s2 < runs.length; s2++) {
                 if (runs[s2].k === 'kana') {
                     end = rf.indexOf(lib.foldKana(runs[s2].chars.join('')), ri);
@@ -244,7 +280,8 @@
     // annotated" rule.
     lib.furiganaFromArray = function (word, arr) {
         if (!Array.isArray(arr) || arr.length === 0) return null;
-        var segs = [], surface = '';
+        var segs = [],
+            surface = '';
         for (var i = 0; i < arr.length; i++) {
             var it = arr[i];
             if (!it || typeof it.t !== 'string' || !it.t) return null;
@@ -271,15 +308,18 @@
         var rgb = lib.hexToRgb(hex);
         if (!rgb) return hex;
         var f = Math.max(0, Math.min(1, 1 - amt));
-        function ch(v) { return Math.round(v * f).toString(16).padStart(2, '0'); }
+        function ch(v) {
+            return Math.round(v * f)
+                .toString(16)
+                .padStart(2, '0');
+        }
         return '#' + ch(rgb[0]) + ch(rgb[1]) + ch(rgb[2]);
     };
 
     lib.hexToRgba = function (hex, alpha) {
         var rgb = lib.hexToRgb(hex);
         if (!rgb) return hex;
-        return 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', ' +
-            Math.max(0, Math.min(1, alpha)) + ')';
+        return 'rgba(' + rgb[0] + ', ' + rgb[1] + ', ' + rgb[2] + ', ' + Math.max(0, Math.min(1, alpha)) + ')';
     };
 
     // =========================== FONTS ===========================
@@ -291,18 +331,17 @@
     // through to M PLUS (Japanese glyph shapes on Chinese translations).
     // The UI default 'default' stays Noto Sans SC-first. 'inherit' = follow UI.
     lib.FONT_PRESETS = {
-        'default': 'var(--font)',
-        'jp': "'M PLUS Rounded 1c', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Yu Gothic UI', 'Meiryo', sans-serif",
-        'sc': "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Hiragino Sans GB', sans-serif",
-        'inherit': 'var(--font)',
-        'sans': "'M PLUS Rounded 1c', 'Noto Sans SC', 'Segoe UI', 'Hiragino Sans', 'PingFang SC', 'Yu Gothic', sans-serif",
-        'serif': "Georgia, 'Noto Serif JP', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif",
-        'mono': "'Cascadia Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace"
+        default: 'var(--font)',
+        jp: "'M PLUS Rounded 1c', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Yu Gothic UI', 'Meiryo', sans-serif",
+        sc: "'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Hiragino Sans GB', sans-serif",
+        inherit: 'var(--font)',
+        sans: "'M PLUS Rounded 1c', 'Noto Sans SC', 'Segoe UI', 'Hiragino Sans', 'PingFang SC', 'Yu Gothic', sans-serif",
+        serif: "Georgia, 'Noto Serif JP', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif",
+        mono: "'Cascadia Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace"
     };
 
     lib.fontStack = function (preset, custom) {
-        return (custom && String(custom).trim()) ? String(custom).trim() :
-            (lib.FONT_PRESETS[preset] || 'var(--font)');
+        return custom && String(custom).trim() ? String(custom).trim() : lib.FONT_PRESETS[preset] || 'var(--font)';
     };
 
     // ==================== PER-LINE SCRIPT DETECTION (v1.6.2) ====================
@@ -336,7 +375,9 @@
     // the romaji is kept on the main line as line.romaji instead of being
     // dropped (or worse, displacing the Japanese original).
     lib.splitMixedLrc = function (lines) {
-        var main = [], trans = [], split = false;
+        var main = [],
+            trans = [],
+            split = false;
         // group by timestamp, rounded to 10ms so NetEase pairs (identical ts)
         // always land in one group while adjacent lines stay separate
         var groups = {};
@@ -344,22 +385,32 @@
             var key = Math.round((Number(l.time) || 0) * 100);
             (groups[key] = groups[key] || []).push(l);
         });
-        Object.keys(groups).sort(function (a, b) { return Number(a) - Number(b); }).forEach(function (key) {
-            var g = groups[key];
-            var ja = g.filter(function (l) { return !lib.isChinese(l.text) && /[\u3040-\u30ff\u31f0-\u31ff\u3005\u3006]/.test(l.text); });
-            var cn = g.filter(function (l) { return lib.isChinese(l.text); });
-            var other = g.filter(function (l) { return !lib.isChinese(l.text) && !/[\u3040-\u30ff\u31f0-\u31ff\u3005\u3006]/.test(l.text); });
-            // pick one original and one translation per group (first wins)
-            var orig = ja.length ? ja[0] : (other.length ? other[0] : null);
-            var tr = cn.length ? cn[0] : null;
-            if (orig && tr) split = true;
-            if (orig) {
-                var m = Object.assign({}, orig);
-                if (orig === ja[0] && other.length && !m.romaji) m.romaji = other[0].text;
-                main.push(m);
-            }
-            if (tr) trans.push(Object.assign({}, tr));
-        });
+        Object.keys(groups)
+            .sort(function (a, b) {
+                return Number(a) - Number(b);
+            })
+            .forEach(function (key) {
+                var g = groups[key];
+                var ja = g.filter(function (l) {
+                    return !lib.isChinese(l.text) && /[\u3040-\u30ff\u31f0-\u31ff\u3005\u3006]/.test(l.text);
+                });
+                var cn = g.filter(function (l) {
+                    return lib.isChinese(l.text);
+                });
+                var other = g.filter(function (l) {
+                    return !lib.isChinese(l.text) && !/[\u3040-\u30ff\u31f0-\u31ff\u3005\u3006]/.test(l.text);
+                });
+                // pick one original and one translation per group (first wins)
+                var orig = ja.length ? ja[0] : other.length ? other[0] : null;
+                var tr = cn.length ? cn[0] : null;
+                if (orig && tr) split = true;
+                if (orig) {
+                    var m = Object.assign({}, orig);
+                    if (orig === ja[0] && other.length && !m.romaji) m.romaji = other[0].text;
+                    main.push(m);
+                }
+                if (tr) trans.push(Object.assign({}, tr));
+            });
         // pure-Chinese input: no split (all lines are originals)
         if (!main.length) return { main: (lines || []).slice(), trans: [], split: false };
         return { main: main, trans: trans, split: split };
@@ -369,26 +420,38 @@
     lib.SETTINGS_DEFAULTS = {
         version: 1,
         theme: 'light',
-        colorTheme: 'default',          // default | preset id | custom
+        colorTheme: 'default', // default | preset id | custom
         customAccent: '#8a7a6a',
         // per-POS study-table colors; '' = follow the theme default
         posColors: { romaji: '', hiragana: '', kanji: '', pos: '', meaning: '' },
         locale: 'zh',
         // v2.3.1: text-direction override — 'auto' (language's rtl flag) | 'rtl' | 'ltr'
         directionMode: 'auto',
-        defaultView: 'lyrics',          // home view: lyrics | study | mixed
+        defaultView: 'lyrics', // home view: lyrics | study | mixed
         // v1.6.3: motion — animations toggle + speed (scales --transition)
         animations: true,
-        animationSpeed: 'normal',       // slow | normal | fast
+        animationSpeed: 'normal', // slow | normal | fast
         // sidebar entry visibility (Settings is always shown, so it isn't listed)
-        sidebar: { lyrics: true, study: true, mixed: true, editor: true, cinema: true, mini: true, theme: true, about: true },
+        sidebar: {
+            lyrics: true,
+            study: true,
+            mixed: true,
+            editor: true,
+            cinema: true,
+            mini: true,
+            theme: true,
+            about: true
+        },
         // typography
-        lyricFont: 'jp', lyricFontCustom: '',   // v1.6.1: JP-first lyric font, NOT the UI font
-        translationFont: 'sc', translationFontCustom: '',   // SC-first translation font, NOT the UI font
-        uiFont: 'default', uiFontCustom: '',
+        lyricFont: 'jp',
+        lyricFontCustom: '', // v1.6.1: JP-first lyric font, NOT the UI font
+        translationFont: 'sc',
+        translationFontCustom: '', // SC-first translation font, NOT the UI font
+        uiFont: 'default',
+        uiFontCustom: '',
         // v1.6.4: lyric text weight — regular (400, default; one notch lighter
         // than before, which rendered the 500-only Noto face) or bold (700).
-        lyricWeight: 'regular',          // regular | bold
+        lyricWeight: 'regular', // regular | bold
         lyricSize: 26,
         lyricLineHeight: 1.9,
         translationSize: 14,
@@ -402,20 +465,20 @@
         editorTextSize: 15,
         furiganaSize: 15,
         // features
-        subLine: 'auto',          // off | auto | translation | romaji
+        subLine: 'auto', // off | auto | translation | romaji
         showFurigana: true,
-        showRuby: true,           // v1.6.0: kanji ruby in lyric text
-        wordKaraoke: true,        // master toggle; needs per-word timing in package
+        showRuby: true, // v1.6.0: kanji ruby in lyric text
+        wordKaraoke: true, // master toggle; needs per-word timing in package
         spectrum: false,
         // v2.1.1: cinema backdrop effects (设置 → 外观 → 影院)
-        cinemaUseCover: true,     // use the package cover as wallpaper (else theme color)
-        cinemaBlur: 0,            // px backdrop blur
-        cinemaBrightness: 100,    // % brightness
-        cinemaContrast: 100,      // % contrast
-        cinemaSaturate: 100,      // % saturation
-        cinemaDarken: 0,          // % extra darkening overlay (0 = off)
-        cinemaBorder: 0,          // px border around the backdrop
-        cinemaGlass: 0,           // % glass translucency of the backdrop overlay
+        cinemaUseCover: true, // use the package cover as wallpaper (else theme color)
+        cinemaBlur: 0, // px backdrop blur
+        cinemaBrightness: 100, // % brightness
+        cinemaContrast: 100, // % contrast
+        cinemaSaturate: 100, // % saturation
+        cinemaDarken: 0, // % extra darkening overlay (0 = off)
+        cinemaBorder: 0, // px border around the backdrop
+        cinemaGlass: 0, // % glass translucency of the backdrop overlay
         // v2.1.1: mobile bottom nav — entries pinned outside the "更多" drawer
         // (each slot picks from lyrics/study/mixed/editor/cinema/mini; settings)
         bottomNav: ['lyrics', 'study', 'mixed', 'editor'],
@@ -425,16 +488,26 @@
         playerExt: ['vol', 'speed', 'transpose', 'ab', 'marks', 'share'],
         // v2.0.5: per-line audition behavior — auto-pause the main
         // playback and snap its progress to the sentence start/end on ♪ click
-        auditionAutoPause: true,      // pause the main playback on audition
-        auditionSnap: 'start',        // none | start | end — where the main progress snaps
+        auditionAutoPause: true, // pause the main playback on audition
+        auditionSnap: 'start', // none | start | end — where the main progress snaps
         // playback
         volume: 80,
         speed: '1.0',
         // key bindings (normalized keys; ' ' = space, single letters lowercase)
         shortcuts: {
-            playPause: ' ', seekBack: 'ArrowLeft', seekForward: 'ArrowRight',
-            volumeUp: 'ArrowUp', volumeDown: 'ArrowDown', mute: 'm', cinema: 'f',
-            follow: 'g', loop: 'l', prevLine: 'p', nextLine: 'n', reset: 'r', mini: 'v'
+            playPause: ' ',
+            seekBack: 'ArrowLeft',
+            seekForward: 'ArrowRight',
+            volumeUp: 'ArrowUp',
+            volumeDown: 'ArrowDown',
+            mute: 'm',
+            cinema: 'f',
+            follow: 'g',
+            loop: 'l',
+            prevLine: 'p',
+            nextLine: 'n',
+            reset: 'r',
+            mini: 'v'
         }
     };
 
@@ -450,14 +523,14 @@
         Object.keys(defaults).forEach(function (k) {
             var d = defaults[k];
             if (d && typeof d === 'object' && !Array.isArray(d)) {
-                var s = (stored && typeof stored[k] === 'object' && !Array.isArray(stored[k])) ? stored[k] : {};
+                var s = stored && typeof stored[k] === 'object' && !Array.isArray(stored[k]) ? stored[k] : {};
                 var sub = {};
                 Object.keys(d).forEach(function (sk) {
-                    sub[sk] = (s[sk] !== undefined) ? s[sk] : d[sk];
+                    sub[sk] = s[sk] !== undefined ? s[sk] : d[sk];
                 });
                 out[k] = sub;
             } else {
-                out[k] = (stored && stored[k] !== undefined) ? stored[k] : d;
+                out[k] = stored && stored[k] !== undefined ? stored[k] : d;
             }
         });
         return out;
@@ -495,10 +568,13 @@
     // v2 adds optional `cover`, `instrumental`, and per-line `lang` (folder paths
     // are resolved case-insensitively by the loader).
     lib.validateManifest = function (manifest) {
-        return !!(manifest && manifest.format === 'lyricex-package' &&
+        return !!(
+            manifest &&
+            manifest.format === 'lyricex-package' &&
             (manifest.version === 1 || manifest.version === 2) &&
             typeof manifest.title === 'string' &&
-            typeof manifest.lyricsFile === 'string');
+            typeof manifest.lyricsFile === 'string'
+        );
     };
 
     root.__lyricexLib = lib;

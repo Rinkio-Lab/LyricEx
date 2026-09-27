@@ -16,110 +16,450 @@
 
     root.__lyricexSettings = function (ctx) {
         var t = ctx.t;
-        var settingsBtn = ctx.settingsBtn, settingsOverlay = ctx.settingsOverlay, settingsCloseBtn = ctx.settingsCloseBtn,
-            settingsTabs = ctx.settingsTabs, settingsPanels = ctx.settingsPanels, colorOptions = ctx.colorOptions,
+        var settingsBtn = ctx.settingsBtn,
+            settingsOverlay = ctx.settingsOverlay,
+            settingsCloseBtn = ctx.settingsCloseBtn,
+            settingsTabs = ctx.settingsTabs,
+            settingsPanels = ctx.settingsPanels,
+            colorOptions = ctx.colorOptions,
             resetSettingsBtn = ctx.resetSettingsBtn,
-            settingsExportBtn = ctx.settingsExportBtn, settingsImportBtn = ctx.settingsImportBtn,
+            settingsExportBtn = ctx.settingsExportBtn,
+            settingsImportBtn = ctx.settingsImportBtn,
             settingsImportFile = ctx.settingsImportFile,
-            settingsSubnav = ctx.settingsSubnav, settingsBody = ctx.settingsBody,
-            appearanceFonts = ctx.appearanceFonts, appearanceSizes = ctx.appearanceSizes,
-            appearanceCinema = ctx.appearanceCinema, appearanceLayout = ctx.appearanceLayout,
+            settingsSubnav = ctx.settingsSubnav,
+            settingsBody = ctx.settingsBody,
+            appearanceFonts = ctx.appearanceFonts,
+            appearanceSizes = ctx.appearanceSizes,
+            appearanceCinema = ctx.appearanceCinema,
+            appearanceLayout = ctx.appearanceLayout,
             lyricsControls = ctx.lyricsControls,
-            themeControls = ctx.themeControls, generalControls = ctx.generalControls,
+            themeControls = ctx.themeControls,
+            generalControls = ctx.generalControls,
             sidebarControls = ctx.sidebarControls;
 
         // v1.6.1: appearance rows are grouped into sections ('fonts' / 'sizes') so
         // the appearance panel can carry a vertical sub-nav (see index.html).
         const SETTING_DEFS = [
-            { group: 'appearance', section: 'fonts', key: 'lyricFont', type: 'select', labelKey: 'lyricFont',
-                options: [['jp', 'fontJp'], ['inherit', 'fontInherit'], ['sans', 'fontSans'], ['serif', 'fontSerif'], ['mono', 'fontMono']] },
-            { group: 'appearance', section: 'fonts', key: 'lyricFontCustom', type: 'text', labelKey: 'fontCustom', placeholderKey: 'fontCustomPlaceholder' },
-            { group: 'appearance', section: 'fonts', key: 'translationFont', type: 'select', labelKey: 'translationFont',
-                options: [['sc', 'fontSc'], ['inherit', 'fontInherit'], ['sans', 'fontSans'], ['serif', 'fontSerif'], ['mono', 'fontMono']] },
-            { group: 'appearance', section: 'fonts', key: 'translationFontCustom', type: 'text', labelKey: 'fontCustom', placeholderKey: 'fontCustomPlaceholder' },
-            { group: 'appearance', section: 'fonts', key: 'uiFont', type: 'select', labelKey: 'uiFont',
-                options: [['default', 'fontDefault'], ['sans', 'fontSans'], ['serif', 'fontSerif'], ['mono', 'fontMono']] },
-            { group: 'appearance', section: 'fonts', key: 'uiFontCustom', type: 'text', labelKey: 'fontCustom', placeholderKey: 'fontCustomPlaceholder' },
-            { group: 'appearance', section: 'fonts', key: 'lyricWeight', type: 'select', labelKey: 'lyricWeight',
-                options: [['regular', 'weightRegular'], ['bold', 'weightBold']] },
-            { group: 'appearance', section: 'sizes', key: 'lyricSize', type: 'range', min: 14, max: 40, step: 1, unit: ' px', labelKey: 'lyricSize' },
-            { group: 'appearance', section: 'sizes', key: 'lyricLineHeight', type: 'range', min: 1.2, max: 3, step: 0.1, unit: '', labelKey: 'lyricLineHeight' },
-            { group: 'appearance', section: 'sizes', key: 'translationSize', type: 'range', min: 10, max: 24, step: 1, unit: ' px', labelKey: 'translationSize' },
-            { group: 'appearance', section: 'sizes', key: 'translationLineHeight', type: 'range', min: 1, max: 2.5, step: 0.1, unit: '', labelKey: 'translationLineHeight' },
+            {
+                group: 'appearance',
+                section: 'fonts',
+                key: 'lyricFont',
+                type: 'select',
+                labelKey: 'lyricFont',
+                options: [
+                    ['jp', 'fontJp'],
+                    ['inherit', 'fontInherit'],
+                    ['sans', 'fontSans'],
+                    ['serif', 'fontSerif'],
+                    ['mono', 'fontMono']
+                ]
+            },
+            {
+                group: 'appearance',
+                section: 'fonts',
+                key: 'lyricFontCustom',
+                type: 'text',
+                labelKey: 'fontCustom',
+                placeholderKey: 'fontCustomPlaceholder'
+            },
+            {
+                group: 'appearance',
+                section: 'fonts',
+                key: 'translationFont',
+                type: 'select',
+                labelKey: 'translationFont',
+                options: [
+                    ['sc', 'fontSc'],
+                    ['inherit', 'fontInherit'],
+                    ['sans', 'fontSans'],
+                    ['serif', 'fontSerif'],
+                    ['mono', 'fontMono']
+                ]
+            },
+            {
+                group: 'appearance',
+                section: 'fonts',
+                key: 'translationFontCustom',
+                type: 'text',
+                labelKey: 'fontCustom',
+                placeholderKey: 'fontCustomPlaceholder'
+            },
+            {
+                group: 'appearance',
+                section: 'fonts',
+                key: 'uiFont',
+                type: 'select',
+                labelKey: 'uiFont',
+                options: [
+                    ['default', 'fontDefault'],
+                    ['sans', 'fontSans'],
+                    ['serif', 'fontSerif'],
+                    ['mono', 'fontMono']
+                ]
+            },
+            {
+                group: 'appearance',
+                section: 'fonts',
+                key: 'uiFontCustom',
+                type: 'text',
+                labelKey: 'fontCustom',
+                placeholderKey: 'fontCustomPlaceholder'
+            },
+            {
+                group: 'appearance',
+                section: 'fonts',
+                key: 'lyricWeight',
+                type: 'select',
+                labelKey: 'lyricWeight',
+                options: [
+                    ['regular', 'weightRegular'],
+                    ['bold', 'weightBold']
+                ]
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'lyricSize',
+                type: 'range',
+                min: 14,
+                max: 40,
+                step: 1,
+                unit: ' px',
+                labelKey: 'lyricSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'lyricLineHeight',
+                type: 'range',
+                min: 1.2,
+                max: 3,
+                step: 0.1,
+                unit: '',
+                labelKey: 'lyricLineHeight'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'translationSize',
+                type: 'range',
+                min: 10,
+                max: 24,
+                step: 1,
+                unit: ' px',
+                labelKey: 'translationSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'translationLineHeight',
+                type: 'range',
+                min: 1,
+                max: 2.5,
+                step: 0.1,
+                unit: '',
+                labelKey: 'translationLineHeight'
+            },
             // v1.6.0: per-view / per-element sizes
-            { group: 'appearance', section: 'sizes', key: 'mixedLyricSize', type: 'range', min: 14, max: 36, step: 1, unit: ' px', labelKey: 'mixedLyricSize' },
-            { group: 'appearance', section: 'sizes', key: 'cinemaLyricSize', type: 'range', min: 18, max: 60, step: 1, unit: ' px', labelKey: 'cinemaLyricSize' },
-            { group: 'appearance', section: 'sizes', key: 'studyLineSize', type: 'range', min: 14, max: 40, step: 1, unit: ' px', labelKey: 'studyLineSize' },
-            { group: 'appearance', section: 'sizes', key: 'studyTableSize', type: 'range', min: 11, max: 22, step: 1, unit: ' px', labelKey: 'studyTableSize' },
-            { group: 'appearance', section: 'sizes', key: 'timeTagSize', type: 'range', min: 9, max: 18, step: 1, unit: ' px', labelKey: 'timeTagSize' },
-            { group: 'appearance', section: 'sizes', key: 'editorTextSize', type: 'range', min: 11, max: 24, step: 1, unit: ' px', labelKey: 'editorTextSize' },
-            { group: 'appearance', section: 'sizes', key: 'furiganaSize', type: 'range', min: 10, max: 24, step: 1, unit: ' px', labelKey: 'furiganaSize' },
-            { group: 'lyrics', key: 'subLine', type: 'select', labelKey: 'subLine',
-                options: [['auto', 'subLineAuto'], ['translation', 'subLineTranslation'], ['romaji', 'subLineRomaji'], ['off', 'subLineOff']] },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'mixedLyricSize',
+                type: 'range',
+                min: 14,
+                max: 36,
+                step: 1,
+                unit: ' px',
+                labelKey: 'mixedLyricSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'cinemaLyricSize',
+                type: 'range',
+                min: 18,
+                max: 60,
+                step: 1,
+                unit: ' px',
+                labelKey: 'cinemaLyricSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'studyLineSize',
+                type: 'range',
+                min: 14,
+                max: 40,
+                step: 1,
+                unit: ' px',
+                labelKey: 'studyLineSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'studyTableSize',
+                type: 'range',
+                min: 11,
+                max: 22,
+                step: 1,
+                unit: ' px',
+                labelKey: 'studyTableSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'timeTagSize',
+                type: 'range',
+                min: 9,
+                max: 18,
+                step: 1,
+                unit: ' px',
+                labelKey: 'timeTagSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'editorTextSize',
+                type: 'range',
+                min: 11,
+                max: 24,
+                step: 1,
+                unit: ' px',
+                labelKey: 'editorTextSize'
+            },
+            {
+                group: 'appearance',
+                section: 'sizes',
+                key: 'furiganaSize',
+                type: 'range',
+                min: 10,
+                max: 24,
+                step: 1,
+                unit: ' px',
+                labelKey: 'furiganaSize'
+            },
+            {
+                group: 'lyrics',
+                key: 'subLine',
+                type: 'select',
+                labelKey: 'subLine',
+                options: [
+                    ['auto', 'subLineAuto'],
+                    ['translation', 'subLineTranslation'],
+                    ['romaji', 'subLineRomaji'],
+                    ['off', 'subLineOff']
+                ]
+            },
             { group: 'lyrics', key: 'showFurigana', type: 'toggle', labelKey: 'furigana' },
             { group: 'lyrics', key: 'showRuby', type: 'toggle', labelKey: 'showRuby' },
             { group: 'lyrics', key: 'wordKaraoke', type: 'toggle', labelKey: 'wordKaraoke' },
             { group: 'lyrics', key: 'spectrum', type: 'toggle', labelKey: 'spectrum' },
-            { group: 'general', key: 'defaultView', type: 'select', labelKey: 'defaultView',
-                options: [['lyrics', 'lyrics'], ['study', 'study'], ['mixed', 'mixed']] },
+            {
+                group: 'general',
+                key: 'defaultView',
+                type: 'select',
+                labelKey: 'defaultView',
+                options: [
+                    ['lyrics', 'lyrics'],
+                    ['study', 'study'],
+                    ['mixed', 'mixed']
+                ]
+            },
             { group: 'general', key: 'animations', type: 'toggle', labelKey: 'animations' },
-            { group: 'general', key: 'animationSpeed', type: 'select', labelKey: 'animationSpeed',
-                options: [['slow', 'animSpeedSlow'], ['normal', 'animSpeedNormal'], ['fast', 'animSpeedFast']] },
+            {
+                group: 'general',
+                key: 'animationSpeed',
+                type: 'select',
+                labelKey: 'animationSpeed',
+                options: [
+                    ['slow', 'animSpeedSlow'],
+                    ['normal', 'animSpeedNormal'],
+                    ['fast', 'animSpeedFast']
+                ]
+            },
             // v2.0.5: per-line audition behavior (pause + progress snap)
             { group: 'general', key: 'auditionAutoPause', type: 'toggle', labelKey: 'auditionAutoPause' },
             // v2.3.1: text-direction override (easter-egg / power feature)
-            { group: 'general', key: 'directionMode', type: 'select', labelKey: 'directionMode',
-                options: [['auto', 'directionAuto'], ['rtl', 'directionRtl'], ['ltr', 'directionLtr']] },
-            { group: 'general', key: 'auditionSnap', type: 'select', labelKey: 'auditionSnap',
-                options: [['none', 'snapNone'], ['start', 'snapStart'], ['end', 'snapEnd']] },
+            {
+                group: 'general',
+                key: 'directionMode',
+                type: 'select',
+                labelKey: 'directionMode',
+                options: [
+                    ['auto', 'directionAuto'],
+                    ['rtl', 'directionRtl'],
+                    ['ltr', 'directionLtr']
+                ]
+            },
+            {
+                group: 'general',
+                key: 'auditionSnap',
+                type: 'select',
+                labelKey: 'auditionSnap',
+                options: [
+                    ['none', 'snapNone'],
+                    ['start', 'snapStart'],
+                    ['end', 'snapEnd']
+                ]
+            },
             // v2.1.1: cinema backdrop effects (外观 → 影院)
-            { group: 'appearance', section: 'cinema', key: 'cinemaUseCover', type: 'toggle', labelKey: 'cinemaUseCover' },
-            { group: 'appearance', section: 'cinema', key: 'cinemaBlur', type: 'range', min: 0, max: 40, step: 1, unit: ' px', labelKey: 'cinemaBlur' },
-            { group: 'appearance', section: 'cinema', key: 'cinemaBrightness', type: 'range', min: 40, max: 160, step: 5, unit: ' %', labelKey: 'cinemaBrightness' },
-            { group: 'appearance', section: 'cinema', key: 'cinemaContrast', type: 'range', min: 40, max: 160, step: 5, unit: ' %', labelKey: 'cinemaContrast' },
-            { group: 'appearance', section: 'cinema', key: 'cinemaSaturate', type: 'range', min: 0, max: 200, step: 5, unit: ' %', labelKey: 'cinemaSaturate' },
-            { group: 'appearance', section: 'cinema', key: 'cinemaDarken', type: 'range', min: 0, max: 80, step: 5, unit: ' %', labelKey: 'cinemaDarken' },
-            { group: 'appearance', section: 'cinema', key: 'cinemaBorder', type: 'range', min: 0, max: 12, step: 1, unit: ' px', labelKey: 'cinemaBorder' },
-            { group: 'appearance', section: 'cinema', key: 'cinemaGlass', type: 'range', min: 0, max: 100, step: 5, unit: ' %', labelKey: 'cinemaGlass' }
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaUseCover',
+                type: 'toggle',
+                labelKey: 'cinemaUseCover'
+            },
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaBlur',
+                type: 'range',
+                min: 0,
+                max: 40,
+                step: 1,
+                unit: ' px',
+                labelKey: 'cinemaBlur'
+            },
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaBrightness',
+                type: 'range',
+                min: 40,
+                max: 160,
+                step: 5,
+                unit: ' %',
+                labelKey: 'cinemaBrightness'
+            },
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaContrast',
+                type: 'range',
+                min: 40,
+                max: 160,
+                step: 5,
+                unit: ' %',
+                labelKey: 'cinemaContrast'
+            },
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaSaturate',
+                type: 'range',
+                min: 0,
+                max: 200,
+                step: 5,
+                unit: ' %',
+                labelKey: 'cinemaSaturate'
+            },
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaDarken',
+                type: 'range',
+                min: 0,
+                max: 80,
+                step: 5,
+                unit: ' %',
+                labelKey: 'cinemaDarken'
+            },
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaBorder',
+                type: 'range',
+                min: 0,
+                max: 12,
+                step: 1,
+                unit: ' px',
+                labelKey: 'cinemaBorder'
+            },
+            {
+                group: 'appearance',
+                section: 'cinema',
+                key: 'cinemaGlass',
+                type: 'range',
+                min: 0,
+                max: 100,
+                step: 5,
+                unit: ' %',
+                labelKey: 'cinemaGlass'
+            }
         ];
 
         // Each sidebar entry (except Settings, which is always shown) can be hidden
         // from 设置 → 通用. [item-id, i18n-key]; order matches the sidebar groups.
         const SIDEBAR_ITEMS = [
-            ['lyrics', 'lyrics'], ['study', 'study'], ['mixed', 'mixed'], ['editor', 'editor'],
-            ['cinema', 'cinemaMode'], ['mini', 'miniMode'],
-            ['theme', 'darkMode'], ['about', 'about']
+            ['lyrics', 'lyrics'],
+            ['study', 'study'],
+            ['mixed', 'mixed'],
+            ['editor', 'editor'],
+            ['cinema', 'cinemaMode'],
+            ['mini', 'miniMode'],
+            ['theme', 'darkMode'],
+            ['about', 'about']
         ];
 
         // v2.4.1: leading FA icon per setting row so options are scannable at a
         // glance. Keyed by setting key / sidebar id / player-extension id.
         const SETTING_ICONS = {
-            lyricFont: 'fa-font', lyricFontCustom: 'fa-font', lyricWeight: 'fa-bold',
-            translationFont: 'fa-language', translationFontCustom: 'fa-language',
-            uiFont: 'fa-desktop', uiFontCustom: 'fa-desktop',
-            lyricSize: 'fa-text-height', lyricLineHeight: 'fa-text-height',
-            translationSize: 'fa-text-height', translationLineHeight: 'fa-text-height',
-            mixedLyricSize: 'fa-text-height', cinemaLyricSize: 'fa-text-height',
-            studyLineSize: 'fa-text-height', studyTableSize: 'fa-text-height',
-            timeTagSize: 'fa-text-height', editorTextSize: 'fa-text-height',
+            lyricFont: 'fa-font',
+            lyricFontCustom: 'fa-font',
+            lyricWeight: 'fa-bold',
+            translationFont: 'fa-language',
+            translationFontCustom: 'fa-language',
+            uiFont: 'fa-desktop',
+            uiFontCustom: 'fa-desktop',
+            lyricSize: 'fa-text-height',
+            lyricLineHeight: 'fa-text-height',
+            translationSize: 'fa-text-height',
+            translationLineHeight: 'fa-text-height',
+            mixedLyricSize: 'fa-text-height',
+            cinemaLyricSize: 'fa-text-height',
+            studyLineSize: 'fa-text-height',
+            studyTableSize: 'fa-text-height',
+            timeTagSize: 'fa-text-height',
+            editorTextSize: 'fa-text-height',
             furiganaSize: 'fa-text-height',
-            subLine: 'fa-align-left', showFurigana: 'fa-italic', showRuby: 'fa-language',
-            wordKaraoke: 'fa-music', spectrum: 'fa-wave-square',
-            defaultView: 'fa-th-large', animations: 'fa-magic',
-            animationSpeed: 'fa-tachometer-alt', auditionAutoPause: 'fa-pause-circle',
-            directionMode: 'fa-arrows-alt-h', auditionSnap: 'fa-crosshairs',
-            cinemaUseCover: 'fa-image', cinemaBlur: 'fa-tint',
-            cinemaBrightness: 'fa-sun', cinemaContrast: 'fa-adjust',
-            cinemaSaturate: 'fa-palette', cinemaDarken: 'fa-moon',
-            cinemaBorder: 'fa-border-none', cinemaGlass: 'fa-window-restore'
+            subLine: 'fa-align-left',
+            showFurigana: 'fa-italic',
+            showRuby: 'fa-language',
+            wordKaraoke: 'fa-music',
+            spectrum: 'fa-wave-square',
+            defaultView: 'fa-th-large',
+            animations: 'fa-magic',
+            animationSpeed: 'fa-tachometer-alt',
+            auditionAutoPause: 'fa-pause-circle',
+            directionMode: 'fa-arrows-alt-h',
+            auditionSnap: 'fa-crosshairs',
+            cinemaUseCover: 'fa-image',
+            cinemaBlur: 'fa-tint',
+            cinemaBrightness: 'fa-sun',
+            cinemaContrast: 'fa-adjust',
+            cinemaSaturate: 'fa-palette',
+            cinemaDarken: 'fa-moon',
+            cinemaBorder: 'fa-border-none',
+            cinemaGlass: 'fa-window-restore'
         };
         const SIDEBAR_ICONS = {
-            lyrics: 'fa-music', study: 'fa-book', mixed: 'fa-layer-group', editor: 'fa-edit',
-            cinema: 'fa-tv', mini: 'fa-window-minimize', theme: 'fa-moon', about: 'fa-info-circle'
+            lyrics: 'fa-music',
+            study: 'fa-book',
+            mixed: 'fa-layer-group',
+            editor: 'fa-edit',
+            cinema: 'fa-tv',
+            mini: 'fa-window-minimize',
+            theme: 'fa-moon',
+            about: 'fa-info-circle'
         };
         const EXT_ICONS = {
-            vol: 'fa-volume-up', speed: 'fa-tachometer-alt', transpose: 'fa-sliders-h',
-            ab: 'fa-redo-alt', marks: 'fa-bookmark', share: 'fa-share-alt'
+            vol: 'fa-volume-up',
+            speed: 'fa-tachometer-alt',
+            transpose: 'fa-sliders-h',
+            ab: 'fa-redo-alt',
+            marks: 'fa-bookmark',
+            share: 'fa-share-alt'
         };
         function labelWithIcon(icon, text) {
             const label = document.createElement('label');
@@ -143,7 +483,9 @@
                 const btns = sec.querySelectorAll('.sidebar-btn');
                 if (!btns.length) return;
                 let anyVisible = false;
-                btns.forEach(function (b) { if (b.style.display !== 'none') anyVisible = true; });
+                btns.forEach(function (b) {
+                    if (b.style.display !== 'none') anyVisible = true;
+                });
                 sec.style.display = anyVisible ? '' : 'none';
             });
         }
@@ -181,9 +523,16 @@
             lyricsControls.innerHTML = '';
             generalControls.innerHTML = '';
             SETTING_DEFS.forEach(function (def) {
-                const host = def.group === 'appearance'
-                    ? (def.section === 'fonts' ? appearanceFonts : def.section === 'sizes' ? appearanceSizes : appearanceCinema)
-                    : (def.group === 'general' ? generalControls : lyricsControls);
+                const host =
+                    def.group === 'appearance'
+                        ? def.section === 'fonts'
+                            ? appearanceFonts
+                            : def.section === 'sizes'
+                              ? appearanceSizes
+                              : appearanceCinema
+                        : def.group === 'general'
+                          ? generalControls
+                          : lyricsControls;
                 const row = document.createElement('div');
                 row.className = 'setting-row';
                 row.appendChild(labelWithIcon(SETTING_ICONS[def.key], t(def.labelKey)));
@@ -198,7 +547,9 @@
                     });
                     sel.value = String(val);
                     sel.setAttribute('aria-label', t(def.labelKey));
-                    sel.addEventListener('change', function () { ctx.setSetting(def.key, sel.value); });
+                    sel.addEventListener('change', function () {
+                        ctx.setSetting(def.key, sel.value);
+                    });
                     row.appendChild(sel);
                 } else if (def.type === 'text') {
                     const inp = document.createElement('input');
@@ -206,7 +557,9 @@
                     inp.value = val || '';
                     inp.placeholder = t(def.placeholderKey || '');
                     inp.setAttribute('aria-label', t(def.labelKey));
-                    inp.addEventListener('change', function () { ctx.setSetting(def.key, inp.value.trim()); });
+                    inp.addEventListener('change', function () {
+                        ctx.setSetting(def.key, inp.value.trim());
+                    });
                     row.appendChild(inp);
                 } else if (def.type === 'range') {
                     const inp = document.createElement('input');
@@ -230,7 +583,9 @@
                     box.type = 'checkbox';
                     box.setAttribute('aria-label', t(def.labelKey));
                     box.checked = !!val;
-                    box.addEventListener('change', function () { ctx.setSetting(def.key, box.checked); });
+                    box.addEventListener('change', function () {
+                        ctx.setSetting(def.key, box.checked);
+                    });
                     row.appendChild(box);
                 }
                 host.appendChild(row);
@@ -245,12 +600,20 @@
         // These are array-valued settings, so they render here (not via
         // SETTING_DEFS which is scalar-only) and write back to the arrays.
         const NAV_SLOT_OPTS = [
-            ['lyrics', 'lyrics'], ['study', 'study'], ['mixed', 'mixed'],
-            ['editor', 'editor'], ['cinema', 'cinemaMode'], ['mini', 'miniMode']
+            ['lyrics', 'lyrics'],
+            ['study', 'study'],
+            ['mixed', 'mixed'],
+            ['editor', 'editor'],
+            ['cinema', 'cinemaMode'],
+            ['mini', 'miniMode']
         ];
         const EXT_OPTS = [
-            ['vol', 'volumeLabel'], ['speed', 'speed'], ['transpose', 'transpose'],
-            ['ab', 'abLoop'], ['marks', 'loopMarks'], ['share', 'shareCard']
+            ['vol', 'volumeLabel'],
+            ['speed', 'speed'],
+            ['transpose', 'transpose'],
+            ['ab', 'abLoop'],
+            ['marks', 'loopMarks'],
+            ['share', 'shareCard']
         ];
         function renderLayoutControls() {
             appearanceLayout.innerHTML = '';
@@ -324,9 +687,11 @@
                 btn.className = 'settings-subnav-item';
                 btn.textContent = t(sec.dataset.nav || '');
                 btn.addEventListener('click', function () {
-                    const top = sec.getBoundingClientRect().top -
+                    const top =
+                        sec.getBoundingClientRect().top -
                         settingsBody.getBoundingClientRect().top +
-                        settingsBody.scrollTop - 8;
+                        settingsBody.scrollTop -
+                        8;
                     settingsBody.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
                 });
                 settingsSubnav.appendChild(btn);
@@ -344,14 +709,24 @@
             for (let i = 0; i < sections.length; i++) {
                 if (sections[i].getBoundingClientRect().top - bodyTop <= 96) activeIdx = i;
             }
-            items.forEach(function (it, i) { it.classList.toggle('active', i === activeIdx); });
+            items.forEach(function (it, i) {
+                it.classList.toggle('active', i === activeIdx);
+            });
         }
 
         function loadThemePresets() {
-            try { return JSON.parse(localStorage.getItem('lyricex-theme-presets') || '{}'); } catch (_) { return {}; }
+            try {
+                return JSON.parse(localStorage.getItem('lyricex-theme-presets') || '{}');
+            } catch (_) {
+                return {};
+            }
         }
         function saveThemePresets(p) {
-            try { localStorage.setItem('lyricex-theme-presets', JSON.stringify(p)); } catch (_) { /* noop */ }
+            try {
+                localStorage.setItem('lyricex-theme-presets', JSON.stringify(p));
+            } catch (_) {
+                /* noop */
+            }
         }
         function captureThemePreset() {
             return {
@@ -379,11 +754,16 @@
             picker.type = 'color';
             picker.value = value || '#000000';
             picker.setAttribute('aria-label', labelText);
-            picker.addEventListener('input', function () { onInput(picker.value); });
+            picker.addEventListener('input', function () {
+                onInput(picker.value);
+            });
             const clearBtn = document.createElement('button');
             clearBtn.className = 'mini-btn';
             clearBtn.textContent = t('accentReset');
-            clearBtn.addEventListener('click', function () { onClear(); renderThemeControls(); });
+            clearBtn.addEventListener('click', function () {
+                onClear();
+                renderThemeControls();
+            });
             // v2.5.0: the label was created but never mounted (v2.4.1 icon refactor
             // dropped the append) — theme color rows showed pickers with no label
             row.appendChild(label);
@@ -396,40 +776,53 @@
             themeControls.innerHTML = '';
 
             // custom accent
-            themeControls.appendChild(colorRow(
-                'fa-palette', t('customAccent'), ctx.settings.customAccent,
-                function (v) {
-                    ctx.settings.colorTheme = 'custom';
-                    ctx.settings.customAccent = v;
-                    ctx.saveSettings();
-                    ctx.applySettings();
-                },
-                function () { ctx.setSetting('colorTheme', 'default'); }
-            ));
+            themeControls.appendChild(
+                colorRow(
+                    'fa-palette',
+                    t('customAccent'),
+                    ctx.settings.customAccent,
+                    function (v) {
+                        ctx.settings.colorTheme = 'custom';
+                        ctx.settings.customAccent = v;
+                        ctx.saveSettings();
+                        ctx.applySettings();
+                    },
+                    function () {
+                        ctx.setSetting('colorTheme', 'default');
+                    }
+                )
+            );
 
             // per-POS colors
             const posDefs = [
-                ['romaji', 'posColorRomaji'], ['hiragana', 'posColorHiragana'],
-                ['kanji', 'posColorKanji'], ['pos', 'posColorPos'], ['meaning', 'posColorMeaning']
+                ['romaji', 'posColorRomaji'],
+                ['hiragana', 'posColorHiragana'],
+                ['kanji', 'posColorKanji'],
+                ['pos', 'posColorPos'],
+                ['meaning', 'posColorMeaning']
             ];
             const posHeader = document.createElement('h4');
             posHeader.textContent = t('posColors');
             themeControls.appendChild(posHeader);
             posDefs.forEach(function (def) {
                 const key = def[0];
-                themeControls.appendChild(colorRow(
-                    'fa-tint', t(def[1]), ctx.settings.posColors[key] || '#888888',
-                    function (v) {
-                        ctx.settings.posColors[key] = v;
-                        ctx.saveSettings();
-                        ctx.applyPosColors();
-                    },
-                    function () {
-                        ctx.settings.posColors[key] = '';
-                        ctx.saveSettings();
-                        ctx.applyPosColors();
-                    }
-                ));
+                themeControls.appendChild(
+                    colorRow(
+                        'fa-tint',
+                        t(def[1]),
+                        ctx.settings.posColors[key] || '#888888',
+                        function (v) {
+                            ctx.settings.posColors[key] = v;
+                            ctx.saveSettings();
+                            ctx.applyPosColors();
+                        },
+                        function () {
+                            ctx.settings.posColors[key] = '';
+                            ctx.saveSettings();
+                            ctx.applyPosColors();
+                        }
+                    )
+                );
             });
 
             // theme presets (config groups)
@@ -487,7 +880,10 @@
             saveBtn.textContent = t('savePreset');
             saveBtn.addEventListener('click', function () {
                 const name = nameInput.value.trim();
-                if (!name) { window.__lyricexDialog.alert(t('presetNameRequired')); return; }
+                if (!name) {
+                    window.__lyricexDialog.alert(t('presetNameRequired'));
+                    return;
+                }
                 const presetsNow = loadThemePresets();
                 presetsNow[name] = captureThemePreset();
                 saveThemePresets(presetsNow);
@@ -508,7 +904,9 @@
             ctx.renderShortcutControls();
             switchSettingsTab('general'); // v1.6.1: general is the first screen
         }
-        function closeSettings() { settingsOverlay.classList.remove('open'); }
+        function closeSettings() {
+            settingsOverlay.classList.remove('open');
+        }
 
         function switchSettingsTab(tabName) {
             settingsTabs.forEach(function (tab) {
@@ -527,9 +925,15 @@
             settingsOverlay.addEventListener('click', function (e) {
                 if (e.target === settingsOverlay) closeSettings();
             });
-            resetSettingsBtn.addEventListener('click', function () { ctx.resetSettings(); });
-            settingsExportBtn.addEventListener('click', function () { ctx.exportSettings(); });
-            settingsImportBtn.addEventListener('click', function () { settingsImportFile.click(); });
+            resetSettingsBtn.addEventListener('click', function () {
+                ctx.resetSettings();
+            });
+            settingsExportBtn.addEventListener('click', function () {
+                ctx.exportSettings();
+            });
+            settingsImportBtn.addEventListener('click', function () {
+                settingsImportFile.click();
+            });
             settingsImportFile.addEventListener('change', function () {
                 const f = settingsImportFile.files && settingsImportFile.files[0];
                 if (f) ctx.importSettingsFile(f);

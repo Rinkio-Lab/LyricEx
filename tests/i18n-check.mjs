@@ -9,8 +9,11 @@ await import('../assets/locales/en.js');
 // audited in full (boot now loads only the current chain; tests need all).
 for (const lang of window.__lyricexLanguages) {
     if (lang.code === 'zh' || lang.code === 'ja' || lang.code === 'en') continue;
-    try { await import('../assets/locales/' + lang.code + '.js'); }
-    catch (_) { /* entry without a dict file */ }
+    try {
+        await import('../assets/locales/' + lang.code + '.js');
+    } catch (_) {
+        /* entry without a dict file */
+    }
 }
 const fs = await import('fs');
 const path = await import('path');
@@ -20,7 +23,10 @@ const keys = new Set([...Object.keys(d.zh), ...Object.keys(d.ja), ...Object.keys
 let bad = 0;
 for (const k of keys) {
     for (const loc of ['zh', 'ja', 'en']) {
-        if (d[loc][k] === undefined) { console.log('MISSING', loc, k); bad++; }
+        if (d[loc][k] === undefined) {
+            console.log('MISSING', loc, k);
+            bad++;
+        }
     }
 }
 console.log(bad === 0 ? 'I18N KEYS COMPLETE (' + keys.size + ' keys)' : bad + ' MISSING');
@@ -44,7 +50,11 @@ for (const src of jsSources) {
     for (const m of src.matchAll(/\bt\('([a-zA-Z0-9]+)'\)/g)) used.add(m[1]);
 }
 let miss = 0;
-for (const k of used) if (!d.zh[k]) { console.log('UNUSED-KEY-MISSING', k); miss++; }
+for (const k of used)
+    if (!d.zh[k]) {
+        console.log('UNUSED-KEY-MISSING', k);
+        miss++;
+    }
 console.log(miss === 0 ? 'ALL USED KEYS EXIST (' + used.size + ' used)' : miss + ' MISSING');
 
 // id contract: every getElementById('x') across assets/scripts/ (static ones) exists in
@@ -53,18 +63,50 @@ const ids = new Set();
 for (const src of jsSources) {
     for (const m of src.matchAll(/getElementById\('([^']+)'\)/g)) ids.add(m[1]);
 }
-const dynamic = new Set(['editorOffsetRange', 'editorOffsetValue', 'exportPackageBtn', 'exportLrcBtn',
-    'exportSrtBtn', 'exportAssBtn', 'exportVideoBtn', 'editorSeekStartBtn', 'metaTitle', 'metaArtist',
-    'metaAlbum', 'editorAddLineBtn', 'editorReloadBtn', 'printStudyBtn', 'exportNotesBtn',
-    'exportNotesHtmlBtn', 'posterBtn', 'importWordsBtn', 'importWordsFile',
-    'editorCoverBtn', 'editorCoverRemoveBtn', 'editorCoverFile', 'editorCoverThumb',
-    'editorInstBtn', 'editorInstRemoveBtn', 'editorInstFile', 'editorInstThumb',
-    'helpContent', 'helpSearchInput', 'helpNoResults', 'helpTopBtn',
-    'helpPrevBtn', 'helpNextBtn', 'helpPagerLabel', 'helpContribute']);
+const dynamic = new Set([
+    'editorOffsetRange',
+    'editorOffsetValue',
+    'exportPackageBtn',
+    'exportLrcBtn',
+    'exportSrtBtn',
+    'exportAssBtn',
+    'exportVideoBtn',
+    'editorSeekStartBtn',
+    'metaTitle',
+    'metaArtist',
+    'metaAlbum',
+    'editorAddLineBtn',
+    'editorReloadBtn',
+    'printStudyBtn',
+    'exportNotesBtn',
+    'exportNotesHtmlBtn',
+    'posterBtn',
+    'importWordsBtn',
+    'importWordsFile',
+    'editorCoverBtn',
+    'editorCoverRemoveBtn',
+    'editorCoverFile',
+    'editorCoverThumb',
+    'editorInstBtn',
+    'editorInstRemoveBtn',
+    'editorInstFile',
+    'editorInstThumb',
+    'helpContent',
+    'helpSearchInput',
+    'helpNoResults',
+    'helpTopBtn',
+    'helpPrevBtn',
+    'helpNextBtn',
+    'helpPagerLabel',
+    'helpContribute'
+]);
 let idMiss = 0;
 for (const id of ids) {
     if (dynamic.has(id)) continue;
-    if (!html.includes('id="' + id + '"')) { console.log('ID MISSING IN HTML', id); idMiss++; }
+    if (!html.includes('id="' + id + '"')) {
+        console.log('ID MISSING IN HTML', id);
+        idMiss++;
+    }
 }
 console.log(idMiss === 0 ? 'ALL STATIC IDS EXIST (' + ids.size + ' refs)' : idMiss + ' ID MISSING');
 
@@ -72,15 +114,19 @@ console.log(idMiss === 0 ? 'ALL STATIC IDS EXIST (' + ids.size + ' refs)' : idMi
 // Simulate with FICTIONAL codes (xx/yy) so the real user-maintained dicts
 // (ko/fr/…) stay intact for the key-alignment audit below.
 const i18n = window.__i18n;
-i18n.registerConfig([...window.__lyricexLanguages,
+i18n.registerConfig([
+    ...window.__lyricexLanguages,
     { code: 'xx', native: 'X', maintainedBy: 'user', fallback: 'en' },
-    { code: 'yy', native: 'Y', maintainedBy: 'user', fallback: 'xx' }]);
+    { code: 'yy', native: 'Y', maintainedBy: 'user', fallback: 'xx' }
+]);
 i18n.register('xx', { about: 'xx-about', developer: '' });
 i18n.register('yy', {});
 let fbad = 0;
 function feq(name, got, want) {
-    if (got !== want) { console.log('FALLBACK-FAIL', name, 'got', JSON.stringify(got), 'want', JSON.stringify(want)); fbad++; }
-    else console.log('ok fallback ' + name);
+    if (got !== want) {
+        console.log('FALLBACK-FAIL', name, 'got', JSON.stringify(got), 'want', JSON.stringify(want));
+        fbad++;
+    } else console.log('ok fallback ' + name);
 }
 i18n._current = 'xx';
 // xx has the key -> xx value ('' is a valid filled value, not a miss)
@@ -95,9 +141,11 @@ feq('two hops to xx', i18n.t('about'), 'xx-about');
 // missing everywhere (yy->xx->en->zh->key) -> raw key
 feq('key itself', i18n.t('__no_such_key_xyz__'), '__no_such_key_xyz__');
 // cycle guard: xx<->yy loop must not hang, resolves to key
-i18n.registerConfig([...window.__lyricexLanguages,
+i18n.registerConfig([
+    ...window.__lyricexLanguages,
     { code: 'xx', native: 'X', maintainedBy: 'user', fallback: 'yy' },
-    { code: 'yy', native: 'Y', maintainedBy: 'user', fallback: 'xx' }]);
+    { code: 'yy', native: 'Y', maintainedBy: 'user', fallback: 'xx' }
+]);
 feq('cycle guard', i18n.t('__no_such_key_xyz__'), '__no_such_key_xyz__');
 i18n._current = 'zh';
 console.log(fbad === 0 ? 'FALLBACK CHAIN OK' : fbad + ' FALLBACK FAIL');
@@ -107,17 +155,28 @@ let ubad = 0;
 window.__lyricexLanguages.forEach(function (l) {
     if (l.code === 'zh') return;
     const dict = i18n._dicts[l.code] || {};
-    const extra = Object.keys(dict).filter(function (k) { return d.zh[k] === undefined; });
-    if (extra.length) { console.log('USER-LANG-EXTRA', l.code, extra.slice(0, 3)); ubad++; }
+    const extra = Object.keys(dict).filter(function (k) {
+        return d.zh[k] === undefined;
+    });
+    if (extra.length) {
+        console.log('USER-LANG-EXTRA', l.code, extra.slice(0, 3));
+        ubad++;
+    }
 });
 console.log(ubad === 0 ? 'USER LANGS KEY-ALIGNED' : ubad + ' USER-LANG EXTRA');
 
 // ---- RTL dir + BCP 47 detection (needs a minimal document/navigator shim) ----
 globalThis.document = {
     documentElement: { lang: '', dir: '' },
-    querySelectorAll: function () { return []; },
-    querySelector: function () { return null; },
-    getAttribute: function () { return null; },
+    querySelectorAll: function () {
+        return [];
+    },
+    querySelector: function () {
+        return null;
+    },
+    getAttribute: function () {
+        return null;
+    }
 };
 const origNav = globalThis.navigator;
 Object.defineProperty(globalThis, 'navigator', { value: { language: 'pt-BR' }, configurable: true });

@@ -8,14 +8,20 @@
     'use strict';
     var g = { ctx: null, analyser: null, data: null, shifter: null, transpose: 0 };
 
-    function AC() { return root.AudioContext || root.webkitAudioContext; }
+    function AC() {
+        return root.AudioContext || root.webkitAudioContext;
+    }
 
     // Ensure context + analyser + shifter exist, and the given audio element's
     // source is created and routed (audibly) through the analyser. Returns the
     // source node, or null when unavailable.
     g.ensure = function (audio) {
         if (!audio) return null;
-        if (!g.ctx) { var C = AC(); if (!C) return null; g.ctx = new C(); }
+        if (!g.ctx) {
+            var C = AC();
+            if (!C) return null;
+            g.ctx = new C();
+        }
         if (g.ctx.state === 'suspended') g.ctx.resume().catch(function () {});
         if (!g.analyser) {
             g.analyser = g.ctx.createAnalyser();
@@ -31,11 +37,18 @@
         }
         var src = audio.__lyricexSource;
         if (!src) {
-            try { src = g.ctx.createMediaElementSource(audio); audio.__lyricexSource = src; }
-            catch (_) { return null; }
+            try {
+                src = g.ctx.createMediaElementSource(audio);
+                audio.__lyricexSource = src;
+            } catch (_) {
+                return null;
+            }
         }
         // Fall back to a direct route when the pitch-shift module is missing.
-        if (!src.__lyricexRouted) { src.connect(g.shifter ? g.shifter.input : g.analyser); src.__lyricexRouted = true; }
+        if (!src.__lyricexRouted) {
+            src.connect(g.shifter ? g.shifter.input : g.analyser);
+            src.__lyricexRouted = true;
+        }
         return src;
     };
 
@@ -49,10 +62,14 @@
 
     // Drive the pitch shifter's phase ramp. Call once per animation frame while
     // playing (no-op at 0 semitones).
-    g.tick = function () { if (g.shifter) g.shifter.tick(); };
+    g.tick = function () {
+        if (g.shifter) g.shifter.tick();
+    };
 
     // Spectrum enable (passthrough analyser is always wired by ensure()).
-    g.startSpectrum = function (audio) { return !!g.ensure(audio); };
+    g.startSpectrum = function (audio) {
+        return !!g.ensure(audio);
+    };
 
     // Recording tap: branch the element's source into a MediaStreamDestination.
     // Returns { stream, stop() } or null.
@@ -68,16 +85,26 @@
                 stream: src.__lyricexRecordDest.stream,
                 stop: function () {
                     if (src.__lyricexRecordDest) {
-                        try { src.disconnect(src.__lyricexRecordDest); } catch (_) { /* noop */ }
+                        try {
+                            src.disconnect(src.__lyricexRecordDest);
+                        } catch (_) {
+                            /* noop */
+                        }
                         src.__lyricexRecordDest = null;
                     }
                 }
             };
-        } catch (_) { return null; }
+        } catch (_) {
+            return null;
+        }
     };
 
-    g.getAnalyser = function () { return g.analyser; };
-    g.getData = function () { return g.data; };
+    g.getAnalyser = function () {
+        return g.analyser;
+    };
+    g.getData = function () {
+        return g.data;
+    };
 
     root.__lyricexAudioGraph = g;
 })(typeof window !== 'undefined' ? window : globalThis);

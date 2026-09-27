@@ -18,13 +18,18 @@ await import('../assets/scripts/utils/lyric-package.js');
 const u = globalThis.__lyricexUtils;
 let failures = 0;
 function eq(name, got, want) {
-    const g = JSON.stringify(got), w = JSON.stringify(want);
-    if (g !== w) { failures++; console.error(`FAIL ${name}: got ${g} want ${w}`); }
-    else console.log(`ok ${name}`);
+    const g = JSON.stringify(got),
+        w = JSON.stringify(want);
+    if (g !== w) {
+        failures++;
+        console.error(`FAIL ${name}: got ${g} want ${w}`);
+    } else console.log(`ok ${name}`);
 }
 function ok(name, cond) {
-    if (!cond) { failures++; console.error(`FAIL ${name}`); }
-    else console.log(`ok ${name}`);
+    if (!cond) {
+        failures++;
+        console.error(`FAIL ${name}`);
+    } else console.log(`ok ${name}`);
 }
 
 // ---- theme three-state ----
@@ -40,7 +45,9 @@ eq('loop cycle none->single', u.nextLoopMode('none'), 'single');
 eq('loop cycle single->line', u.nextLoopMode('single'), 'line');
 eq('loop cycle line->none', u.nextLoopMode('line'), 'none');
 const lyrics = [
-    { time: 10, text: 'a' }, { time: 12, text: 'b' }, { time: 15, text: 'c' }
+    { time: 10, text: 'a' },
+    { time: 12, text: 'b' },
+    { time: 15, text: 'c' }
 ];
 eq('line bounds uses next line', u.lineLoopBounds(lyrics, 0, 0, 100), { start: 10, end: 12 });
 eq('line bounds last line uses duration', u.lineLoopBounds(lyrics, 0, 2, 100), { start: 15, end: 100 });
@@ -50,7 +57,13 @@ ok('line bounds null for bad index', u.lineLoopBounds(lyrics, 0, 9, 100) === nul
 
 // ---- search ----
 const idx = u.buildSearchIndex([
-    { text: '悴んだ心', translation: '内心憔悴', analysis: [{ romaji: 'kaji kan da', hiragana: 'かじかんだ', kanji: '悴んだ', partOfSpeech: '動詞', meaning: '冻僵' }] },
+    {
+        text: '悴んだ心',
+        translation: '内心憔悴',
+        analysis: [
+            { romaji: 'kaji kan da', hiragana: 'かじかんだ', kanji: '悴んだ', partOfSpeech: '動詞', meaning: '冻僵' }
+        ]
+    },
     { text: 'hello world', translation: '你好世界', note: 'english' }
 ]);
 ok('search index length', idx.length === 2);
@@ -100,17 +113,30 @@ eq('pitch ramp down for up-shift', u.pitchShift.ramp(0.25, 2), 0.75);
 eq('pitch delayAt base', u.pitchShift.delayAt(0, 0.5), u.pitchShift.base);
 ok('pitch delayAt grows for down-shift', u.pitchShift.delayAt(0.5, 0.5) > u.pitchShift.delayAt(0, 0.5));
 ok('pitch delayAt shrinks for up-shift', u.pitchShift.delayAt(0.5, 2) < u.pitchShift.delayAt(0, 2));
-ok('pitch window sums to 1 with half-period partner',
-    Math.abs(u.pitchShift.window(0.3) + u.pitchShift.window(0.8) - 1) < 1e-9);
+ok(
+    'pitch window sums to 1 with half-period partner',
+    Math.abs(u.pitchShift.window(0.3) + u.pitchShift.window(0.8) - 1) < 1e-9
+);
 ok('pitch window peaks at mid-phase', Math.abs(u.pitchShift.window(0.5) - 1) < 1e-9);
 ok('pitch window 0 at reset points', u.pitchShift.window(0) < 1e-9 && u.pitchShift.window(1) < 1e-9);
 
 // ---- recent prune (v2.0.0 #14) ----
 const recent = [
-    { name: 'b.zip', ts: 3 }, { name: 'a.zip', ts: 1 }, { name: 'c.zip', ts: 2 }, { name: 'b.zip', ts: 5 }
+    { name: 'b.zip', ts: 3 },
+    { name: 'a.zip', ts: 1 },
+    { name: 'c.zip', ts: 2 },
+    { name: 'b.zip', ts: 5 }
 ];
-eq('pruneRecent newest first + dedupe', u.pruneRecent(recent, 10).map(e => e.name), ['b.zip', 'c.zip', 'a.zip']);
-eq('pruneRecent caps', u.pruneRecent(recent, 2).map(e => e.name), ['b.zip', 'c.zip']);
+eq(
+    'pruneRecent newest first + dedupe',
+    u.pruneRecent(recent, 10).map((e) => e.name),
+    ['b.zip', 'c.zip', 'a.zip']
+);
+eq(
+    'pruneRecent caps',
+    u.pruneRecent(recent, 2).map((e) => e.name),
+    ['b.zip', 'c.zip']
+);
 ok('pruneRecent does not mutate', recent.length === 4);
 eq('pruneRecent empty', u.pruneRecent([], 5), []);
 eq('queuePeek first', u.queuePeek([{ name: 'x' }, { name: 'y' }]).name, 'x');
@@ -118,8 +144,14 @@ eq('queuePeek empty', u.queuePeek([]), null);
 
 // ---- study notes export (v2.0.0 #18) ----
 const noteLyrics = [
-    { time: 1, text: '時計', translation: '时钟', romaji: 'tokei', note: 'n1',
-        analysis: [{ romaji: 'tokei', hiragana: 'とけい', kanji: '時計', partOfSpeech: '名詞', meaning: '钟' }] },
+    {
+        time: 1,
+        text: '時計',
+        translation: '时钟',
+        romaji: 'tokei',
+        note: 'n1',
+        analysis: [{ romaji: 'tokei', hiragana: 'とけい', kanji: '時計', partOfSpeech: '名詞', meaning: '钟' }]
+    },
     { time: 2.5, text: 'hello' }
 ];
 const md = u.buildStudyNotes(noteLyrics, { title: 'Song', artist: 'A', format: 'md', labels: {} });
@@ -142,34 +174,60 @@ ok('poster has lyric + powered', poster.includes('歌詞') && poster.includes('P
 const wlrc = u.parseLrcWordLines('[00:01.00]<00:01.00>こ<00:01.50>ん<00:02.00>にちは\n[00:03.00]hello\n');
 eq('wlrc line count', wlrc.lines.length, 2);
 eq('wlrc strips inline tags', wlrc.lines[0].text, 'こんにちは');
-eq('wlrc word texts', wlrc.lines[0].words.map(w => w.text), ['こ', 'ん', 'にちは']);
-eq('wlrc word ends borrow next line', wlrc.lines[0].words.map(w => w.end), [1.5, 2, 3]);
+eq(
+    'wlrc word texts',
+    wlrc.lines[0].words.map((w) => w.text),
+    ['こ', 'ん', 'にちは']
+);
+eq(
+    'wlrc word ends borrow next line',
+    wlrc.lines[0].words.map((w) => w.end),
+    [1.5, 2, 3]
+);
 ok('wlrc no words on untagged line', wlrc.lines[1].words.length === 0);
-const assK = u.parseAssKaraoke('[Events]\nDialogue: 0,0:00:01.00,0:00:03.00,Lyric,,0,0,0,,{\\k20}こ{\\k30}ん{\\k50}にちは\n');
+const assK = u.parseAssKaraoke(
+    '[Events]\nDialogue: 0,0:00:01.00,0:00:03.00,Lyric,,0,0,0,,{\\k20}こ{\\k30}ん{\\k50}にちは\n'
+);
 eq('ass line count', assK.length, 1);
 eq('ass line text', assK[0].text, 'こんにちは');
-eq('ass word texts', assK[0].words.map(w => w.text), ['こ', 'ん', 'にちは']);
-ok('ass word times cumulative',
-    Math.abs(assK[0].words[0].start - 1) < 1e-9 && Math.abs(assK[0].words[2].end - 2) < 1e-9);
+eq(
+    'ass word texts',
+    assK[0].words.map((w) => w.text),
+    ['こ', 'ん', 'にちは']
+);
+ok(
+    'ass word times cumulative',
+    Math.abs(assK[0].words[0].start - 1) < 1e-9 && Math.abs(assK[0].words[2].end - 2) < 1e-9
+);
 const merged = u.mergeWordTimings(
-    [{ time: 1, text: 'a' }, { time: 3, text: 'b' }],
+    [
+        { time: 1, text: 'a' },
+        { time: 3, text: 'b' }
+    ],
     [{ time: 1.2, text: 'x', words: [{ text: 'x', start: 1, end: 2 }] }],
     1
 );
 ok('mergeWordTimings attaches to nearest', merged[0].words && merged[0].words[0].text === 'x' && !merged[1].words);
 
 // ---- NetEase YRC / klyric word lyrics (v2.8.4) ----
-const yrc = u.parseYrcLines('[190871,1984](190871,361,0)For (191232,172,0)the (191404,376,0)first (191780,1075,0)time\n[193459,4198](193459,412,0)What\'s (193871,574,0)past (194445,506,0)is (194951,2706,0)past\n');
+const yrc = u.parseYrcLines(
+    "[190871,1984](190871,361,0)For (191232,172,0)the (191404,376,0)first (191780,1075,0)time\n[193459,4198](193459,412,0)What's (193871,574,0)past (194445,506,0)is (194951,2706,0)past\n"
+);
 eq('yrc line count', yrc.length, 2);
 eq('yrc line time', Math.round(yrc[0].time * 1000), 190871);
 eq('yrc clean text', yrc[0].text, 'For the first time');
-ok('yrc word times absolute', Math.abs(yrc[0].words[0].start - 190.871) < 1e-6 && Math.abs(yrc[0].words[0].end - 191.232) < 1e-6);
+ok(
+    'yrc word times absolute',
+    Math.abs(yrc[0].words[0].start - 190.871) < 1e-6 && Math.abs(yrc[0].words[0].end - 191.232) < 1e-6
+);
 eq('yrc two-field tolerated', u.parseYrcLines('[1000,500](1000,200)ab(1200,300)cd\n')[0].words.length, 2);
 eq('yrc meta line skipped', u.parseYrcLines('[by:someone]\n[1000,500](1000,200)ab\n')[0].words.length, 1);
 const neK = u.parseNeteaseLyrics({
     lrc: { lyric: '[00:01.00]こんにちは世界\n[00:03.00]第二行' },
     tlyric: { lyric: '[00:01.00]你好世界' },
-    klyric: { lyric: '[1000,1000](1000,300,0)こ(1300,200,0)ん(1500,200,0)にちは(1700,200,0)世界\n[3000,1000](3000,300,0)第(3300,300,0)二(3600,300,0)行' }
+    klyric: {
+        lyric: '[1000,1000](1000,300,0)こ(1300,200,0)ん(1500,200,0)にちは(1700,200,0)世界\n[3000,1000](3000,300,0)第(3300,300,0)二(3600,300,0)行'
+    }
 });
 eq('netease klyric line0 words', neK.lines[0].words.length, 4);
 eq('netease klyric first word text', neK.lines[0].words[0].text, 'こ');
@@ -190,10 +248,18 @@ eq('netease second translation', ne.lines[1].translation, '世界（译）');
 const neNoTl = u.parseNeteaseLyrics({ lrc: { lyric: '[00:01.00]a' } });
 eq('netease no tlyric', neNoTl.lines[0].translation, undefined);
 let neThrew = false;
-try { u.parseNeteaseLyrics({ lrc: { lyric: '' } }); } catch (e) { neThrew = e.name === 'NeteaseParseError'; }
+try {
+    u.parseNeteaseLyrics({ lrc: { lyric: '' } });
+} catch (e) {
+    neThrew = e.name === 'NeteaseParseError';
+}
 ok('netease rejects empty', neThrew);
 neThrew = false;
-try { u.parseNeteaseLyrics([]); } catch (e) { neThrew = e.name === 'NeteaseParseError'; }
+try {
+    u.parseNeteaseLyrics([]);
+} catch (e) {
+    neThrew = e.name === 'NeteaseParseError';
+}
 ok('netease rejects array', neThrew);
 
 // ---- AI result import (v2.7.0) ----
@@ -201,18 +267,30 @@ const aiLyrics = [
     { time: 15.3, text: '重大な問題抱えて眠る' },
     { time: 24.7, text: '愛されたほうが確かに無双的だけれど' }
 ];
-const parsedAi = u.parseAiResult('{"results":[{"time":15.3,"text":"重大な問題抱えて眠る","analysis":"a,あ,阿,名詞,啊|b,び,び,助詞,吧"},{"time":24.7,"text":"愛されたほうが確かに無双的だけれど","analysis":"c,し,し,動詞,是"}]}');
+const parsedAi = u.parseAiResult(
+    '{"results":[{"time":15.3,"text":"重大な問題抱えて眠る","analysis":"a,あ,阿,名詞,啊|b,び,び,助詞,吧"},{"time":24.7,"text":"愛されたほうが確かに無双的だけれど","analysis":"c,し,し,動詞,是"}]}'
+);
 eq('ai parse result count', parsedAi.results.length, 2);
-eq('ai parse analysis fields', parsedAi.results[0].analysis[0], { romaji: 'a', hiragana: 'あ', kanji: '阿', partOfSpeech: '名詞', meaning: '啊' });
+eq('ai parse analysis fields', parsedAi.results[0].analysis[0], {
+    romaji: 'a',
+    hiragana: 'あ',
+    kanji: '阿',
+    partOfSpeech: '名詞',
+    meaning: '啊'
+});
 const matched = u.matchAnalysisToLyrics(aiLyrics, parsedAi.results);
 eq('ai matched all', matched.unmatched, []);
 eq('ai attaches analysis', matched.lyrics[0].analysis[0].romaji, 'a');
 eq('ai marks source', matched.lyrics[0].analysisSource, 'ai');
 // code-fenced result
-const fenced = u.parseAiResult('```json\n{"results":[{"time":15.3,"text":"重大な問題抱えて眠る","analysis":"x,ぁ,ぁ,名詞,雪"}]}\n```');
+const fenced = u.parseAiResult(
+    '```json\n{"results":[{"time":15.3,"text":"重大な問題抱えて眠る","analysis":"x,ぁ,ぁ,名詞,雪"}]}\n```'
+);
 eq('ai fence stripped', fenced.results.length, 1);
 // tolerance match: AI time drifts 0.08s, text same → still matched
-const drift = u.matchAnalysisToLyrics(aiLyrics, [{ time: 15.38, text: '重大な問題抱えて眠る', analysis: 'x,ぁ,ぁ,名詞,雪' }]);
+const drift = u.matchAnalysisToLyrics(aiLyrics, [
+    { time: 15.38, text: '重大な問題抱えて眠る', analysis: 'x,ぁ,ぁ,名詞,雪' }
+]);
 eq('ai tolerance match', drift.unmatched, [1]);
 eq('ai tolerance attach', drift.lyrics[0].analysis[0].kanji, 'ぁ');
 // mismatch: same time, different text → unmatched, no guess
@@ -220,13 +298,25 @@ const wrong = u.matchAnalysisToLyrics(aiLyrics, [{ time: 15.3, text: '完全不�
 eq('ai text mismatch unmatched', wrong.unmatched, [0, 1]);
 eq('ai text mismatch no attach', wrong.lyrics[0].analysis, undefined);
 let aiThrew = false;
-try { u.parseAiResult('not json at all'); } catch (e) { aiThrew = e.name === 'AiImportError'; }
+try {
+    u.parseAiResult('not json at all');
+} catch (e) {
+    aiThrew = e.name === 'AiImportError';
+}
 ok('ai rejects non-json', aiThrew);
 aiThrew = false;
-try { u.parseAiResult('{"results":[{"time":"bad","text":"x","analysis":"a,b,c,d,e"}]}'); } catch (e) { aiThrew = e.name === 'AiImportError'; }
+try {
+    u.parseAiResult('{"results":[{"time":"bad","text":"x","analysis":"a,b,c,d,e"}]}');
+} catch (e) {
+    aiThrew = e.name === 'AiImportError';
+}
 ok('ai rejects bad time', aiThrew);
 aiThrew = false;
-try { u.parseAiResult('{"results":[{"time":1,"text":"x","analysis":"a,b,c"}]}'); } catch (e) { aiThrew = e.name === 'AiImportError'; }
+try {
+    u.parseAiResult('{"results":[{"time":1,"text":"x","analysis":"a,b,c"}]}');
+} catch (e) {
+    aiThrew = e.name === 'AiImportError';
+}
 ok('ai rejects short analysis', aiThrew);
 
 // ---- AI prompt builder (v2.7.0) ----
@@ -236,7 +326,11 @@ ok('prompt has lyric', prompt.includes('重大な問題抱えて眠る'));
 ok('prompt has time', prompt.includes('[00:15.3]'));
 ok('prompt has output contract', prompt.includes('{"results"'));
 eq('chunkLyrics no chunk', u.chunkLyrics(aiLyrics, 0).length, 1);
-eq('chunkLyrics splits', u.chunkLyrics([1, 2, 3, 4, 5], 2).map(c => c.length), [2, 2, 1]);
+eq(
+    'chunkLyrics splits',
+    u.chunkLyrics([1, 2, 3, 4, 5], 2).map((c) => c.length),
+    [2, 2, 1]
+);
 const prompts = u.buildAnalysisPrompts(aiLyrics, { chunkSize: 1 });
 eq('buildAnalysisPrompts count', prompts.length, 2);
 ok('chunked prompt announces part', prompts[1].prompt.includes('第 2 / 2 段'));
@@ -247,13 +341,25 @@ eq('sanitize fallback', u.sanitizeMediaName('', 'audio.mp3'), 'audio.mp3');
 eq('sanitize forces ext', u.sanitizeMediaName('song.wav', 'audio.mp3', 'mp3'), 'song.mp3');
 eq('mediaExt known', u.mediaExt('a.M4A'), 'm4a');
 eq('mediaExt unknown', u.mediaExt('a.txt'), '');
-const baked = u.bakeLyricTimes([{ time: 10.123, text: 'x' }, { time: 5, text: 'y' }], 0.123);
+const baked = u.bakeLyricTimes(
+    [
+        { time: 10.123, text: 'x' },
+        { time: 5, text: 'y' }
+    ],
+    0.123
+);
 eq('bake applies offset', baked[0].time, 10);
 eq('bake keeps text', baked[1].text, 'y');
 ok('bake does not mutate', aiLyrics[0].time === 15.3);
 const man = u.buildManifest({
-    title: 'T', artist: 'A', album: 'Al', audioName: 'song.mp3',
-    instrumentalName: 'inst.m4a', coverName: 'c.jpg', convertedFrom: 'legacy', analysisModel: 'glm'
+    title: 'T',
+    artist: 'A',
+    album: 'Al',
+    audioName: 'song.mp3',
+    instrumentalName: 'inst.m4a',
+    coverName: 'c.jpg',
+    convertedFrom: 'legacy',
+    analysisModel: 'glm'
 });
 eq('manifest version stays 2', man.version, 2);
 eq('manifest audio path', man.audio, 'assets/song.mp3');
@@ -268,11 +374,15 @@ eq('payload baked', payload.lyrics[0].time, 2);
 
 // ---- lib.parseLRC NetEase inline variant + lib.splitMixedLrc (v2.7.0) ----
 const lib = globalThis.__lyricexLib;
-const neLrc = lib.parseLRC('[00:08.55](ready set and find out[00:09.83]\n[00:09.83]ready set and find out[00:10.85]\n[00:08.55](准备好 亲自去确认[00:09.83]\n[00:09.83]准备好 亲自去确认[00:10.85]');
+const neLrc = lib.parseLRC(
+    '[00:08.55](ready set and find out[00:09.83]\n[00:09.83]ready set and find out[00:10.85]\n[00:08.55](准备好 亲自去确认[00:09.83]\n[00:09.83]准备好 亲自去确认[00:10.85]'
+);
 ok('netease inline variant keeps lines', neLrc.lines.length === 4);
 eq('netease inline first time', neLrc.lines[0].time, 8.55);
 eq('netease inline first text', neLrc.lines[0].text, '(ready set and find out');
-const neTs = neLrc.lines.filter(function (l) { return l.time === 9.83; });
+const neTs = neLrc.lines.filter(function (l) {
+    return l.time === 9.83;
+});
 ok('netease inline paired ts both kept', neTs.length === 2);
 eq('netease inline paired ts text', neTs[0].text, 'ready set and find out');
 const sm = lib.splitMixedLrc(neLrc.lines);
@@ -290,12 +400,15 @@ ok('splitMixedLrc pure Japanese no trans', jpOnly.trans.length === 0);
 eq('splitMixedLrc pure Japanese keeps all', jpOnly.main.length, 2);
 // v2.8.3: three-line sheets — JP + CN + full-line romaji sharing one timestamp;
 // the romaji attaches as line.romaji (never displaces JP, never dropped)
-const three = lib.splitMixedLrc(lib.parseLRC(
-    '[00:01.00]こんにちは世界[00:02.00]\n' +
-    '[00:01.00]你好世界[00:02.00]\n' +
-    '[00:01.00]ko n ni chi wa se ka i[00:02.00]\n' +
-    '[00:02.00]これは歌です[00:03.00]\n' +
-    '[00:02.00]ko re wa u ta de su[00:03.00]').lines);
+const three = lib.splitMixedLrc(
+    lib.parseLRC(
+        '[00:01.00]こんにちは世界[00:02.00]\n' +
+            '[00:01.00]你好世界[00:02.00]\n' +
+            '[00:01.00]ko n ni chi wa se ka i[00:02.00]\n' +
+            '[00:02.00]これは歌です[00:03.00]\n' +
+            '[00:02.00]ko re wa u ta de su[00:03.00]'
+    ).lines
+);
 ok('splitMixedLrc 3line split true', three.split === true);
 eq('splitMixedLrc 3line main keeps JP', three.main[0].text, 'こんにちは世界');
 eq('splitMixedLrc 3line romaji attached', three.main[0].romaji, 'ko n ni chi wa se ka i');
@@ -305,7 +418,10 @@ eq('splitMixedLrc 3line main count', three.main.length, 2);
 
 // ---- lib.sanitizeSettings (v2.8.0) ----
 const dflt = lib.SETTINGS_DEFAULTS;
-const san = lib.sanitizeSettings({ lyricSize: '50', theme: 123, posColors: { romaji: 'x' }, shortcuts: { playPause: null }, hack: true }, dflt);
+const san = lib.sanitizeSettings(
+    { lyricSize: '50', theme: 123, posColors: { romaji: 'x' }, shortcuts: { playPause: null }, hack: true },
+    dflt
+);
 eq('sanitize reverts wrong scalar type', san.lyricSize, dflt.lyricSize);
 eq('sanitize reverts wrong theme type', san.theme, dflt.theme);
 eq('sanitize keeps valid nested value', san.posColors.romaji, 'x');

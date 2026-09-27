@@ -10,7 +10,7 @@
    garbage. */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
     var lib = root.__lyricexLib;
 
     function NeteaseParseError(message) {
@@ -24,7 +24,7 @@
     var TRANSLATION_TOLERANCE = 0.05;
 
     function lyricText(obj, key) {
-        return (obj && obj[key] && typeof obj[key].lyric === 'string') ? obj[key].lyric : '';
+        return obj && obj[key] && typeof obj[key].lyric === 'string' ? obj[key].lyric : '';
     }
 
     u.parseNeteaseLyrics = function (data) {

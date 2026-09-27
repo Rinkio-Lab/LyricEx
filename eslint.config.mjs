@@ -22,15 +22,27 @@ const appGlobals = {
 const safetyRules = {
     ...js.configs.recommended.rules,
     eqeqeq: ['error', 'smart'], // allow the `== null` nullish idiom
-    'no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_' // `catch (_) { /* noop */ }` idiom
-    }]
+    'no-unused-vars': [
+        'error',
+        {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_' // `catch (_) { /* noop */ }` idiom
+        }
+    ]
 };
 
 export default [
-    { ignores: ['vendor/**', 'node_modules/**', 'examples/**', 'coverage/**', 'test-results/**', 'playwright-report/**'] },
+    {
+        ignores: [
+            'vendor/**',
+            'node_modules/**',
+            'examples/**',
+            'coverage/**',
+            'test-results/**',
+            'playwright-report/**'
+        ]
+    },
     {
         files: ['assets/scripts/**/*.js'],
         languageOptions: { ecmaVersion: 2022, sourceType: 'script', globals: appGlobals },

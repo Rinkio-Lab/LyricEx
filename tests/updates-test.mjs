@@ -5,13 +5,18 @@ await import('../assets/scripts/updates.js');
 const U = globalThis.__lyricexUpdates;
 let failures = 0;
 function eq(name, got, want) {
-    const g = JSON.stringify(got), w = JSON.stringify(want);
-    if (g !== w) { failures++; console.error(`FAIL ${name}: got ${g} want ${w}`); }
-    else console.log(`ok ${name}`);
+    const g = JSON.stringify(got),
+        w = JSON.stringify(want);
+    if (g !== w) {
+        failures++;
+        console.error(`FAIL ${name}: got ${g} want ${w}`);
+    } else console.log(`ok ${name}`);
 }
 function ok(name, cond) {
-    if (!cond) { failures++; console.error(`FAIL ${name}`); }
-    else console.log(`ok ${name}`);
+    if (!cond) {
+        failures++;
+        console.error(`FAIL ${name}`);
+    } else console.log(`ok ${name}`);
 }
 
 eq('parse v-prefixed', U.parseVersion('v3.1.0'), [3, 1, 0]);

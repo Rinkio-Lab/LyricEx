@@ -1,11 +1,14 @@
 /* LyricEx v1.7.0 – share card builder (HTML template + canvas rasterize) */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
-    var esc = (root.__lyricexLib && root.__lyricexLib.esc) ||
-        function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-        }); };
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
+    var esc =
+        (root.__lyricexLib && root.__lyricexLib.esc) ||
+        function (s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+            });
+        };
 
     u.SHARE_WIDTH = 1200;
     u.SHARE_HEIGHT = 630;
@@ -22,11 +25,18 @@
 
     function templateStyle(template, accent) {
         if (template === 'gradient') {
-            return '.card{background:linear-gradient(135deg,#f7f5f1 0%,' + accent + '26 55%,#f7f5f1 100%);}' +
-                '.accent-bar{background:linear-gradient(90deg,' + accent + ',' + accent + '88);}';
+            return (
+                '.card{background:linear-gradient(135deg,#f7f5f1 0%,' +
+                accent +
+                '26 55%,#f7f5f1 100%);}' +
+                '.accent-bar{background:linear-gradient(90deg,' +
+                accent +
+                ',' +
+                accent +
+                '88);}'
+            );
         }
-        return '.card{background:#ffffff;}' +
-            '.accent-bar{background:' + accent + ';}';
+        return '.card{background:#ffffff;}' + '.accent-bar{background:' + accent + ';}';
     }
 
     // Build the card's inner HTML (a <style> + the card markup). `lyricHtml`
@@ -44,11 +54,15 @@
         var total = Number(opts.total) || 0;
         var showTranslation = opts.showTranslation !== false && !!translation;
         var showRomaji = opts.showRomaji !== false && !!romaji;
-        var counter = index && total ? (index + ' / ' + total) : '';
+        var counter = index && total ? index + ' / ' + total : '';
 
         var css = [
             '*{margin:0;padding:0;box-sizing:border-box;}',
-            '.card{width:' + u.SHARE_WIDTH + 'px;height:' + u.SHARE_HEIGHT + 'px;position:relative;overflow:hidden;' +
+            '.card{width:' +
+                u.SHARE_WIDTH +
+                'px;height:' +
+                u.SHARE_HEIGHT +
+                'px;position:relative;overflow:hidden;' +
                 'color:#1e1a16;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;' +
                 'display:flex;flex-direction:column;padding:52px 72px 60px;}',
             '.accent-bar{position:absolute;top:0;left:0;right:0;height:8px;}',
@@ -70,13 +84,19 @@
         ].join('\n');
 
         var metaLine = [title, artist].filter(Boolean).join('  ·  ');
-        var html = '<style>' + css + '</style>' +
+        var html =
+            '<style>' +
+            css +
+            '</style>' +
             '<div class="card"><div class="accent-bar"></div>' +
             (metaLine ? '<div class="meta">' + metaLine + '</div>' : '') +
-            '<div class="lyric">' + lyricHtml + '</div>' +
+            '<div class="lyric">' +
+            lyricHtml +
+            '</div>' +
             (showTranslation ? '<div class="translation">' + translation + '</div>' : '') +
             (showRomaji ? '<div class="romaji">' + romaji + '</div>' : '') +
-            '<div class="footer">' + (counter ? '<div class="counter">' + counter + '</div>' : '<div></div>') +
+            '<div class="footer">' +
+            (counter ? '<div class="counter">' + counter + '</div>' : '<div></div>') +
             '<div class="powered">Powered by LyricEx</div></div>' +
             '</div>';
         return html;
@@ -85,7 +105,9 @@
     // Render the card to a canvas (Promise). The SVG <foreignObject> path is
     // fast but fragile in some browsers (blank / onerror), so it falls back to
     // a plain canvas-2D card that always works.
-    function stripHtml(s) { return String(s || '').replace(/<[^>]*>/g, ''); }
+    function stripHtml(s) {
+        return String(s || '').replace(/<[^>]*>/g, '');
+    }
 
     function wrapText(ctx, text, maxWidth, maxLines) {
         const s = String(text || '');
@@ -94,8 +116,10 @@
         let cur = '';
         for (let i = 0; i < s.length; i++) {
             const test = cur + s[i];
-            if (cur && ctx.measureText(test).width > maxWidth) { lines.push(cur); cur = s[i]; }
-            else cur = test;
+            if (cur && ctx.measureText(test).width > maxWidth) {
+                lines.push(cur);
+                cur = s[i];
+            } else cur = test;
         }
         if (cur) lines.push(cur);
         if (lines.length > maxLines) {
@@ -171,8 +195,9 @@
     };
 
     u.renderShareCard = function (opts) {
-        return u.renderHtmlToCanvas(u.buildShareCardHTML(opts), u.SHARE_WIDTH, u.SHARE_HEIGHT)
-            .catch(function () { return u.renderFallbackCard(opts, false); });
+        return u.renderHtmlToCanvas(u.buildShareCardHTML(opts), u.SHARE_WIDTH, u.SHARE_HEIGHT).catch(function () {
+            return u.renderFallbackCard(opts, false);
+        });
     };
 
     // v2.0.0 #19: vertical poster (phone wallpaper) — same data, portrait layout.
@@ -190,7 +215,11 @@
 
         var css = [
             '*{margin:0;padding:0;box-sizing:border-box;}',
-            '.card{width:' + u.SHARE_POSTER_WIDTH + 'px;height:' + u.SHARE_POSTER_HEIGHT + 'px;position:relative;overflow:hidden;' +
+            '.card{width:' +
+                u.SHARE_POSTER_WIDTH +
+                'px;height:' +
+                u.SHARE_POSTER_HEIGHT +
+                'px;position:relative;overflow:hidden;' +
                 'color:#1e1a16;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;' +
                 'display:flex;flex-direction:column;align-items:center;justify-content:center;' +
                 'padding:140px 90px 200px;text-align:center;}',
@@ -210,25 +239,37 @@
             opts.customCss || ''
         ].join('\n');
 
-        return '<style>' + css + '</style>' +
+        return (
+            '<style>' +
+            css +
+            '</style>' +
             '<div class="card"><div class="accent-bar"></div>' +
             (metaLine ? '<div class="meta">' + metaLine + '</div>' : '') +
-            '<div class="lyric">' + lyricHtml + '</div>' +
+            '<div class="lyric">' +
+            lyricHtml +
+            '</div>' +
             (showTranslation ? '<div class="translation">' + translation + '</div>' : '') +
             (showRomaji ? '<div class="romaji">' + romaji + '</div>' : '') +
             '<div class="footer"><div class="powered">Powered by LyricEx</div></div>' +
-            '</div>';
+            '</div>'
+        );
     };
 
     u.renderPoster = function (opts) {
-        return u.renderHtmlToCanvas(u.buildPosterHTML(opts), u.SHARE_POSTER_WIDTH, u.SHARE_POSTER_HEIGHT)
-            .catch(function () { return u.renderFallbackCard(opts, true); });
+        return u
+            .renderHtmlToCanvas(u.buildPosterHTML(opts), u.SHARE_POSTER_WIDTH, u.SHARE_POSTER_HEIGHT)
+            .catch(function () {
+                return u.renderFallbackCard(opts, true);
+            });
     };
 
     // canvas → PNG blob (Promise).
     u.canvasToPngBlob = function (canvas) {
         return new Promise(function (resolve, reject) {
-            if (!canvas || !canvas.toBlob) { reject(new Error('no toBlob')); return; }
+            if (!canvas || !canvas.toBlob) {
+                reject(new Error('no toBlob'));
+                return;
+            }
             canvas.toBlob(function (blob) {
                 blob ? resolve(blob) : reject(new Error('toBlob empty'));
             }, 'image/png');

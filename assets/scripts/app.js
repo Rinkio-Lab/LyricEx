@@ -3,7 +3,8 @@
     'use strict';
 
     var L = window.__lyricexLib;
-    var esc = L.esc, formatTime = L.formatTime;
+    var esc = L.esc,
+        formatTime = L.formatTime;
 
     // =========================== DOM REFS ===========================
     const app = document.getElementById('app');
@@ -238,8 +239,15 @@
 
     // UI feature controllers (js/ui/) — instantiated at the bottom with the
     // shared context, after every helper function is declared.
-    let editorApi = null, workspaceApi = null, shareApi = null, videoApi = null, searchApi = null,
-        miniApi = null, cinemaApi = null, settingsApi = null, aboutApi = null;
+    let editorApi = null,
+        workspaceApi = null,
+        shareApi = null,
+        videoApi = null,
+        searchApi = null,
+        miniApi = null,
+        cinemaApi = null,
+        settingsApi = null,
+        aboutApi = null;
 
     // =========================== SETTINGS ===========================
     let settings = L.mergeSettings(null, L.SETTINGS_DEFAULTS);
@@ -247,7 +255,11 @@
     const RERENDER_KEYS = ['subLine', 'showFurigana', 'wordKaraoke', 'showRuby'];
 
     function saveSettings() {
-        try { localStorage.setItem('lyricex-settings', JSON.stringify(settings)); } catch (_) { /* noop */ }
+        try {
+            localStorage.setItem('lyricex-settings', JSON.stringify(settings));
+        } catch (_) {
+            /* noop */
+        }
     }
 
     function getSetting(key) {
@@ -271,7 +283,10 @@
 
     function settingChanged(key) {
         applySettings();
-        if (key === 'wordKaraoke') lyrics.forEach(function (l) { delete l._words; });
+        if (key === 'wordKaraoke')
+            lyrics.forEach(function (l) {
+                delete l._words;
+            });
         if (key === 'spectrum' && settings.spectrum) ensureAudioGraph();
         if (key.indexOf('shortcuts.') === 0) {
             renderShortcutList();
@@ -286,7 +301,11 @@
 
     function loadSettings() {
         let stored = null;
-        try { stored = JSON.parse(localStorage.getItem('lyricex-settings') || 'null'); } catch (_) { /* noop */ }
+        try {
+            stored = JSON.parse(localStorage.getItem('lyricex-settings') || 'null');
+        } catch (_) {
+            /* noop */
+        }
         settings = L.mergeSettings(stored, L.SETTINGS_DEFAULTS);
         // v1.6.1: lyric font default changed from UI font to a JP-first stack;
         // migrate stored 'default' so the select matches an existing option.
@@ -299,7 +318,9 @@
             try {
                 const c = localStorage.getItem('lyricex-color-theme');
                 if (c) settings.colorTheme = c;
-            } catch (_) { /* noop */ }
+            } catch (_) {
+                /* noop */
+            }
         }
         saveSettings();
     }
@@ -329,7 +350,13 @@
         });
     }
 
-    const POS_COLOR_VARS = { romaji: '--pos-romaji', hiragana: '--pos-hiragana', kanji: '--pos-kanji', pos: '--pos-pos', meaning: '--pos-meaning' };
+    const POS_COLOR_VARS = {
+        romaji: '--pos-romaji',
+        hiragana: '--pos-hiragana',
+        kanji: '--pos-kanji',
+        pos: '--pos-pos',
+        meaning: '--pos-meaning'
+    };
 
     function applyPosColors() {
         Object.keys(POS_COLOR_VARS).forEach(function (k) {
@@ -356,8 +383,12 @@
         // v1.6.3: motion — scale the shared transition duration by speed and
         // expose an attribute so CSS can freeze everything when animations are off.
         app.setAttribute('data-motion', settings.animations ? 'on' : 'off');
-        app.style.setProperty('--transition',
-            (settings.animations ? ({ slow: '0.45s', normal: '0.25s', fast: '0.12s' })[settings.animationSpeed] || '0.25s' : '0s') + ' ease');
+        app.style.setProperty(
+            '--transition',
+            (settings.animations
+                ? { slow: '0.45s', normal: '0.25s', fast: '0.12s' }[settings.animationSpeed] || '0.25s'
+                : '0s') + ' ease'
+        );
         app.style.setProperty('--lyric-size', settings.lyricSize + 'px');
         app.style.setProperty('--lyric-lh', settings.lyricLineHeight);
         app.style.setProperty('--lyric-weight', settings.lyricWeight === 'bold' ? '700' : '400');
@@ -411,13 +442,17 @@
         try {
             localStorage.removeItem('lyricex-settings');
             localStorage.removeItem('lyricex-color-theme');
-        } catch (_) { /* noop */ }
+        } catch (_) {
+            /* noop */
+        }
         settings = L.mergeSettings(null, L.SETTINGS_DEFAULTS);
         settings.locale = keepLocale;
         settings.directionMode = keepDirection;
         saveSettings();
         applySettings(); // locale unchanged, other settings re-applied
-        lyrics.forEach(function (l) { delete l._words; });
+        lyrics.forEach(function (l) {
+            delete l._words;
+        });
         settingsApi.renderControls();
         settingsApi.applySidebarVisibility();
         renderShortcutControls();
@@ -465,41 +500,103 @@
             { id: 'help-contribute', title: titles.contribute || 'Contribute', key: 'contribute' },
             { id: 'help-feedback', title: titles.feedback || 'Feedback & Support', key: 'feedback' }
         ];
-        const navHtml = sections.map(function (sec) {
-            return '<li><a href="#' + sec.id + '" data-target="' + sec.id + '">' + sec.title + '</a></li>';
-        }).join('');
-        const langBtns = ['zh', 'ja', 'en'].map(function (code) {
-            const native = { zh: '简体中文', ja: '日本語', en: 'English' }[code];
-            return '<button type="button" class="help-lang-btn' + (code === helpLang ? ' active' : '') + '" data-help-lang="' + code + '">' + native + '</button>';
-        }).join('');
+        const navHtml = sections
+            .map(function (sec) {
+                return '<li><a href="#' + sec.id + '" data-target="' + sec.id + '">' + sec.title + '</a></li>';
+            })
+            .join('');
+        const langBtns = ['zh', 'ja', 'en']
+            .map(function (code) {
+                const native = { zh: '简体中文', ja: '日本語', en: 'English' }[code];
+                return (
+                    '<button type="button" class="help-lang-btn' +
+                    (code === helpLang ? ' active' : '') +
+                    '" data-help-lang="' +
+                    code +
+                    '">' +
+                    native +
+                    '</button>'
+                );
+            })
+            .join('');
         const html =
             '<div class="view-help">' +
-                '<aside class="help-nav">' +
-                    '<div class="help-lang" role="group" aria-label="' + t('helpLangLabel') + '">' + langBtns + '</div>' +
-                    '<div class="help-search">' +
-                        '<input id="helpSearchInput" type="search" placeholder="' + t('helpSearch') + '" aria-label="' + t('helpSearch') + '">' +
-                        '<i class="fa fa-search" aria-hidden="true"></i>' +
-                    '</div>' +
-                    '<div class="help-nav-title">' + t('helpContents') + '</div>' +
-                    '<ul class="help-nav-list" id="helpNavList">' + navHtml + '</ul>' +
-                '</aside>' +
-                '<div class="help-content" id="helpContent" tabindex="0">' +
-                    '<header class="help-head"><h2>' + t('help') + '</h2></header>' +
-                    '<section class="help-card" id="help-quick"><h3>' + sections[0].title + '</h3>' + (block.quick || '') + '</section>' +
-                    '<section class="help-card" id="help-library"><h3>' + sections[1].title + '</h3>' + (block.library || '') + '</section>' +
-                    '<section class="help-card" id="help-netease"><h3>' + sections[2].title + '</h3>' + (block.netease || '') + '</section>' +
-                    '<section class="help-card" id="help-demo"><h3>' + sections[3].title + '</h3>' + (block.demo || '<img class="help-demo" src="assets/images/demo.gif" alt="LyricEx demo" loading="lazy">') + '</section>' +
-                    '<section class="help-card" id="help-faq"><h3>' + sections[4].title + '</h3>' + (block.faq || '') + '</section>' +
-                    '<section class="help-card" id="help-contribute"><h3>' + sections[5].title + '</h3>' + (block.contribute || '') + '</section>' +
-                    '<section class="help-card" id="help-feedback"><h3>' + sections[6].title + '</h3>' + (block.feedback || '') + '</section>' +
-                    '<p class="help-no-results" id="helpNoResults" hidden>' + t('helpNoResults') + '</p>' +
-                    '<button class="help-top" id="helpTopBtn" hidden>' + t('helpBackToTop') + '</button>' +
-                    '<nav class="help-pager">' +
-                        '<button class="help-pager-btn" id="helpPrevBtn">' + t('helpPrev') + '</button>' +
-                        '<span class="help-pager-label" id="helpPagerLabel"></span>' +
-                        '<button class="help-pager-btn" id="helpNextBtn">' + t('helpNext') + '</button>' +
-                    '</nav>' +
-                '</div>' +
+            '<aside class="help-nav">' +
+            '<div class="help-lang" role="group" aria-label="' +
+            t('helpLangLabel') +
+            '">' +
+            langBtns +
+            '</div>' +
+            '<div class="help-search">' +
+            '<input id="helpSearchInput" type="search" placeholder="' +
+            t('helpSearch') +
+            '" aria-label="' +
+            t('helpSearch') +
+            '">' +
+            '<i class="fa fa-search" aria-hidden="true"></i>' +
+            '</div>' +
+            '<div class="help-nav-title">' +
+            t('helpContents') +
+            '</div>' +
+            '<ul class="help-nav-list" id="helpNavList">' +
+            navHtml +
+            '</ul>' +
+            '</aside>' +
+            '<div class="help-content" id="helpContent" tabindex="0">' +
+            '<header class="help-head"><h2>' +
+            t('help') +
+            '</h2></header>' +
+            '<section class="help-card" id="help-quick"><h3>' +
+            sections[0].title +
+            '</h3>' +
+            (block.quick || '') +
+            '</section>' +
+            '<section class="help-card" id="help-library"><h3>' +
+            sections[1].title +
+            '</h3>' +
+            (block.library || '') +
+            '</section>' +
+            '<section class="help-card" id="help-netease"><h3>' +
+            sections[2].title +
+            '</h3>' +
+            (block.netease || '') +
+            '</section>' +
+            '<section class="help-card" id="help-demo"><h3>' +
+            sections[3].title +
+            '</h3>' +
+            (block.demo || '<img class="help-demo" src="assets/images/demo.gif" alt="LyricEx demo" loading="lazy">') +
+            '</section>' +
+            '<section class="help-card" id="help-faq"><h3>' +
+            sections[4].title +
+            '</h3>' +
+            (block.faq || '') +
+            '</section>' +
+            '<section class="help-card" id="help-contribute"><h3>' +
+            sections[5].title +
+            '</h3>' +
+            (block.contribute || '') +
+            '</section>' +
+            '<section class="help-card" id="help-feedback"><h3>' +
+            sections[6].title +
+            '</h3>' +
+            (block.feedback || '') +
+            '</section>' +
+            '<p class="help-no-results" id="helpNoResults" hidden>' +
+            t('helpNoResults') +
+            '</p>' +
+            '<button class="help-top" id="helpTopBtn" hidden>' +
+            t('helpBackToTop') +
+            '</button>' +
+            '<nav class="help-pager">' +
+            '<button class="help-pager-btn" id="helpPrevBtn">' +
+            t('helpPrev') +
+            '</button>' +
+            '<span class="help-pager-label" id="helpPagerLabel"></span>' +
+            '<button class="help-pager-btn" id="helpNextBtn">' +
+            t('helpNext') +
+            '</button>' +
+            '</nav>' +
+            '</div>' +
             '</div>';
         viewContent.innerHTML = html;
 
@@ -512,31 +609,51 @@
             let carIdx = 0;
             function carShow(i) {
                 carIdx = (i + slides.length) % slides.length;
-                slides.forEach(function (sl, k) { sl.classList.toggle('active', k === carIdx); });
-                if (dotsBox) dotsBox.querySelectorAll('button').forEach(function (d, k) { d.classList.toggle('active', k === carIdx); });
+                slides.forEach(function (sl, k) {
+                    sl.classList.toggle('active', k === carIdx);
+                });
+                if (dotsBox)
+                    dotsBox.querySelectorAll('button').forEach(function (d, k) {
+                        d.classList.toggle('active', k === carIdx);
+                    });
             }
-            if (dotsBox) slides.forEach(function (_sl, k) {
-                const dot = document.createElement('button');
-                dot.type = 'button';
-                dot.setAttribute('aria-label', String(k + 1));
-                dot.addEventListener('click', function () { carShow(k); });
-                dotsBox.appendChild(dot);
-            });
-            if (btnPrev) btnPrev.addEventListener('click', function () { carShow(carIdx - 1); });
-            if (btnNext) btnNext.addEventListener('click', function () { carShow(carIdx + 1); });
+            if (dotsBox)
+                slides.forEach(function (_sl, k) {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.setAttribute('aria-label', String(k + 1));
+                    dot.addEventListener('click', function () {
+                        carShow(k);
+                    });
+                    dotsBox.appendChild(dot);
+                });
+            if (btnPrev)
+                btnPrev.addEventListener('click', function () {
+                    carShow(carIdx - 1);
+                });
+            if (btnNext)
+                btnNext.addEventListener('click', function () {
+                    carShow(carIdx + 1);
+                });
             carShow(0);
         });
 
         // help-page language switch: persist the choice and re-render in place
         document.querySelectorAll('.help-lang-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                try { localStorage.setItem('lyricex-help-locale', btn.getAttribute('data-help-lang')); } catch (_) { /* noop */ }
+                try {
+                    localStorage.setItem('lyricex-help-locale', btn.getAttribute('data-help-lang'));
+                } catch (_) {
+                    /* noop */
+                }
                 renderHelpView();
             });
         });
 
         const content = document.getElementById('helpContent');
-        const cards = sections.map(function (sec) { return document.getElementById(sec.id); });
+        const cards = sections.map(function (sec) {
+            return document.getElementById(sec.id);
+        });
         const navLinks = sections.map(function (sec) {
             return document.querySelector('.help-nav-list a[data-target="' + sec.id + '"]');
         });
@@ -549,10 +666,14 @@
         // guard: DOM shims (boot-smoke) cannot resolve querySelector — render
         // nothing rather than crash the boot path; real browsers always pass
         if (!content || !search || !navLinks[0] || !pagerLabel) return;
-        let visible = sections.map(function (_s, i) { return i; });
+        let visible = sections.map(function (_s, i) {
+            return i;
+        });
 
         function setActive(idx) {
-            navLinks.forEach(function (a, i) { a.classList.toggle('active', i === idx); });
+            navLinks.forEach(function (a, i) {
+                a.classList.toggle('active', i === idx);
+            });
             const pos = visible.indexOf(idx);
             pagerLabel.textContent = (pos < 0 ? visible.length : pos + 1) + ' / ' + visible.length;
         }
@@ -563,21 +684,33 @@
             else content.scrollTop = cards[idx].offsetTop - 14;
         }
         navLinks.forEach(function (a, i) {
-            a.addEventListener('click', function (e) { e.preventDefault(); goTo(i, true); });
+            a.addEventListener('click', function (e) {
+                e.preventDefault();
+                goTo(i, true);
+            });
         });
         if (helpObserver) helpObserver.disconnect();
-        helpObserver = new IntersectionObserver(function (entries) {
-            entries.forEach(function (en) {
-                if (en.isIntersecting) {
-                    const idx = sections.findIndex(function (sec) { return sec.id === en.target.id; });
-                    if (idx >= 0) setActive(idx);
-                }
-            });
-        }, { root: content, rootMargin: '-10% 0px -55% 0px' });
-        cards.forEach(function (c) { helpObserver.observe(c); });
+        helpObserver = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(function (en) {
+                    if (en.isIntersecting) {
+                        const idx = sections.findIndex(function (sec) {
+                            return sec.id === en.target.id;
+                        });
+                        if (idx >= 0) setActive(idx);
+                    }
+                });
+            },
+            { root: content, rootMargin: '-10% 0px -55% 0px' }
+        );
+        cards.forEach(function (c) {
+            helpObserver.observe(c);
+        });
 
         function currentIdx() {
-            return sections.findIndex(function (_sec, i) { return navLinks[i].classList.contains('active'); });
+            return sections.findIndex(function (_sec, i) {
+                return navLinks[i].classList.contains('active');
+            });
         }
         function applyFilter() {
             const q = search.value.trim().toLowerCase();
@@ -599,15 +732,32 @@
         }
         search.addEventListener('input', applyFilter);
         search.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') { search.value = ''; applyFilter(); search.blur(); }
+            if (e.key === 'Escape') {
+                search.value = '';
+                applyFilter();
+                search.blur();
+            }
         });
-        content.addEventListener('scroll', function () { topBtn.hidden = content.scrollTop < 300; });
-        topBtn.addEventListener('click', function () { content.scrollTo({ top: 0, behavior: 'smooth' }); });
-        prevBtn.addEventListener('click', function () { step(-1); });
-        nextBtn.addEventListener('click', function () { step(1); });
+        content.addEventListener('scroll', function () {
+            topBtn.hidden = content.scrollTop < 300;
+        });
+        topBtn.addEventListener('click', function () {
+            content.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        prevBtn.addEventListener('click', function () {
+            step(-1);
+        });
+        nextBtn.addEventListener('click', function () {
+            step(1);
+        });
         content.addEventListener('keydown', function (e) {
-            if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
-            else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                step(1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                step(-1);
+            }
         });
         setActive(0);
     }
@@ -623,17 +773,25 @@
             const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             downloadBlob(blob, 'lyricex-settings-' + stamp + '.json');
             return true;
-        } catch (_) { /* noop */ }
+        } catch (_) {
+            /* noop */
+        }
         return false;
     }
 
     function importSettingsFile(file) {
         if (!file) return;
         const reader = new FileReader();
-        reader.onerror = function () { window.__lyricexDialog.alert(t('settingsImportFail')); };
+        reader.onerror = function () {
+            window.__lyricexDialog.alert(t('settingsImportFail'));
+        };
         reader.onload = function () {
             let parsed = null;
-            try { parsed = JSON.parse(String(reader.result)); } catch (_) { /* noop */ }
+            try {
+                parsed = JSON.parse(String(reader.result));
+            } catch (_) {
+                /* noop */
+            }
             if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
                 window.__lyricexDialog.alert(t('settingsImportBad'));
                 return;
@@ -645,7 +803,9 @@
             settings.directionMode = keepDirection;
             saveSettings();
             applySettings();
-            lyrics.forEach(function (l) { delete l._words; });
+            lyrics.forEach(function (l) {
+                delete l._words;
+            });
             settingsApi.renderControls();
             settingsApi.applySidebarVisibility();
             renderShortcutControls();
@@ -657,7 +817,9 @@
     }
 
     // =========================== I18N ===========================
-    const t = function (key) { return window.__i18n.t(key); };
+    const t = function (key) {
+        return window.__i18n.t(key);
+    };
 
     // Language buttons are generated from the __lyricexLanguages registry
     // (assets/locales/languages.js) so user-maintained languages appear without
@@ -668,9 +830,14 @@
     // v2.3.2: every registry language is shown; unloaded ones (not fetched at
     // boot — see the lazy loader) load their fallback chain on demand first.
     function loadLocale(code, done) {
-        if (window.__i18n._dicts[code]) { if (done) done(); return; }
+        if (window.__i18n._dicts[code]) {
+            if (done) done();
+            return;
+        }
         const byCode = {};
-        (window.__lyricexLanguages || []).forEach(function (l) { byCode[l.code] = l; });
+        (window.__lyricexLanguages || []).forEach(function (l) {
+            byCode[l.code] = l;
+        });
         const wanted = [];
         const seen = {};
         let node = byCode[code];
@@ -682,26 +849,32 @@
         if (!window.__i18n._dicts['zh']) wanted.push('zh');
         let idx = 0;
         (function next() {
-            if (idx >= wanted.length) { if (done) done(); return; }
+            if (idx >= wanted.length) {
+                if (done) done();
+                return;
+            }
             const c = wanted[idx++];
             const s = document.createElement('script');
             s.async = false;
             s.src = 'assets/locales/' + c + '.js';
             s.onload = next;
-            s.onerror = next;   // missing dict file: skip, fallback chain still resolves
+            s.onerror = next; // missing dict file: skip, fallback chain still resolves
             document.head.appendChild(s);
         })();
     }
 
     function renderLangOptions() {
         if (!langList) return;
-        const langs = (window.__lyricexLanguages || []);
+        const langs = window.__lyricexLanguages || [];
         langList.innerHTML = '';
         langs.forEach(function (l) {
             const btn = document.createElement('button');
             btn.className = 'lang-option' + (window.__i18n._dicts[l.code] ? '' : ' lang-pending');
             btn.dataset.lang = l.code;
-            btn.innerHTML = '<span class="lang-native">' + (l.native || l.code) + '</span><span class="lang-check"><i class="fas fa-check"></i></span>';
+            btn.innerHTML =
+                '<span class="lang-native">' +
+                (l.native || l.code) +
+                '</span><span class="lang-check"><i class="fas fa-check"></i></span>';
             btn.addEventListener('click', function () {
                 const code = btn.dataset.lang;
                 loadLocale(code, function () {
@@ -721,13 +894,19 @@
             opt.classList.toggle('active', opt.dataset.lang === cur);
         });
         if (!currentLangLabel) return;
-        const cfg = (window.__lyricexLanguages || []).filter(function (l) { return l.code === cur; })[0];
+        const cfg = (window.__lyricexLanguages || []).filter(function (l) {
+            return l.code === cur;
+        })[0];
         // innerHTML (not textContent) so the globe icon added in v2.4.1 survives
-        currentLangLabel.innerHTML = '<i class="fas fa-globe"></i>' + esc(cfg ? (cfg.native || cfg.code) : cur);
+        currentLangLabel.innerHTML = '<i class="fas fa-globe"></i>' + esc(cfg ? cfg.native || cfg.code : cur);
     }
 
-    function openLangDrawer() { if (langDrawer) langDrawer.style.display = 'flex'; }
-    function closeLangDrawer() { if (langDrawer) langDrawer.style.display = 'none'; }
+    function openLangDrawer() {
+        if (langDrawer) langDrawer.style.display = 'flex';
+    }
+    function closeLangDrawer() {
+        if (langDrawer) langDrawer.style.display = 'none';
+    }
 
     window.__onLocaleChange = function (locale) {
         if (settings.locale !== locale) {
@@ -760,9 +939,7 @@
     }
 
     function setPlayIcon(playing) {
-        playIconWrap.innerHTML = playing ?
-            '<i class="fas fa-pause"></i>' :
-            '<i class="fas fa-play"></i>';
+        playIconWrap.innerHTML = playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
     }
 
     function setThemeIcon(theme) {
@@ -771,9 +948,7 @@
     }
 
     function setMuteIcon(muted) {
-        muteIconWrap.innerHTML = muted ?
-            '<i class="fas fa-volume-mute"></i>' :
-            '<i class="fas fa-volume-up"></i>';
+        muteIconWrap.innerHTML = muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
     }
 
     function updateThemeLabel() {
@@ -798,7 +973,10 @@
             (idx ? t('line') + ' ' + idx + '/' + lyrics.length + ' ' + t('row') : lyrics.length + ' ' + t('row')) +
             '</span>';
         if (!audio && !audioUrl) {
-            html += '<span class="no-audio-tag"><i class="fas fa-volume-off" style="margin-right:4px;"></i>' + t('noAudio') + '</span>';
+            html +=
+                '<span class="no-audio-tag"><i class="fas fa-volume-off" style="margin-right:4px;"></i>' +
+                t('noAudio') +
+                '</span>';
         }
         sidebarStatus.innerHTML = html;
         updateMobileNow();
@@ -811,7 +989,8 @@
         if (currentColorTheme === 'custom') applyCustomAccent();
         if (currentColorTheme === 'default' || currentColorTheme === 'custom') {
             app.removeAttribute('data-color-theme');
-            if (document.documentElement && document.documentElement.removeAttribute) document.documentElement.removeAttribute('data-color-theme');
+            if (document.documentElement && document.documentElement.removeAttribute)
+                document.documentElement.removeAttribute('data-color-theme');
         } else {
             app.setAttribute('data-color-theme', currentColorTheme);
             if (document.documentElement && document.documentElement.setAttribute) {
@@ -840,7 +1019,14 @@
         ['reset', 'shortcutReset'],
         ['mini', 'shortcutMini']
     ];
-    const KEY_LABELS = { ' ': 'Space', 'ArrowLeft': '\u2190', 'ArrowRight': '\u2192', 'ArrowUp': '\u2191', 'ArrowDown': '\u2193', 'Escape': 'Esc' };
+    const KEY_LABELS = {
+        ' ': 'Space',
+        ArrowLeft: '\u2190',
+        ArrowRight: '\u2192',
+        ArrowUp: '\u2191',
+        ArrowDown: '\u2193',
+        Escape: 'Esc'
+    };
 
     function keyLabel(key) {
         if (KEY_LABELS[key]) return KEY_LABELS[key];
@@ -858,19 +1044,47 @@
 
     function runAction(action) {
         switch (action) {
-            case 'playPause': togglePlay(); break;
-            case 'seekBack': if (audio) audio.currentTime = Math.max(0, audio.currentTime - 5); break;
-            case 'seekForward': if (audio) audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5); break;
-            case 'volumeUp': setVolume(volume + 5); break;
-            case 'volumeDown': setVolume(volume - 5); break;
-            case 'mute': toggleMute(); break;
-            case 'cinema': if (cinemaApi.isOpen()) cinemaApi.close(); else cinemaApi.open(); break;
-            case 'follow': enableFollow(); scrollLyricToActive('instant'); break;
-            case 'loop': toggleLoop(); break;
-            case 'prevLine': prevLyric(); break;
-            case 'nextLine': nextLyric(); break;
-            case 'reset': resetPlayback(); break;
-            case 'mini': miniApi.toggle(); break;
+            case 'playPause':
+                togglePlay();
+                break;
+            case 'seekBack':
+                if (audio) audio.currentTime = Math.max(0, audio.currentTime - 5);
+                break;
+            case 'seekForward':
+                if (audio) audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
+                break;
+            case 'volumeUp':
+                setVolume(volume + 5);
+                break;
+            case 'volumeDown':
+                setVolume(volume - 5);
+                break;
+            case 'mute':
+                toggleMute();
+                break;
+            case 'cinema':
+                if (cinemaApi.isOpen()) cinemaApi.close();
+                else cinemaApi.open();
+                break;
+            case 'follow':
+                enableFollow();
+                scrollLyricToActive('instant');
+                break;
+            case 'loop':
+                toggleLoop();
+                break;
+            case 'prevLine':
+                prevLyric();
+                break;
+            case 'nextLine':
+                nextLyric();
+                break;
+            case 'reset':
+                resetPlayback();
+                break;
+            case 'mini':
+                miniApi.toggle();
+                break;
         }
     }
 
@@ -885,9 +1099,14 @@
     }
 
     function overlayOpen() {
-        return aboutOverlay.classList.contains('open') || settingsOverlay.classList.contains('open') ||
-            guideOverlay.classList.contains('open') || shareOverlay.classList.contains('open') ||
-            videoOverlay.classList.contains('open') || changelogOverlay.classList.contains('open');
+        return (
+            aboutOverlay.classList.contains('open') ||
+            settingsOverlay.classList.contains('open') ||
+            guideOverlay.classList.contains('open') ||
+            shareOverlay.classList.contains('open') ||
+            videoOverlay.classList.contains('open') ||
+            changelogOverlay.classList.contains('open')
+        );
     }
 
     let shortcutCapture = null;
@@ -895,8 +1114,12 @@
     function renderShortcutList() {
         let html = '';
         SHORTCUT_DEFS.forEach(function (def) {
-            html += '<li><span>' + t(def[1]) + '</span><span class="key">' +
-                keyLabel(getSetting('shortcuts.' + def[0])) + '</span></li>';
+            html +=
+                '<li><span>' +
+                t(def[1]) +
+                '</span><span class="key">' +
+                keyLabel(getSetting('shortcuts.' + def[0])) +
+                '</span></li>';
         });
         html += '<li><span>' + t('shortcutDigits') + '</span><span class="key">0 \u2013 9</span></li>';
         shortcutList.innerHTML = html;
@@ -914,7 +1137,9 @@
             btn.className = 'keycap';
             btn.dataset.action = def[0];
             btn.textContent = keyLabel(getSetting('shortcuts.' + def[0]));
-            btn.addEventListener('click', function () { startShortcutCapture(btn); });
+            btn.addEventListener('click', function () {
+                startShortcutCapture(btn);
+            });
             row.appendChild(label);
             row.appendChild(btn);
             shortcutControls.appendChild(row);
@@ -937,11 +1162,18 @@
     function handleShortcutCapture(e) {
         e.preventDefault();
         e.stopPropagation();
-        if (e.key === 'Escape') { cancelShortcutCapture(); return; }
+        if (e.key === 'Escape') {
+            cancelShortcutCapture();
+            return;
+        }
         if (['Shift', 'Control', 'Alt', 'Meta'].indexOf(e.key) !== -1) return; // need a real key
         const key = L.normalizeKey(e.key);
         if (!key) return;
-        if (/^[0-9]$/.test(key)) { window.__lyricexDialog.alert(t('shortcutDigitsReserved')); cancelShortcutCapture(); return; }
+        if (/^[0-9]$/.test(key)) {
+            window.__lyricexDialog.alert(t('shortcutDigitsReserved'));
+            cancelShortcutCapture();
+            return;
+        }
         for (let i = 0; i < SHORTCUT_DEFS.length; i++) {
             const id = SHORTCUT_DEFS[i][0];
             if (id !== shortcutCapture.action && L.normalizeKey(getSetting('shortcuts.' + id)) === key) {
@@ -954,7 +1186,6 @@
         cancelShortcutCapture();
     }
 
-
     // per-line font discriminator: Chinese lines get data-lang="zh" so CSS can
     // swap the JP-first lyric font for the SC stack (see assets/styles/views.css).
     // v2.0.0: an explicit per-line `lang` (manifest v2) wins over the heuristic.
@@ -963,10 +1194,6 @@
         if (lang === 'zh' || lang === 'ja' || lang === 'en') return ' data-lang="' + lang + '"';
         return L.isChinese(line && line.text) ? ' data-lang="zh"' : '';
     }
-
-
-
-
 
     // =========================== WORD-BY-WORD KARAOKE ===========================
     // v1.6.0: karaoke word spans render ONLY from real per-word timing carried
@@ -986,13 +1213,18 @@
         if (!settings.showRuby) return null;
         const segs = L.annotateRuby(line.text, line.analysis);
         if (!segs) return null;
-        return segs.map(function (s) {
-            if (s.type === 'text') return esc(s.text);
-            if (s.type === 'furigana') return s.segs.map(function (g) {
-                return g.r ? '<ruby>' + esc(g.t) + '<rt>' + esc(g.r) + '</rt></ruby>' : esc(g.t);
-            }).join('');
-            return '<ruby>' + esc(s.text) + '<rt>' + esc(s.reading) + '</rt></ruby>';
-        }).join('');
+        return segs
+            .map(function (s) {
+                if (s.type === 'text') return esc(s.text);
+                if (s.type === 'furigana')
+                    return s.segs
+                        .map(function (g) {
+                            return g.r ? '<ruby>' + esc(g.t) + '<rt>' + esc(g.r) + '</rt></ruby>' : esc(g.t);
+                        })
+                        .join('');
+                return '<ruby>' + esc(s.text) + '<rt>' + esc(s.reading) + '</rt></ruby>';
+            })
+            .join('');
     }
 
     function lineTextHTML(line, _idx) {
@@ -1000,9 +1232,11 @@
         if (ruby !== null) return ruby;
         const words = lineWordSpans(line);
         if (!words) return esc(line.text);
-        return words.map(function (w, i) {
-            return '<span class="w" data-w="' + i + '">' + esc(w.text) + '</span>';
-        }).join(' ');
+        return words
+            .map(function (w, i) {
+                return '<span class="w" data-w="' + i + '">' + esc(w.text) + '</span>';
+            })
+            .join(' ');
     }
 
     // study view header: ruby if available, else plain escaped text
@@ -1013,12 +1247,17 @@
 
     function romajiFromLine(line) {
         if (line.analysis && line.analysis.length) {
-            const r = line.analysis.map(function (a) { return a.romaji; }).filter(Boolean).join(' ');
+            const r = line.analysis
+                .map(function (a) {
+                    return a.romaji;
+                })
+                .filter(Boolean)
+                .join(' ');
             if (r) return r;
         }
         // v2.8.3: full-line romaji attached by splitMixedLrc for three-line sheets
         if (line.romaji && typeof line.romaji === 'string') return line.romaji;
-        return (line.note && typeof line.note === 'string') ? line.note : '';
+        return line.note && typeof line.note === 'string' ? line.note : '';
     }
 
     function subLineHTML(line) {
@@ -1059,8 +1298,16 @@
         if (!settings.wordKaraoke) return;
         const idx = activeLineIndex;
         if (idx < 0 || idx >= lyrics.length) {
-            viewContent.querySelectorAll('.w').forEach(function (sp) { sp.classList.remove('past', 'on'); });
-            if (cinemaApi.isOpen()) cinemaApi.container().querySelectorAll('.w').forEach(function (sp) { sp.classList.remove('past', 'on'); });
+            viewContent.querySelectorAll('.w').forEach(function (sp) {
+                sp.classList.remove('past', 'on');
+            });
+            if (cinemaApi.isOpen())
+                cinemaApi
+                    .container()
+                    .querySelectorAll('.w')
+                    .forEach(function (sp) {
+                        sp.classList.remove('past', 'on');
+                    });
             return;
         }
         const wIdx = wordIndexAt(lyrics[idx], getCurrentTime());
@@ -1068,7 +1315,10 @@
             const item = viewContent.querySelector('.lyric-line.active');
             if (item) {
                 updateWordSpans(item, wIdx);
-                updateTableCells(item.closest('.lyric-item') ? item.closest('.lyric-item').querySelector('.study-table') : null, wIdx);
+                updateTableCells(
+                    item.closest('.lyric-item') ? item.closest('.lyric-item').querySelector('.study-table') : null,
+                    wIdx
+                );
             }
         } else if (currentView === 'study') {
             updateTableCells(viewContent.querySelector('.study-table'), wIdx);
@@ -1083,7 +1333,8 @@
     // =========================== STUDY TABLE ===========================
     function buildStudyTable(line, wIdx) {
         if (!line) return '<div class="no-analysis">' + t('noAnalysisInvalid') + '</div>';
-        if (!line.analysis || line.analysis.length === 0) return '<div class="no-analysis">' + t('noAnalysisMeta') + '</div>';
+        if (!line.analysis || line.analysis.length === 0)
+            return '<div class="no-analysis">' + t('noAnalysisMeta') + '</div>';
         const analysis = line.analysis;
         const labels = [
             { key: 'romaji', label: t('romaji'), cls: 'romaji' },
@@ -1101,16 +1352,32 @@
                 if (label.key === 'romaji' && item.note) {
                     extra = '<span class="sub-note">' + esc(item.note) + '</span>';
                 }
-                html += '<td class="word-cell ' + label.cls + (wi === wIdx ? ' active' : '') + '" data-w="' + wi + '">' + val + extra + '</td>';
+                html +=
+                    '<td class="word-cell ' +
+                    label.cls +
+                    (wi === wIdx ? ' active' : '') +
+                    '" data-w="' +
+                    wi +
+                    '">' +
+                    val +
+                    extra +
+                    '</td>';
             });
             html += '</tr>';
         });
         const translation = esc(line.translation || '(' + t('noTranslation') + ')');
-        html += '<tr class="translation-row"><td class="label">' + t('translation') + '</td><td colspan="' + analysis.length + '">' +
+        html +=
+            '<tr class="translation-row"><td class="label">' +
+            t('translation') +
+            '</td><td colspan="' +
+            analysis.length +
+            '">' +
             translation;
         if (line.note) {
-            html += '<span class="note-text"><i class="fas fa-comment" style="margin-right:4px;"></i>' +
-                esc(line.note) + '</span>';
+            html +=
+                '<span class="note-text"><i class="fas fa-comment" style="margin-right:4px;"></i>' +
+                esc(line.note) +
+                '</span>';
         }
         html += '</td></tr></tbody></table></div>';
         return html;
@@ -1121,29 +1388,56 @@
         viewContent.innerHTML =
             '<div class="view-empty">' +
             '<span class="icon-big"><i class="fas fa-music"></i></span>' +
-            '<div class="title">' + t('emptyTitle') + '</div>' +
-            '<div class="desc">' + t('emptyDesc') + '<br>' +
-            '<span style="font-size:12px;color:var(--text-muted);">' + t('emptyHint') + '</span></div>' +
+            '<div class="title">' +
+            t('emptyTitle') +
+            '</div>' +
+            '<div class="desc">' +
+            t('emptyDesc') +
+            '<br>' +
+            '<span style="font-size:12px;color:var(--text-muted);">' +
+            t('emptyHint') +
+            '</span></div>' +
             '</div>';
     }
 
     // =========================== RENDER VIEWS ===========================
     function renderLyricsView() {
-        if (!lyrics.length) { renderEmpty(); return; }
+        if (!lyrics.length) {
+            renderEmpty();
+            return;
+        }
         let html = '<div class="view-lyrics">';
         lyrics.forEach(function (line, idx) {
-            const isActive = (idx === activeLineIndex);
+            const isActive = idx === activeLineIndex;
             const timeStr = formatTime(line.time);
             const hasAnalysis = line.analysis && line.analysis.length > 0;
             const timeAttr = Number(line.time) || 0; // numeric: package JSON is untrusted
             html +=
-                '<div class="lyric-line ' + (isActive ? 'active' : '') + '" data-index="' + idx + '" data-time="' + timeAttr + '"' + langAttr(line) + '>' +
-                '<span class="time-tag">' + timeStr + '</span>' +
+                '<div class="lyric-line ' +
+                (isActive ? 'active' : '') +
+                '" data-index="' +
+                idx +
+                '" data-time="' +
+                timeAttr +
+                '"' +
+                langAttr(line) +
+                '>' +
+                '<span class="time-tag">' +
+                timeStr +
+                '</span>' +
                 '<span class="line-body">' +
-                '<span class="line-text">' + lineTextHTML(line, idx) + '</span>' +
+                '<span class="line-text">' +
+                lineTextHTML(line, idx) +
+                '</span>' +
                 subLineHTML(line) +
                 '</span>' +
-                (instrumentalUrl ? '<button class="line-inst" data-inst="' + idx + '" title="' + auditionLineTitle() + '"><i class="fas fa-music"></i></button>' : '') +
+                (instrumentalUrl
+                    ? '<button class="line-inst" data-inst="' +
+                      idx +
+                      '" title="' +
+                      auditionLineTitle() +
+                      '"><i class="fas fa-music"></i></button>'
+                    : '') +
                 (!hasAnalysis ? '<span class="no-analysis-badge"><i class="fas fa-file-alt"></i></span>' : '') +
                 '</div>';
         });
@@ -1155,7 +1449,10 @@
     }
 
     function renderStudyView() {
-        if (!lyrics.length) { renderEmpty(); return; }
+        if (!lyrics.length) {
+            renderEmpty();
+            return;
+        }
         const prev = viewContent.querySelector('.view-study');
         const top = prev ? prev.scrollTop : 0;
         const idx = activeLineIndex >= 0 && activeLineIndex < lyrics.length ? activeLineIndex : 0;
@@ -1165,14 +1462,35 @@
         const wIdx = wordIndexAt(line, getCurrentTime());
         let furi = '';
         if (settings.showFurigana && line.analysis && line.analysis.length) {
-            const h = line.analysis.map(function (a) { return a.hiragana; }).filter(Boolean).join(' ');
+            const h = line.analysis
+                .map(function (a) {
+                    return a.hiragana;
+                })
+                .filter(Boolean)
+                .join(' ');
             if (h) furi = '<div class="furigana">' + esc(h) + '</div>';
         }
         let html = '<div class="view-study">';
         html += '<div class="study-header">';
-        html += '<div class="line-ref study-line-ref" data-index="' + idx + '" data-time="' + (Number(line.time) || 0) + '"' + langAttr(line) + '>' +
-            lineRubyHTML(line) + ' <span class="time">\u2014 ' + timeStr + '</span></div>';
-        if (instrumentalUrl) html += '<button class="study-inst" data-inst="' + idx + '" title="' + auditionLineTitle() + '"><i class="fas fa-music"></i></button>';
+        html +=
+            '<div class="line-ref study-line-ref" data-index="' +
+            idx +
+            '" data-time="' +
+            (Number(line.time) || 0) +
+            '"' +
+            langAttr(line) +
+            '>' +
+            lineRubyHTML(line) +
+            ' <span class="time">\u2014 ' +
+            timeStr +
+            '</span></div>';
+        if (instrumentalUrl)
+            html +=
+                '<button class="study-inst" data-inst="' +
+                idx +
+                '" title="' +
+                auditionLineTitle() +
+                '"><i class="fas fa-music"></i></button>';
         html += furi;
         html += '</div>';
         html += buildStudyTable(line, wIdx);
@@ -1184,23 +1502,45 @@
     }
 
     function renderMixedView() {
-        if (!lyrics.length) { renderEmpty(); return; }
+        if (!lyrics.length) {
+            renderEmpty();
+            return;
+        }
         let html = '<div class="view-mixed">';
         lyrics.forEach(function (line, idx) {
-            const isActive = (idx === activeLineIndex);
+            const isActive = idx === activeLineIndex;
             const timeStr = formatTime(line.time);
             const wIdx = wordIndexAt(line, getCurrentTime());
             const timeAttr = Number(line.time) || 0; // numeric: package JSON is untrusted
             html += '<div class="lyric-item">';
             html +=
-                '<div class="lyric-line ' + (isActive ? 'active' : '') + '" data-index="' + idx + '" data-time="' + timeAttr + '"' + langAttr(line) + '>' +
-                '<span class="time-tag">' + timeStr + '</span>' +
-                '<span class="line-body"><span class="line-text">' + lineTextHTML(line, idx) + '</span></span>' +
-                (instrumentalUrl ? '<button class="line-inst" data-inst="' + idx + '" title="' + auditionLineTitle() + '"><i class="fas fa-music"></i></button>' : '') +
+                '<div class="lyric-line ' +
+                (isActive ? 'active' : '') +
+                '" data-index="' +
+                idx +
+                '" data-time="' +
+                timeAttr +
+                '"' +
+                langAttr(line) +
+                '>' +
+                '<span class="time-tag">' +
+                timeStr +
+                '</span>' +
+                '<span class="line-body"><span class="line-text">' +
+                lineTextHTML(line, idx) +
+                '</span></span>' +
+                (instrumentalUrl
+                    ? '<button class="line-inst" data-inst="' +
+                      idx +
+                      '" title="' +
+                      auditionLineTitle() +
+                      '"><i class="fas fa-music"></i></button>'
+                    : '') +
                 '</div>';
             // v1.5.0: render every study panel and toggle visibility, so the
             // active line's table follows playback without a full re-render
-            html += '<div class="mixed-study' + (isActive ? '' : ' hidden') + '">' + buildStudyTable(line, wIdx) + '</div>';
+            html +=
+                '<div class="mixed-study' + (isActive ? '' : ' hidden') + '">' + buildStudyTable(line, wIdx) + '</div>';
             html += '</div>';
         });
         html += '</div>';
@@ -1212,15 +1552,27 @@
 
     function renderView() {
         switch (currentView) {
-            case 'lyrics': renderLyricsView(); break;
-            case 'study': renderStudyView(); break;
-            case 'mixed': renderMixedView(); break;
-            case 'editor': editorApi.render(); break;
-            case 'help': renderHelpView(); break;
+            case 'lyrics':
+                renderLyricsView();
+                break;
+            case 'study':
+                renderStudyView();
+                break;
+            case 'mixed':
+                renderMixedView();
+                break;
+            case 'editor':
+                editorApi.render();
+                break;
+            case 'help':
+                renderHelpView();
+                break;
             case 'library':
                 if (window.__lyricexLibraryUI) window.__lyricexLibraryUI.render();
                 break;
-            default: renderLyricsView(); break;
+            default:
+                renderLyricsView();
+                break;
         }
         if (cinemaApi.isOpen()) cinemaApi.renderLyrics();
     }
@@ -1305,7 +1657,9 @@
     function prefersReducedMotion() {
         try {
             return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        } catch (_) { return false; }
+        } catch (_) {
+            return false;
+        }
     }
 
     function cancelScrollAnim() {
@@ -1366,8 +1720,8 @@
             return;
         }
         const paused = !followEnabled && !!getLyricsScrollTarget();
-        followPill.style.display = (paused && !cinemaApi.isOpen()) ? 'flex' : 'none';
-        cinemaFollowPill.style.display = (paused && cinemaApi.isOpen()) ? 'flex' : 'none';
+        followPill.style.display = paused && !cinemaApi.isOpen() ? 'flex' : 'none';
+        cinemaFollowPill.style.display = paused && cinemaApi.isOpen() ? 'flex' : 'none';
     }
 
     function bindScrollInteractions(container) {
@@ -1386,18 +1740,22 @@
         container.addEventListener('wheel', userScrollIntent, { passive: true });
         container.addEventListener('touchmove', userScrollIntent, { passive: true });
 
-        container.addEventListener('scroll', function () {
-            if (followEnabled) return;
-            const el = container.querySelector('.lyric-line.active, .cinema-line.active, .editor-row.active');
-            if (!el) return;
-            const relTop = el.offsetTop - container.offsetTop;
-            const activeCenter = relTop + el.offsetHeight / 2;
-            const viewCenter = container.scrollTop + container.clientHeight / 2;
-            if (Math.abs(activeCenter - viewCenter) <= container.clientHeight * 0.2) {
-                followEnabled = true;
-                updateFollowPill();
-            }
-        }, { passive: true });
+        container.addEventListener(
+            'scroll',
+            function () {
+                if (followEnabled) return;
+                const el = container.querySelector('.lyric-line.active, .cinema-line.active, .editor-row.active');
+                if (!el) return;
+                const relTop = el.offsetTop - container.offsetTop;
+                const activeCenter = relTop + el.offsetHeight / 2;
+                const viewCenter = container.scrollTop + container.clientHeight / 2;
+                if (Math.abs(activeCenter - viewCenter) <= container.clientHeight * 0.2) {
+                    followEnabled = true;
+                    updateFollowPill();
+                }
+            },
+            { passive: true }
+        );
     }
 
     // =========================== CLICK HANDLERS ===========================
@@ -1433,7 +1791,6 @@
         }
         return -1;
     }
-
 
     // =========================== PLAYBACK SYNC ===========================
     function updatePlayState() {
@@ -1477,8 +1834,8 @@
             // v1.6.1: while the progress bar is being dragged, only the
             // highlight moves — scrolling mid-drag fights the pointer (the
             // release handler re-syncs the view with an instant scroll).
-            const behavior = (isDragging || isThumbDragging) ? 'none' :
-                (Math.abs(idx - activeLineIndex) > 1 ? 'instant' : 'smooth');
+            const behavior =
+                isDragging || isThumbDragging ? 'none' : Math.abs(idx - activeLineIndex) > 1 ? 'instant' : 'smooth';
             if (idx >= 0) setActiveLine(idx, behavior);
             else setActiveLine(-1);
         }
@@ -1490,7 +1847,10 @@
         if (animationId) cancelAnimationFrame(animationId);
 
         function loop() {
-            if (!isPlaying || !audio) { animationId = null; return; }
+            if (!isPlaying || !audio) {
+                animationId = null;
+                return;
+            }
             updatePlayState();
             if (settings.spectrum && ensureAudioGraph()) drawSpectrum();
             window.__lyricexAudioGraph.tick(); // v2.0.0: drive the pitch shifter
@@ -1501,19 +1861,27 @@
 
     // =========================== AUDIO CONTROLS ===========================
     function stopAudio() {
-        if (audio) { audio.pause(); audio.src = ''; }
+        if (audio) {
+            audio.pause();
+            audio.src = '';
+        }
         audio = null;
         isPlaying = false;
         setPlayIcon(false);
         playBtn.classList.remove('playing');
-        if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
     }
 
     function togglePlay() {
         if (!audio) {
             if (audioUrl) {
                 loadAudioFromUrl(audioUrl);
-                setTimeout(function () { togglePlay(); }, 300);
+                setTimeout(function () {
+                    togglePlay();
+                }, 300);
             } else {
                 window.__lyricexDialog.alert(t('pleaseUpload'));
             }
@@ -1559,7 +1927,10 @@
     }
 
     function loadAudioFromUrl(url) {
-        if (audio) { audio.pause(); audio.src = ''; }
+        if (audio) {
+            audio.pause();
+            audio.src = '';
+        }
         audio = new Audio(url);
         audio.preload = 'metadata';
         audio.volume = isMuted ? 0 : volume / 100;
@@ -1578,7 +1949,9 @@
             updateMediaSession();
             // v1.5.0: word windows of the last line depend on duration — drop
             // the cache and re-render so the spans are rebuilt with it known
-            lyrics.forEach(function (l) { delete l._words; });
+            lyrics.forEach(function (l) {
+                delete l._words;
+            });
             renderView();
         });
         audio.addEventListener('play', function () {
@@ -1593,7 +1966,10 @@
             setPlayIcon(false);
             playBtn.classList.remove('playing');
             miniApi.updateBar();
-            if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
         });
         audio.addEventListener('ended', function () {
             if (loopMode === 'single') {
@@ -1608,11 +1984,17 @@
                 return;
             }
             // v2.0.0 #14: advance to the next queued package
-            if (queue.length) { advanceQueue(); return; }
+            if (queue.length) {
+                advanceQueue();
+                return;
+            }
             isPlaying = false;
             setPlayIcon(false);
             playBtn.classList.remove('playing');
-            if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
             audio.currentTime = 0;
             updatePlayState();
             if (lyrics.length > 0) setActiveLine(0, 'instant');
@@ -1620,7 +2002,8 @@
         audio.addEventListener('error', function () {
             sidebarStatus.innerHTML =
                 '<span style="color:#c0392b;"><i class="fas fa-times-circle" style="margin-right:4px;"></i>' +
-                t('audioError') + '</span>';
+                t('audioError') +
+                '</span>';
         });
     }
 
@@ -1629,14 +2012,19 @@
     // going through the zip loader. Both editor panes then operate on it.
     function loadWorkspaceDraft(draft) {
         if (!draft || !draft.lines) return;
-        lyrics = draft.lines.map(function (l) { return Object.assign({}, l); });
+        lyrics = draft.lines.map(function (l) {
+            return Object.assign({}, l);
+        });
         if (!songData) songData = {};
         songData.title = draft.title || songData.title || '';
         songData.artist = songData.artist || '';
         songData.album = songData.album || '';
         // replace current audio if the draft carries one; keep playing otherwise
         if (draft.audioFile) {
-            if (audio) { audio.pause(); audio.src = ''; }
+            if (audio) {
+                audio.pause();
+                audio.src = '';
+            }
             if (audioUrl) URL.revokeObjectURL(audioUrl);
             audioUrl = URL.createObjectURL(draft.audioFile);
             loadAudioFromUrl(audioUrl);
@@ -1714,14 +2102,20 @@
     }
 
     function stopInstrumental() {
-        if (instAudio) { instAudio.pause(); instAudio = null; }
+        if (instAudio) {
+            instAudio.pause();
+            instAudio = null;
+        }
         // if the main player sits on the track being removed (editor remove /
         // change), fall back to the original BEFORE revoking the blob URL
         if (mainTrackMode === 'instrumental' && audioUrl && audio) {
             retuneMainAudio(audioUrl, audio.currentTime, isPlaying);
             mainTrackMode = 'original';
         }
-        if (instrumentalUrl) { URL.revokeObjectURL(instrumentalUrl); instrumentalUrl = null; }
+        if (instrumentalUrl) {
+            URL.revokeObjectURL(instrumentalUrl);
+            instrumentalUrl = null;
+        }
         updateTrackToggle();
     }
 
@@ -1739,7 +2133,11 @@
     function toggleLineAudition(idx) {
         const src = auditionSource();
         if (!src || idx < 0 || idx >= lyrics.length) return;
-        if (instAudio && instAudio.__lyricexLine === idx) { instAudio.pause(); instAudio = null; return; }
+        if (instAudio && instAudio.__lyricexLine === idx) {
+            instAudio.pause();
+            instAudio = null;
+            return;
+        }
         if (instAudio) instAudio.pause();
         const b = window.__lyricexUtils.lineLoopBounds(lyrics, offset, idx, audio ? audio.duration : 0);
         if (!b) return;
@@ -1747,7 +2145,8 @@
         // progress to the sentence start/end, so resuming continues from
         // the practiced line (pause runs first, then the seek)
         if (audio && settings.auditionAutoPause) audio.pause();
-        if (audio && settings.auditionSnap !== 'none') audio.currentTime = settings.auditionSnap === 'end' ? b.end : b.start;
+        if (audio && settings.auditionSnap !== 'none')
+            audio.currentTime = settings.auditionSnap === 'end' ? b.end : b.start;
         instAudio = new Audio(src);
         instAudio.__lyricexLine = idx;
         instAudio.volume = isMuted ? 0 : volume / 100; // v2.0.3: audition honors volume/mute
@@ -1756,8 +2155,10 @@
         (function (el, end) {
             function check() {
                 if (el !== instAudio) return;
-                if (el.currentTime >= end || el.ended) { el.pause(); instAudio = null; }
-                else requestAnimationFrame(check);
+                if (el.currentTime >= end || el.ended) {
+                    el.pause();
+                    instAudio = null;
+                } else requestAnimationFrame(check);
             }
             requestAnimationFrame(check);
         })(instAudio, b.end);
@@ -1773,7 +2174,10 @@
         const wasPlaying = isPlaying;
         const resumeAt = audio.currentTime;
         mainTrackMode = mode;
-        if (instAudio) { instAudio.pause(); instAudio = null; } // stale-track audition
+        if (instAudio) {
+            instAudio.pause();
+            instAudio = null;
+        } // stale-track audition
         retuneMainAudio(src, resumeAt, wasPlaying);
         updateTrackToggle();
         renderView(); // per-line ♪ titles flip to the other track
@@ -1830,7 +2234,11 @@
         abEnabled = !abEnabled;
         abToggleBtn.classList.toggle('active', abEnabled);
         abBadge.style.display = abEnabled ? 'block' : 'none';
-        if (!abEnabled) { abPointA = null; abPointB = null; updateABDisplay(); }
+        if (!abEnabled) {
+            abPointA = null;
+            abPointB = null;
+            updateABDisplay();
+        }
     }
 
     function setABPoint(point) {
@@ -1866,9 +2274,13 @@
         if (abPointA === null || abPointB === null || abPointA >= abPointB) return;
         loopMarks.push({
             id: 'mk' + Date.now(),
-            start: abPointA, end: abPointB, active: true
+            start: abPointA,
+            end: abPointB,
+            active: true
         });
-        abPointA = null; abPointB = null; abEnabled = false;
+        abPointA = null;
+        abPointB = null;
+        abEnabled = false;
         abToggleBtn.classList.remove('active');
         abBadge.style.display = 'none';
         updateABDisplay();
@@ -1880,7 +2292,13 @@
         if (marksPanel.style.display === 'block') renderMarks();
     }
 
-    function removeMark(id) { loopMarks = loopMarks.filter(function (m) { return m.id !== id; }); currentLoopMark = null; renderMarks(); }
+    function removeMark(id) {
+        loopMarks = loopMarks.filter(function (m) {
+            return m.id !== id;
+        });
+        currentLoopMark = null;
+        renderMarks();
+    }
 
     function renderMarks() {
         marksBadge.textContent = loopMarks.length;
@@ -1892,21 +2310,44 @@
         }
         let html = '';
         loopMarks.forEach(function (m) {
-            html += '<div class="mark-row' + (m.active ? '' : ' off') + '">' +
-                '<input type="checkbox" class="mark-active" data-id="' + m.id + '"' + (m.active ? ' checked' : '') + '>' +
-                '<span class="mark-times">' + formatTime(m.start) + ' \u2013 ' + formatTime(m.end) + '</span>' +
-                '<button class="mark-del" data-id="' + m.id + '" title="' + t('marksDelete') + '"><i class="fas fa-times"></i></button>' +
+            html +=
+                '<div class="mark-row' +
+                (m.active ? '' : ' off') +
+                '">' +
+                '<input type="checkbox" class="mark-active" data-id="' +
+                m.id +
+                '"' +
+                (m.active ? ' checked' : '') +
+                '>' +
+                '<span class="mark-times">' +
+                formatTime(m.start) +
+                ' \u2013 ' +
+                formatTime(m.end) +
+                '</span>' +
+                '<button class="mark-del" data-id="' +
+                m.id +
+                '" title="' +
+                t('marksDelete') +
+                '"><i class="fas fa-times"></i></button>' +
                 '</div>';
         });
         marksList.innerHTML = html;
         marksList.querySelectorAll('.mark-active').forEach(function (box) {
             box.addEventListener('change', function () {
-                const m = loopMarks.find(function (x) { return x.id === box.dataset.id; });
-                if (m) { m.active = box.checked; if (!m.active && currentLoopMark === m) currentLoopMark = null; renderMarks(); }
+                const m = loopMarks.find(function (x) {
+                    return x.id === box.dataset.id;
+                });
+                if (m) {
+                    m.active = box.checked;
+                    if (!m.active && currentLoopMark === m) currentLoopMark = null;
+                    renderMarks();
+                }
             });
         });
         marksList.querySelectorAll('.mark-del').forEach(function (btn) {
-            btn.addEventListener('click', function () { removeMark(btn.dataset.id); });
+            btn.addEventListener('click', function () {
+                removeMark(btn.dataset.id);
+            });
         });
     }
 
@@ -1919,10 +2360,16 @@
                 artist: songData.artist || '',
                 album: songData.album || ''
             });
-        } catch (_) { /* MediaMetadata unsupported */ }
+        } catch (_) {
+            /* MediaMetadata unsupported */
+        }
         if (!navigator.mediaSession.setActionHandler) return;
-        navigator.mediaSession.setActionHandler('play', function () { if (audio) audio.play().catch(function () {}); });
-        navigator.mediaSession.setActionHandler('pause', function () { if (audio) audio.pause(); });
+        navigator.mediaSession.setActionHandler('play', function () {
+            if (audio) audio.play().catch(function () {});
+        });
+        navigator.mediaSession.setActionHandler('pause', function () {
+            if (audio) audio.pause();
+        });
         navigator.mediaSession.setActionHandler('previoustrack', prevLyric);
         navigator.mediaSession.setActionHandler('nexttrack', nextLyric);
         navigator.mediaSession.setActionHandler('seekbackward', function (details) {
@@ -1944,35 +2391,54 @@
 
     function showStatusError(msg) {
         sidebarStatus.innerHTML =
-            '<span style="color:#c0392b;"><i class="fas fa-times-circle" style="margin-right:4px;"></i>' + msg + '</span>';
+            '<span style="color:#c0392b;"><i class="fas fa-times-circle" style="margin-right:4px;"></i>' +
+            msg +
+            '</span>';
     }
 
     // v2.9.4: play a library song through the main player (audio blob from IDB)
     function playLibrarySong(entry) {
-        if (!entry || !entry.audioBlob) { if (window.__lyricexLog) window.__lyricexLog.warn('app', 'playLibrarySong without audio', entry && entry.id); return; }
+        if (!entry || !entry.audioBlob) {
+            if (window.__lyricexLog)
+                window.__lyricexLog.warn('app', 'playLibrarySong without audio', entry && entry.id);
+            return;
+        }
         try {
-        if (audioUrl) { URL.revokeObjectURL(audioUrl); audioUrl = null; }
-        if (coverUrl) { URL.revokeObjectURL(coverUrl); coverUrl = null; }
-        stopInstrumental();
-        if (instrumentalUrl) { URL.revokeObjectURL(instrumentalUrl); instrumentalUrl = null; }
-        mainTrackMode = 'original';
-        songData = {
-            title: entry.title || '', artist: entry.artist || '', album: entry.album || '',
-            sourceFormat: entry.sourceFormat || 'library'
-        };
-        lyrics = entry.lyricLines ? JSON.parse(entry.lyricLines) : [];
-        offset = Number(entry.lyricOffset) || 0;
-        audioUrl = URL.createObjectURL(entry.audioBlob);
-        if (entry.coverBlob) coverUrl = URL.createObjectURL(entry.coverBlob);
-        updateTrackToggle();
-        uploadFileName.textContent = entry.fileName || '';
-        activeLineIndex = -1;
-        if (audioUrl) loadAudioFromUrl(audioUrl);
-        updateSidebarStatus();
-        if (window.__lyricexLibrary && window.__lyricexLibrary.recordPlay) window.__lyricexLibrary.recordPlay(entry.id);
-        if (lyrics.length) switchView('lyrics');
+            if (audioUrl) {
+                URL.revokeObjectURL(audioUrl);
+                audioUrl = null;
+            }
+            if (coverUrl) {
+                URL.revokeObjectURL(coverUrl);
+                coverUrl = null;
+            }
+            stopInstrumental();
+            if (instrumentalUrl) {
+                URL.revokeObjectURL(instrumentalUrl);
+                instrumentalUrl = null;
+            }
+            mainTrackMode = 'original';
+            songData = {
+                title: entry.title || '',
+                artist: entry.artist || '',
+                album: entry.album || '',
+                sourceFormat: entry.sourceFormat || 'library'
+            };
+            lyrics = entry.lyricLines ? JSON.parse(entry.lyricLines) : [];
+            offset = Number(entry.lyricOffset) || 0;
+            audioUrl = URL.createObjectURL(entry.audioBlob);
+            if (entry.coverBlob) coverUrl = URL.createObjectURL(entry.coverBlob);
+            updateTrackToggle();
+            uploadFileName.textContent = entry.fileName || '';
+            activeLineIndex = -1;
+            if (audioUrl) loadAudioFromUrl(audioUrl);
+            updateSidebarStatus();
+            if (window.__lyricexLibrary && window.__lyricexLibrary.recordPlay)
+                window.__lyricexLibrary.recordPlay(entry.id);
+            if (lyrics.length) switchView('lyrics');
         } catch (err) {
-            if (window.__lyricexLog) window.__lyricexLog.error('app', 'playLibrarySong failed', entry && entry.id, err && err.message);
+            if (window.__lyricexLog)
+                window.__lyricexLog.error('app', 'playLibrarySong failed', entry && entry.id, err && err.message);
         }
     }
 
@@ -1981,7 +2447,12 @@
         try {
             const zip = await JSZip.loadAsync(file);
             if (token !== loadToken) return;
-            let audioEntry = null, instrumentalEntry = null, coverEntry = null, manifestEntry = null, legacyJsonEntry = null, lrcEntry = null;
+            let audioEntry = null,
+                instrumentalEntry = null,
+                coverEntry = null,
+                manifestEntry = null,
+                legacyJsonEntry = null,
+                lrcEntry = null;
             for (const [name, entry] of Object.entries(zip.files)) {
                 if (entry.dir) continue;
                 const lower = name.toLowerCase();
@@ -1992,14 +2463,14 @@
                     } else if (!audioEntry) {
                         audioEntry = entry;
                     }
-                }
-                else if (/(\.jpg|\.jpeg|\.png|\.webp)$/i.test(name) && !coverEntry) coverEntry = entry;
+                } else if (/(\.jpg|\.jpeg|\.png|\.webp)$/i.test(name) && !coverEntry) coverEntry = entry;
                 else if (lower === 'manifest.json') manifestEntry = entry;
                 else if (lower.endsWith('song.json') && !legacyJsonEntry) legacyJsonEntry = entry;
                 else if (lower.endsWith('.lrc') && !lrcEntry) lrcEntry = entry;
             }
 
-            let data = null, sourceFormat = '';
+            let data = null,
+                sourceFormat = '';
             if (manifestEntry) {
                 // v1.5.0: LyricEx package format (manifest.json)
                 const manifest = JSON.parse(await manifestEntry.async('text'));
@@ -2010,11 +2481,15 @@
                 const lyricsData = JSON.parse(await lyricsEntry.async('text'));
                 if (token !== loadToken) return;
                 data = {
-                    title: manifest.title, artist: manifest.artist || '', album: manifest.album || '',
-                    lyrics: (lyricsData.lyrics || []), config: manifest.config || {}
+                    title: manifest.title,
+                    artist: manifest.artist || '',
+                    album: manifest.album || '',
+                    lyrics: lyricsData.lyrics || [],
+                    config: manifest.config || {}
                 };
                 if (!audioEntry && manifest.audio) audioEntry = findZipEntry(zip, manifest.audio);
-                if (!instrumentalEntry && manifest.instrumental) instrumentalEntry = findZipEntry(zip, manifest.instrumental);
+                if (!instrumentalEntry && manifest.instrumental)
+                    instrumentalEntry = findZipEntry(zip, manifest.instrumental);
                 if (manifest.cover) coverEntry = findZipEntry(zip, manifest.cover) || coverEntry;
                 sourceFormat = 'lyricex-package';
             } else if (legacyJsonEntry) {
@@ -2028,17 +2503,22 @@
                 sourceFormat = 'lrc';
             }
             if (token !== loadToken) return;
-            if (!data) { showStatusError(t('zipMissing')); return; }
+            if (!data) {
+                showStatusError(t('zipMissing'));
+                return;
+            }
 
             songData = data;
             songData.sourceFormat = sourceFormat;
             lyrics = data.lyrics || [];
-            offset = data.config ? (Number(data.config.lyricOffset) || 0) : 0;
+            offset = data.config ? Number(data.config.lyricOffset) || 0 : 0;
             if (!lyrics || lyrics.length === 0) {
                 showStatusError(t('noLyrics'));
                 return;
             }
-            lyrics.forEach(function (l) { delete l._words; });
+            lyrics.forEach(function (l) {
+                delete l._words;
+            });
 
             if (audioEntry) {
                 const mp3Blob = await audioEntry.async('blob');
@@ -2063,7 +2543,10 @@
             }
             updateTrackToggle(); // v2.0.4: show the toggle only when a second track exists
             // v2.0.0 #22: optional cover image (manifest v2)
-            if (coverUrl) { URL.revokeObjectURL(coverUrl); coverUrl = null; }
+            if (coverUrl) {
+                URL.revokeObjectURL(coverUrl);
+                coverUrl = null;
+            }
             if (coverEntry) {
                 const coverBlob = await coverEntry.async('blob');
                 if (token !== loadToken) return;
@@ -2098,7 +2581,10 @@
             const text = await file.text();
             if (token !== loadToken) return;
             const p = L.parseLRC(text);
-            if (!p.lines.length) { showStatusError(t('lrcInvalid')); return; }
+            if (!p.lines.length) {
+                showStatusError(t('lrcInvalid'));
+                return;
+            }
             songData = {
                 title: p.title || file.name.replace(/\.lrc$/i, ''),
                 artist: p.artist || '',
@@ -2108,7 +2594,9 @@
             };
             lyrics = p.lines;
             offset = 0;
-            lyrics.forEach(function (l) { delete l._words; });
+            lyrics.forEach(function (l) {
+                delete l._words;
+            });
             uploadFileName.textContent = file.name;
             activeLineIndex = -1;
             editorApi.setDirty(false);
@@ -2138,7 +2626,10 @@
     // v2.0.0 #14: multi-file input → load first, queue the rest
     function handleFiles(fileList) {
         const files = Array.prototype.slice.call(fileList || []);
-        if (!files.length) { window.__lyricexDialog.alert(t('pleaseDropZip')); return; }
+        if (!files.length) {
+            window.__lyricexDialog.alert(t('pleaseDropZip'));
+            return;
+        }
         handleFile(files[0]);
         for (let i = 1; i < files.length; i++) {
             if (/\.(zip|lrc)$/i.test(files[i].name)) queue.push({ name: files[i].name, file: files[i] });
@@ -2148,60 +2639,103 @@
 
     // =========================== RECENT + QUEUE (v2.0.0 #14) ===========================
     function saveRecent(file) {
-        try { window.__lyricexRecent.save(file.name, file).then(renderRecent).catch(function () {}); } catch (_) { /* IndexedDB unavailable */ }
+        try {
+            window.__lyricexRecent
+                .save(file.name, file)
+                .then(renderRecent)
+                .catch(function () {});
+        } catch (_) {
+            /* IndexedDB unavailable */
+        }
     }
 
     function renderRecent() {
         try {
-            window.__lyricexRecent.list().then(function (all) {
-                const list = window.__lyricexUtils.pruneRecent(all, 10);
-                recentSection.style.display = list.length ? '' : 'none';
-                // v2.1.1: mirror the list into the mobile more-drawer too
-                const targets = [recentList, mobileRecentList].filter(Boolean);
-                targets.forEach(function (el) { el.innerHTML = ''; });
-                if (!list.length) return;
-                let html = '';
-                list.forEach(function (e) {
-                    html += '<div class="recent-row">' +
-                        '<button class="recent-open" data-name="' + esc(e.name) + '"><i class="fas fa-history"></i> ' + esc(e.name) + '</button>' +
-                        '<button class="recent-del" data-name="' + esc(e.name) + '" title="' + t('marksDelete') + '"><i class="fas fa-times"></i></button>' +
-                        '</div>';
-                });
-                targets.forEach(function (el) {
-                    el.innerHTML = html;
-                    el.querySelectorAll('.recent-open').forEach(function (btn) {
-                        btn.addEventListener('click', function () { openRecent(btn.dataset.name); });
+            window.__lyricexRecent
+                .list()
+                .then(function (all) {
+                    const list = window.__lyricexUtils.pruneRecent(all, 10);
+                    recentSection.style.display = list.length ? '' : 'none';
+                    // v2.1.1: mirror the list into the mobile more-drawer too
+                    const targets = [recentList, mobileRecentList].filter(Boolean);
+                    targets.forEach(function (el) {
+                        el.innerHTML = '';
                     });
-                    el.querySelectorAll('.recent-del').forEach(function (btn) {
-                        btn.addEventListener('click', function () {
-                            window.__lyricexRecent.remove(btn.dataset.name).then(renderRecent);
+                    if (!list.length) return;
+                    let html = '';
+                    list.forEach(function (e) {
+                        html +=
+                            '<div class="recent-row">' +
+                            '<button class="recent-open" data-name="' +
+                            esc(e.name) +
+                            '"><i class="fas fa-history"></i> ' +
+                            esc(e.name) +
+                            '</button>' +
+                            '<button class="recent-del" data-name="' +
+                            esc(e.name) +
+                            '" title="' +
+                            t('marksDelete') +
+                            '"><i class="fas fa-times"></i></button>' +
+                            '</div>';
+                    });
+                    targets.forEach(function (el) {
+                        el.innerHTML = html;
+                        el.querySelectorAll('.recent-open').forEach(function (btn) {
+                            btn.addEventListener('click', function () {
+                                openRecent(btn.dataset.name);
+                            });
+                        });
+                        el.querySelectorAll('.recent-del').forEach(function (btn) {
+                            btn.addEventListener('click', function () {
+                                window.__lyricexRecent.remove(btn.dataset.name).then(renderRecent);
+                            });
                         });
                     });
+                })
+                .catch(function () {
+                    /* noop */
                 });
-            }).catch(function () { /* noop */ });
-        } catch (_) { /* noop */ }
+        } catch (_) {
+            /* noop */
+        }
     }
 
     function openRecent(name) {
-        window.__lyricexRecent.get(name).then(function (entry) {
-            if (!entry || !entry.blob) return;
-            // IndexedDB may return a Blob without a name — rebuild a File.
-            const f = new File([entry.blob], entry.name || name, { type: entry.blob.type || '' });
-            handleFile(f);
-        }).catch(function () { /* noop */ });
+        window.__lyricexRecent
+            .get(name)
+            .then(function (entry) {
+                if (!entry || !entry.blob) return;
+                // IndexedDB may return a Blob without a name — rebuild a File.
+                const f = new File([entry.blob], entry.name || name, { type: entry.blob.type || '' });
+                handleFile(f);
+            })
+            .catch(function () {
+                /* noop */
+            });
     }
 
     function renderQueue() {
         queueSection.style.display = queue.length ? '' : 'none';
         // v2.1.1: mirror the list into the mobile more-drawer too
         const targets = [queueList, mobileQueueList].filter(Boolean);
-        targets.forEach(function (el) { el.innerHTML = ''; });
+        targets.forEach(function (el) {
+            el.innerHTML = '';
+        });
         if (!queue.length) return;
         let html = '';
         queue.forEach(function (q, i) {
-            html += '<div class="queue-row">' +
-                '<span class="queue-name" title="' + esc(q.name) + '">' + esc(q.name) + '</span>' +
-                '<button class="queue-del" data-idx="' + i + '" title="' + t('marksDelete') + '"><i class="fas fa-times"></i></button>' +
+            html +=
+                '<div class="queue-row">' +
+                '<span class="queue-name" title="' +
+                esc(q.name) +
+                '">' +
+                esc(q.name) +
+                '</span>' +
+                '<button class="queue-del" data-idx="' +
+                i +
+                '" title="' +
+                t('marksDelete') +
+                '"><i class="fas fa-times"></i></button>' +
                 '</div>';
         });
         targets.forEach(function (el) {
@@ -2271,8 +2805,12 @@
     }
 
     function closeAllDrawers() {
-        [topDrawer, moreDrawer, playerDrawer, langDrawer].forEach(function (d) { if (d) d.style.display = 'none'; });
-        [mobileMoreBtn, bottomMoreBtn, playerExtToggle].forEach(function (b) { if (b) b.classList.remove('active'); });
+        [topDrawer, moreDrawer, playerDrawer, langDrawer].forEach(function (d) {
+            if (d) d.style.display = 'none';
+        });
+        [mobileMoreBtn, bottomMoreBtn, playerExtToggle].forEach(function (b) {
+            if (b) b.classList.remove('active');
+        });
     }
 
     function updateMobileNow() {
@@ -2303,8 +2841,16 @@
         const bg = document.querySelector('.cinema-bg');
         if (!bg) return;
         const s = settings;
-        bg.style.filter = 'blur(' + s.cinemaBlur + 'px) brightness(' + s.cinemaBrightness +
-            '%) contrast(' + s.cinemaContrast + '%) saturate(' + s.cinemaSaturate + '%)';
+        bg.style.filter =
+            'blur(' +
+            s.cinemaBlur +
+            'px) brightness(' +
+            s.cinemaBrightness +
+            '%) contrast(' +
+            s.cinemaContrast +
+            '%) saturate(' +
+            s.cinemaSaturate +
+            '%)';
         bg.style.setProperty('--cinema-darken', (s.cinemaDarken / 100).toFixed(2));
         bg.style.setProperty('--cinema-glass', (s.cinemaGlass / 100).toFixed(2));
         bg.style.setProperty('--cinema-border', s.cinemaBorder + 'px');
@@ -2324,7 +2870,10 @@
         closeAllDrawers();
         if (!libraryOverlay) return;
         libraryOverlay.classList.add('open');
-        if (libraryCache) { renderLibrary(libraryCache); return; }
+        if (libraryCache) {
+            renderLibrary(libraryCache);
+            return;
+        }
         libraryStatus.textContent = t('libraryLoad');
         fetch('examples/manifest.json', { cache: 'no-store' })
             .then(function (res) {
@@ -2350,7 +2899,10 @@
         const songs = (manifest && manifest.songs) || [];
         libraryStatus.textContent = '';
         libraryList.innerHTML = '';
-        if (!songs.length) { libraryStatus.textContent = t('libraryEmpty'); return; }
+        if (!songs.length) {
+            libraryStatus.textContent = t('libraryEmpty');
+            return;
+        }
         songs.forEach(function (s) {
             const row = document.createElement('div');
             row.className = 'library-item';
@@ -2360,19 +2912,35 @@
             // v3.0.0: manifest songs[].links[] — optional author/source page
             // links (icon = Font Awesome class); a placeholder "#" is fine
             var links = Array.isArray(s.links) ? s.links : [];
-            var linksHTML = links.map(function (lk) {
-                var url = lk.url || '#';
-                var label = lk.label || url;
-                var icon = lk.icon || 'fa-globe';
-                return '<a class="library-item-link" href="' + esc(url) + '" target="_blank" rel="noopener">' +
-                    '<i class="fas ' + esc(icon) + '"></i> ' + esc(label) + '</a>';
-            }).join('');
+            var linksHTML = links
+                .map(function (lk) {
+                    var url = lk.url || '#';
+                    var label = lk.label || url;
+                    var icon = lk.icon || 'fa-globe';
+                    return (
+                        '<a class="library-item-link" href="' +
+                        esc(url) +
+                        '" target="_blank" rel="noopener">' +
+                        '<i class="fas ' +
+                        esc(icon) +
+                        '"></i> ' +
+                        esc(label) +
+                        '</a>'
+                    );
+                })
+                .join('');
             row.innerHTML =
-                '<div class="library-item-info"><div class="library-item-title">' + esc(s.title || '') + '</div>' +
+                '<div class="library-item-info"><div class="library-item-title">' +
+                esc(s.title || '') +
+                '</div>' +
                 (meta ? '<div class="library-item-meta">' + meta + '</div>' : '') +
                 (linksHTML ? '<div class="library-item-links">' + linksHTML + '</div>' : '') +
-                '</div><button class="library-item-btn">' + t('librarySource') + '</button>';
-            row.querySelector('.library-item-btn').addEventListener('click', function () { openLibrarySong(s); });
+                '</div><button class="library-item-btn">' +
+                t('librarySource') +
+                '</button>';
+            row.querySelector('.library-item-btn').addEventListener('click', function () {
+                openLibrarySong(s);
+            });
             libraryList.appendChild(row);
         });
     }
@@ -2381,7 +2949,10 @@
         // v2.9.3: manifest.sources[] may declare >1 loadable source for a song;
         // single-source songs load straight through, multi-source show a chooser
         var sources = Array.isArray(song.sources) ? song.sources : null;
-        if (sources && sources.length > 1) { renderSourcePop(song, sources); return; }
+        if (sources && sources.length > 1) {
+            renderSourcePop(song, sources);
+            return;
+        }
         loadLibrarySong(song);
     }
 
@@ -2396,7 +2967,10 @@
             var btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'library-source-btn';
-            btn.innerHTML = '<span class="library-source-label">' + esc(label) + '</span>' +
+            btn.innerHTML =
+                '<span class="library-source-label">' +
+                esc(label) +
+                '</span>' +
                 (src.file ? '<span class="library-source-file">' + esc(src.file.split('/').pop()) + '</span>' : '');
             btn.addEventListener('click', function () {
                 closeSourcePop();
@@ -2421,53 +2995,132 @@
                 return res.blob();
             })
             .then(function (blob) {
-                const f = new File([blob], (file.split('/').pop() || 'song.lxp.zip'), { type: 'application/zip' });
+                const f = new File([blob], file.split('/').pop() || 'song.lxp.zip', { type: 'application/zip' });
                 closeLibrary();
                 handleFile(f);
             })
-            .catch(function () { libraryStatus.textContent = t('libraryUnavailable'); });
+            .catch(function () {
+                libraryStatus.textContent = t('libraryUnavailable');
+            });
     }
 
     function bindMobileEvents() {
-        if (mobileMoreBtn) mobileMoreBtn.addEventListener('click', function () { toggleDrawer(topDrawer); });
-        if (bottomMoreBtn) bottomMoreBtn.addEventListener('click', function () { toggleDrawer(moreDrawer); });
+        if (mobileMoreBtn)
+            mobileMoreBtn.addEventListener('click', function () {
+                toggleDrawer(topDrawer);
+            });
+        if (bottomMoreBtn)
+            bottomMoreBtn.addEventListener('click', function () {
+                toggleDrawer(moreDrawer);
+            });
         if (langChangeBtn) langChangeBtn.addEventListener('click', openLangDrawer);
         if (guideGlobeBtn) guideGlobeBtn.addEventListener('click', openLangDrawer);
         if (langDrawerClose) langDrawerClose.addEventListener('click', closeLangDrawer);
-        if (langDrawer) langDrawer.addEventListener('click', function (e) { if (e.target === langDrawer) closeLangDrawer(); });
-        if (playerExtToggle) playerExtToggle.addEventListener('click', function () { toggleDrawer(playerDrawer); });
-        if (topThemeBtn) topThemeBtn.addEventListener('click', function () { toggleTheme(); closeAllDrawers(); });
-        if (topSettingsBtn) topSettingsBtn.addEventListener('click', function () { closeAllDrawers(); settingsApi.open(); });
-        if (topAboutBtn) topAboutBtn.addEventListener('click', function () { closeAllDrawers(); aboutApi.open(); });
-        if (moreCinemaBtn) moreCinemaBtn.addEventListener('click', function () { closeAllDrawers(); cinemaApi.open(); });
-        if (moreMiniBtn) moreMiniBtn.addEventListener('click', function () { closeAllDrawers(); miniApi.toggle(); });
-        if (moreUploadBtn) moreUploadBtn.addEventListener('click', function () { closeAllDrawers(); fileInput.click(); });
+        if (langDrawer)
+            langDrawer.addEventListener('click', function (e) {
+                if (e.target === langDrawer) closeLangDrawer();
+            });
+        if (playerExtToggle)
+            playerExtToggle.addEventListener('click', function () {
+                toggleDrawer(playerDrawer);
+            });
+        if (topThemeBtn)
+            topThemeBtn.addEventListener('click', function () {
+                toggleTheme();
+                closeAllDrawers();
+            });
+        if (topSettingsBtn)
+            topSettingsBtn.addEventListener('click', function () {
+                closeAllDrawers();
+                settingsApi.open();
+            });
+        if (topAboutBtn)
+            topAboutBtn.addEventListener('click', function () {
+                closeAllDrawers();
+                aboutApi.open();
+            });
+        if (moreCinemaBtn)
+            moreCinemaBtn.addEventListener('click', function () {
+                closeAllDrawers();
+                cinemaApi.open();
+            });
+        if (moreMiniBtn)
+            moreMiniBtn.addEventListener('click', function () {
+                closeAllDrawers();
+                miniApi.toggle();
+            });
+        if (moreUploadBtn)
+            moreUploadBtn.addEventListener('click', function () {
+                closeAllDrawers();
+                fileInput.click();
+            });
         // v2.9.4: library entries moved to the standalone library view (data-view)
-        if (bottomNav) bottomNav.addEventListener('click', function (e) {
-            const btn = e.target.closest('.bottom-nav-slot');
-            if (!btn || !btn.dataset.view) return;
-            closeAllDrawers();
-            switchView(btn.dataset.view);
-            renderBottomNav();
-        });
+        if (bottomNav)
+            bottomNav.addEventListener('click', function (e) {
+                const btn = e.target.closest('.bottom-nav-slot');
+                if (!btn || !btn.dataset.view) return;
+                closeAllDrawers();
+                switchView(btn.dataset.view);
+                renderBottomNav();
+            });
         if (mobileCoverBtn) mobileCoverBtn.addEventListener('click', openCoverViewer);
         if (playerCoverBtn) playerCoverBtn.addEventListener('click', openCoverViewer);
         if (coverViewerClose) coverViewerClose.addEventListener('click', closeCoverViewer);
-        if (coverViewer) coverViewer.addEventListener('click', function (e) { if (e.target === coverViewer) closeCoverViewer(); });
+        if (coverViewer)
+            coverViewer.addEventListener('click', function (e) {
+                if (e.target === coverViewer) closeCoverViewer();
+            });
         if (libraryCloseBtn) libraryCloseBtn.addEventListener('click', closeLibrary);
         if (librarySourcePopClose) librarySourcePopClose.addEventListener('click', closeSourcePop);
-        if (librarySourcePop) librarySourcePop.addEventListener('click', function (e) { if (e.target === librarySourcePop) closeSourcePop(); });
-        if (libraryOverlay) libraryOverlay.addEventListener('click', function (e) { if (e.target === libraryOverlay) closeLibrary(); });
+        if (librarySourcePop)
+            librarySourcePop.addEventListener('click', function (e) {
+                if (e.target === librarySourcePop) closeSourcePop();
+            });
+        if (libraryOverlay)
+            libraryOverlay.addEventListener('click', function (e) {
+                if (e.target === libraryOverlay) closeLibrary();
+            });
         document.addEventListener('click', function (e) {
-            if (topDrawer && topDrawer.style.display === 'flex' && !topDrawer.contains(e.target) && !(mobileMoreBtn && mobileMoreBtn.contains(e.target))) topDrawer.style.display = 'none';
-            if (moreDrawer && moreDrawer.style.display === 'flex' && !moreDrawer.contains(e.target) && !(bottomMoreBtn && bottomMoreBtn.contains(e.target))) moreDrawer.style.display = 'none';
-            if (langDrawer && langDrawer.style.display === 'flex' && !langDrawer.contains(e.target) && !(langChangeBtn && langChangeBtn.contains(e.target)) && !(guideGlobeBtn && guideGlobeBtn.contains(e.target))) langDrawer.style.display = 'none';
-            if (playerDrawer && playerDrawer.style.display === 'flex' && !playerDrawer.contains(e.target) && !(playerExtToggle && playerExtToggle.contains(e.target))) playerDrawer.style.display = 'none';
+            if (
+                topDrawer &&
+                topDrawer.style.display === 'flex' &&
+                !topDrawer.contains(e.target) &&
+                !(mobileMoreBtn && mobileMoreBtn.contains(e.target))
+            )
+                topDrawer.style.display = 'none';
+            if (
+                moreDrawer &&
+                moreDrawer.style.display === 'flex' &&
+                !moreDrawer.contains(e.target) &&
+                !(bottomMoreBtn && bottomMoreBtn.contains(e.target))
+            )
+                moreDrawer.style.display = 'none';
+            if (
+                langDrawer &&
+                langDrawer.style.display === 'flex' &&
+                !langDrawer.contains(e.target) &&
+                !(langChangeBtn && langChangeBtn.contains(e.target)) &&
+                !(guideGlobeBtn && guideGlobeBtn.contains(e.target))
+            )
+                langDrawer.style.display = 'none';
+            if (
+                playerDrawer &&
+                playerDrawer.style.display === 'flex' &&
+                !playerDrawer.contains(e.target) &&
+                !(playerExtToggle && playerExtToggle.contains(e.target))
+            )
+                playerDrawer.style.display = 'none';
         });
         document.addEventListener('keydown', function (e) {
             if (e.key !== 'Escape') return;
-            if (coverViewer && coverViewer.classList.contains('open')) { closeCoverViewer(); return; }
-            if (libraryOverlay && libraryOverlay.classList.contains('open')) { closeLibrary(); return; }
+            if (coverViewer && coverViewer.classList.contains('open')) {
+                closeCoverViewer();
+                return;
+            }
+            if (libraryOverlay && libraryOverlay.classList.contains('open')) {
+                closeLibrary();
+                return;
+            }
             closeAllDrawers();
         });
         renderBottomNav();
@@ -2488,7 +3141,9 @@
         document.body.appendChild(a);
         a.click();
         a.remove();
-        setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
+        setTimeout(function () {
+            URL.revokeObjectURL(url);
+        }, 5000);
     }
 
     async function exportPackageZip() {
@@ -2562,8 +3217,13 @@
     // =========================== v2.0.0: PRINT / NOTES / POSTER ===========================
     function studyNotesLabels() {
         return {
-            translation: t('translation'), romaji: t('romaji'), note: t('editorNote'),
-            hiragana: t('hiragana'), kanji: t('kanji'), partOfSpeech: t('pos'), meaning: t('meaning')
+            translation: t('translation'),
+            romaji: t('romaji'),
+            note: t('editorNote'),
+            hiragana: t('hiragana'),
+            kanji: t('kanji'),
+            partOfSpeech: t('pos'),
+            meaning: t('meaning')
         };
     }
 
@@ -2572,7 +3232,8 @@
         const doc = window.__lyricexUtils.buildStudyNotes(lyrics, {
             title: (songData && songData.title) || '',
             artist: (songData && songData.artist) || '',
-            format: format, labels: studyNotesLabels()
+            format: format,
+            labels: studyNotesLabels()
         });
         const ext = format === 'html' ? 'html' : 'md';
         const type = format === 'html' ? 'text/html;charset=utf-8' : 'text/markdown;charset=utf-8';
@@ -2581,11 +3242,17 @@
 
     function printStudySheet() {
         if (!lyrics.length) return;
-        let html = '<div class="print-sheet">' +
-            '<h1>' + esc((songData && songData.title) || t('unknownSong')) +
-            (songData && songData.artist ? ' · ' + esc(songData.artist) : '') + '</h1>';
+        let html =
+            '<div class="print-sheet">' +
+            '<h1>' +
+            esc((songData && songData.title) || t('unknownSong')) +
+            (songData && songData.artist ? ' · ' + esc(songData.artist) : '') +
+            '</h1>';
         lyrics.forEach(function (line) {
-            html += '<section class="print-line"><h2>' + esc(line.text || '') + '</h2>' +
+            html +=
+                '<section class="print-line"><h2>' +
+                esc(line.text || '') +
+                '</h2>' +
                 (line.translation ? '<p class="pt">' + esc(line.translation) + '</p>' : '') +
                 (line.analysis && line.analysis.length ? buildStudyTable(line, -1) : '') +
                 '</section>';
@@ -2610,18 +3277,28 @@
             showTranslation: !!line.translation,
             showRomaji: true
         };
-        window.__lyricexUtils.renderPoster(opts).then(function (canvas) {
-            window.__lyricexUtils.canvasToPngBlob(canvas).then(function (blob) {
-                downloadBlob(blob, safePackageName() + '-poster.png');
-            }).catch(function () {});
-        }).catch(function (e) { console.error('poster render failed', e); });
+        window.__lyricexUtils
+            .renderPoster(opts)
+            .then(function (canvas) {
+                window.__lyricexUtils
+                    .canvasToPngBlob(canvas)
+                    .then(function (blob) {
+                        downloadBlob(blob, safePackageName() + '-poster.png');
+                    })
+                    .catch(function () {});
+            })
+            .catch(function (e) {
+                console.error('poster render failed', e);
+            });
     }
 
     // =========================== SPECTRUM (v1.5.0) ===========================
     function refreshSpectrumColor() {
         try {
             spectrumColor = getComputedStyle(app).getPropertyValue('--accent').trim() || '#8a7a6a';
-        } catch (_) { /* keep last */ }
+        } catch (_) {
+            /* keep last */
+        }
     }
 
     function ensureAudioGraph() {
@@ -2634,7 +3311,8 @@
         const spectrumData = window.__lyricexAudioGraph.getData();
         if (!analyser || !spectrumData) return;
         const canvas = spectrumCanvas;
-        const w = canvas.clientWidth, h = canvas.clientHeight;
+        const w = canvas.clientWidth,
+            h = canvas.clientHeight;
         if (!w || !h) return;
         const dpr = window.devicePixelRatio || 1;
         if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
@@ -2656,11 +3334,12 @@
         }
     }
 
-
     // =========================== VIEW SWITCH ===========================
     function switchView(view) {
         currentView = view;
-        viewBtns.forEach(function (btn) { btn.classList.toggle('active', btn.dataset.view === view); });
+        viewBtns.forEach(function (btn) {
+            btn.classList.toggle('active', btn.dataset.view === view);
+        });
         enableFollow(); // before renderView so the fresh view re-syncs to the active line
         renderView();
         // v1.6.3: gentle fade-in on explicit view switches only (not the study
@@ -2689,15 +3368,23 @@
             if (isThumbDragging && audio) seekFromEvent(e);
         });
         document.addEventListener('mouseup', endProgressDrag);
-        progressBar.addEventListener('touchstart', function (e) {
-            if (!audio) return;
-            isDragging = true;
-            seekFromTouch(e);
-        }, { passive: true });
-        document.addEventListener('touchmove', function (e) {
-            if (isDragging && audio) seekFromTouch(e);
-            if (isThumbDragging && audio) seekFromTouch(e);
-        }, { passive: true });
+        progressBar.addEventListener(
+            'touchstart',
+            function (e) {
+                if (!audio) return;
+                isDragging = true;
+                seekFromTouch(e);
+            },
+            { passive: true }
+        );
+        document.addEventListener(
+            'touchmove',
+            function (e) {
+                if (isDragging && audio) seekFromTouch(e);
+                if (isThumbDragging && audio) seekFromTouch(e);
+            },
+            { passive: true }
+        );
         document.addEventListener('touchend', endProgressDrag, { passive: true });
         progressThumb.addEventListener('mousedown', function (e) {
             e.stopPropagation();
@@ -2705,12 +3392,16 @@
             isThumbDragging = true;
             seekFromEvent(e);
         });
-        progressThumb.addEventListener('touchstart', function (e) {
-            e.stopPropagation();
-            if (!audio) return;
-            isThumbDragging = true;
-            seekFromTouch(e);
-        }, { passive: true });
+        progressThumb.addEventListener(
+            'touchstart',
+            function (e) {
+                e.stopPropagation();
+                if (!audio) return;
+                isThumbDragging = true;
+                seekFromTouch(e);
+            },
+            { passive: true }
+        );
     }
 
     function seekFromEvent(e) {
@@ -2751,16 +3442,35 @@
 
     // =========================== KEYBOARD ===========================
     function handleKeydown(e) {
-        if (shortcutCapture) { handleShortcutCapture(e); return; }
+        if (shortcutCapture) {
+            handleShortcutCapture(e);
+            return;
+        }
         if (searchApi.isOpen()) {
-            if (e.key === 'Escape') { e.preventDefault(); searchApi.close(); }
-            else if (e.key === 'ArrowDown') { e.preventDefault(); searchApi.select(1); }
-            else if (e.key === 'ArrowUp') { e.preventDefault(); searchApi.select(-1); }
-            else if (e.key === 'Enter') { e.preventDefault(); searchApi.jump(); }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                searchApi.close();
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                searchApi.select(1);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                searchApi.select(-1);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                searchApi.jump();
+            }
             return;
         }
         if (overlayOpen()) {
-            if (e.key === 'Escape') { aboutApi.close(); settingsApi.close(); aboutApi.closeGuide(); shareApi.close(); videoApi.close(); aboutApi.closeChangelog(); }
+            if (e.key === 'Escape') {
+                aboutApi.close();
+                settingsApi.close();
+                aboutApi.closeGuide();
+                shareApi.close();
+                videoApi.close();
+                aboutApi.closeChangelog();
+            }
             return;
         }
         if (cinemaApi.isOpen() && e.key === 'Escape') {
@@ -2769,7 +3479,8 @@
             return;
         }
         const tag = e.target && e.target.tagName;
-        if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+        if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable))
+            return;
         // v1.7.0: '/' or Ctrl/Cmd+F opens lyrics search
         if (e.key === '/' || ((e.ctrlKey || e.metaKey) && String(e.key).toLowerCase() === 'f')) {
             e.preventDefault();
@@ -2802,19 +3513,21 @@
     }
 
     function boot() {
-
         // v1.6.4: eagerly fetch the vendored webfonts (400 + 700 only — the two
         // weights the app renders). Local @font-face CSS already loads them;
         // document.fonts.load() just forces the fetch so text doesn't swap in.
         if (document.fonts && document.fonts.load) {
-            ['400 16px "Noto Sans SC"',
-             '700 16px "Noto Sans SC"',
-             '400 16px "M PLUS Rounded 1c"',
-             '700 16px "M PLUS Rounded 1c"',
-             '400 16px "Courier Prime"',
-             '700 16px "Courier Prime"'
+            [
+                '400 16px "Noto Sans SC"',
+                '700 16px "Noto Sans SC"',
+                '400 16px "M PLUS Rounded 1c"',
+                '700 16px "M PLUS Rounded 1c"',
+                '400 16px "Courier Prime"',
+                '700 16px "Courier Prime"'
             ].forEach(function (f) {
-                document.fonts.load(f).catch(function () { /* offline → fallbacks */ });
+                document.fonts.load(f).catch(function () {
+                    /* offline → fallbacks */
+                });
             });
         }
 
@@ -2848,10 +3561,14 @@
         setMuteIcon(false);
 
         viewBtns.forEach(function (btn) {
-            btn.addEventListener('click', function () { switchView(this.dataset.view); });
+            btn.addEventListener('click', function () {
+                switchView(this.dataset.view);
+            });
         });
         themeToggle.addEventListener('click', toggleTheme);
-        uploadArea.addEventListener('click', function () { fileInput.click(); });
+        uploadArea.addEventListener('click', function () {
+            fileInput.click();
+        });
         uploadArea.addEventListener('dragover', function (e) {
             e.preventDefault();
             uploadArea.style.borderColor = 'var(--accent)';
@@ -2873,8 +3590,12 @@
         });
 
         // v2.0.0: transpose / bookmarks
-        transposeDown.addEventListener('click', function () { setTranspose(transpose - 1); });
-        transposeUp.addEventListener('click', function () { setTranspose(transpose + 1); });
+        transposeDown.addEventListener('click', function () {
+            setTranspose(transpose - 1);
+        });
+        transposeUp.addEventListener('click', function () {
+            setTranspose(transpose + 1);
+        });
         marksToggleBtn.addEventListener('click', toggleMarksPanel);
         abSave.addEventListener('click', saveBookmark);
         marksPanel.addEventListener('click', function (e) {
@@ -2888,7 +3609,9 @@
         prevBtn.addEventListener('click', prevLyric);
         nextBtn.addEventListener('click', nextLyric);
 
-        volumeSlider.addEventListener('input', function () { setVolume(parseInt(this.value)); });
+        volumeSlider.addEventListener('input', function () {
+            setVolume(parseInt(this.value));
+        });
         muteBtn.addEventListener('click', toggleMute);
         speedSelect.addEventListener('change', function () {
             settings.speed = parseFloat(this.value);
@@ -2898,8 +3621,12 @@
         loopBtn.addEventListener('click', toggleLoop);
         abToggleBtn.addEventListener('click', toggleAB);
         auditionToggleBtn.addEventListener('click', toggleTrackMode);
-        abSetA.addEventListener('click', function () { setABPoint('A'); });
-        abSetB.addEventListener('click', function () { setABPoint('B'); });
+        abSetA.addEventListener('click', function () {
+            setABPoint('A');
+        });
+        abSetB.addEventListener('click', function () {
+            setABPoint('B');
+        });
 
         followPill.addEventListener('click', function () {
             enableFollow();
@@ -2928,19 +3655,29 @@
                     if (currentTheme === 'system') applySettings();
                 });
             }
-        } catch (_) { /* noop */ }
+        } catch (_) {
+            /* noop */
+        }
 
         window.__i18n._apply();
 
         // v1.6.4: first visit → show the onboarding guide once; afterwards it
         // only opens via 关于 → 观看指引.
         let guideSeen = false;
-        try { guideSeen = localStorage.getItem('lyricex-guide-seen') === '1'; } catch (_) { /* noop */ }
+        try {
+            guideSeen = localStorage.getItem('lyricex-guide-seen') === '1';
+        } catch (_) {
+            /* noop */
+        }
         if (!guideSeen) aboutApi.openGuide();
 
         if (navigator.mediaSession) {
-            navigator.mediaSession.setActionHandler('play', function () { if (audio) audio.play().catch(function () {}); });
-            navigator.mediaSession.setActionHandler('pause', function () { if (audio) audio.pause(); });
+            navigator.mediaSession.setActionHandler('play', function () {
+                if (audio) audio.play().catch(function () {});
+            });
+            navigator.mediaSession.setActionHandler('pause', function () {
+                if (audio) audio.pause();
+            });
             navigator.mediaSession.setActionHandler('previoustrack', prevLyric);
             navigator.mediaSession.setActionHandler('nexttrack', nextLyric);
         }
@@ -2950,7 +3687,8 @@
             loadZip: loadZipFile,
             loadLrc: loadLrcFile,
             playLibrarySong: playLibrarySong,
-            openLibrary: openLibrary, closeLibrary: closeLibrary,
+            openLibrary: openLibrary,
+            closeLibrary: closeLibrary,
             loadFile: handleFile,
             switchView: switchView,
             toggleTheme: toggleTheme,
@@ -2960,16 +3698,24 @@
             exportPackage: exportPackageZip,
             exportLrc: exportLrc,
             setSetting: setSetting,
-            getSettings: function () { return settings; },
-            audio: function () { return audio; },
-            data: function () { return songData; },
+            getSettings: function () {
+                return settings;
+            },
+            audio: function () {
+                return audio;
+            },
+            data: function () {
+                return songData;
+            },
             setActiveLine: setActiveLine,
             togglePlay: togglePlay,
             prevLyric: prevLyric,
             nextLyric: nextLyric,
             scrollToActive: scrollLyricToActive,
             enableFollow: enableFollow,
-            followOn: function () { return followEnabled; },
+            followOn: function () {
+                return followEnabled;
+            },
             exportSrt: exportSrt,
             exportAss: exportAss,
             openSearch: searchApi.open,
@@ -2977,19 +3723,31 @@
             startVideoExport: videoApi.start,
             // v2.0.0
             setTranspose: setTranspose,
-            getTranspose: function () { return transpose; },
+            getTranspose: function () {
+                return transpose;
+            },
             saveBookmark: saveBookmark,
-            getLoopMarks: function () { return loopMarks; },
-            hasInstrumental: function () { return !!instrumentalUrl; },
+            getLoopMarks: function () {
+                return loopMarks;
+            },
+            hasInstrumental: function () {
+                return !!instrumentalUrl;
+            },
             // v2.0.4
-            getTrackMode: function () { return mainTrackMode; },
+            getTrackMode: function () {
+                return mainTrackMode;
+            },
             toggleTrackMode: toggleTrackMode,
-            hasCover: function () { return !!coverUrl; },
-            getQueue: function () { return queue; },
+            hasCover: function () {
+                return !!coverUrl;
+            },
+            getQueue: function () {
+                return queue;
+            },
             advanceQueue: advanceQueue,
             exportNotes: exportNotes,
             exportPoster: exportPoster,
-            printStudySheet: printStudySheet,
+            printStudySheet: printStudySheet
         };
     }
 
@@ -2998,8 +3756,7 @@
     function renderWorkspaceMissing() {
         const pane = viewContent.querySelector('[data-editor-pane="build"]');
         if (!pane) return;
-        pane.innerHTML = '<div class="ws-empty-hint"><i class="fas fa-tools"></i> ' +
-            t('wsModuleMissing') + '</div>';
+        pane.innerHTML = '<div class="ws-empty-hint"><i class="fas fa-tools"></i> ' + t('wsModuleMissing') + '</div>';
     }
 
     // =========================== UI MODULE WIRING ===========================
@@ -3010,94 +3767,223 @@
     // are late-bound functions so each module keeps its own state without
     // importing its sibling.
     const ctx = {
-        t: t, L: L, esc: esc,
-        get settings() { return settings; },
-        get lyrics() { return lyrics; },
-        get songData() { return songData; },
-        get audio() { return audio; },
-        get audioUrl() { return audioUrl; },
-        get offset() { return offset; },
-        set offset(v) { offset = v; },
-        get activeLineIndex() { return activeLineIndex; },
-        set activeLineIndex(v) { activeLineIndex = v; },
-        get currentView() { return currentView; },
-        get coverUrl() { return coverUrl; },
-        set coverUrl(v) { coverUrl = v; },
-        get instrumentalUrl() { return instrumentalUrl; },
-        set instrumentalUrl(v) { instrumentalUrl = v; updateTrackToggle(); },
+        t: t,
+        L: L,
+        esc: esc,
+        get settings() {
+            return settings;
+        },
+        get lyrics() {
+            return lyrics;
+        },
+        get songData() {
+            return songData;
+        },
+        get audio() {
+            return audio;
+        },
+        get audioUrl() {
+            return audioUrl;
+        },
+        get offset() {
+            return offset;
+        },
+        set offset(v) {
+            offset = v;
+        },
+        get activeLineIndex() {
+            return activeLineIndex;
+        },
+        set activeLineIndex(v) {
+            activeLineIndex = v;
+        },
+        get currentView() {
+            return currentView;
+        },
+        get coverUrl() {
+            return coverUrl;
+        },
+        set coverUrl(v) {
+            coverUrl = v;
+        },
+        get instrumentalUrl() {
+            return instrumentalUrl;
+        },
+        set instrumentalUrl(v) {
+            instrumentalUrl = v;
+            updateTrackToggle();
+        },
         stopInstrumental: stopInstrumental,
-        get isPlaying() { return isPlaying; },
+        get isPlaying() {
+            return isPlaying;
+        },
         app: app,
         viewContent: viewContent,
         fileInput: fileInput,
         renderEmpty: renderEmpty,
-        langAttr: langAttr, lineTextHTML: lineTextHTML, lineRubyHTML: lineRubyHTML,
-        subLineHTML: subLineHTML, romajiFromLine: romajiFromLine, findLyricIndex: findLyricIndex,
-        getCurrentTime: getCurrentTime, enableFollow: enableFollow, setActiveLine: setActiveLine,
-        togglePlay: togglePlay, prevLyric: prevLyric, nextLyric: nextLyric,
-        updatePlayState: updatePlayState, updateSidebarStatus: updateSidebarStatus,
-        updateMiniBar: function () { miniApi.updateBar(); }, updateWordHighlight: updateWordHighlight,
-        renderView: renderView, scrollLyricToActive: scrollLyricToActive, updateFollowPill: updateFollowPill,
+        langAttr: langAttr,
+        lineTextHTML: lineTextHTML,
+        lineRubyHTML: lineRubyHTML,
+        subLineHTML: subLineHTML,
+        romajiFromLine: romajiFromLine,
+        findLyricIndex: findLyricIndex,
+        getCurrentTime: getCurrentTime,
+        enableFollow: enableFollow,
+        setActiveLine: setActiveLine,
+        togglePlay: togglePlay,
+        prevLyric: prevLyric,
+        nextLyric: nextLyric,
+        updatePlayState: updatePlayState,
+        updateSidebarStatus: updateSidebarStatus,
+        updateMiniBar: function () {
+            miniApi.updateBar();
+        },
+        updateWordHighlight: updateWordHighlight,
+        renderView: renderView,
+        scrollLyricToActive: scrollLyricToActive,
+        updateFollowPill: updateFollowPill,
         bindScrollInteractions: bindScrollInteractions,
-        downloadBlob: downloadBlob, safePackageName: safePackageName,
-        handleFile: handleFile, loadAudioFromUrl: loadAudioFromUrl,
-        renderShortcutControls: renderShortcutControls, resetSettings: resetSettings,
-        exportSettings: exportSettings, importSettingsFile: importSettingsFile,
-        getSetting: getSetting, setSetting: setSetting, saveSettings: saveSettings,
-        applySettings: applySettings, applyPosColors: applyPosColors,
+        downloadBlob: downloadBlob,
+        safePackageName: safePackageName,
+        handleFile: handleFile,
+        loadAudioFromUrl: loadAudioFromUrl,
+        renderShortcutControls: renderShortcutControls,
+        resetSettings: resetSettings,
+        exportSettings: exportSettings,
+        importSettingsFile: importSettingsFile,
+        getSetting: getSetting,
+        setSetting: setSetting,
+        saveSettings: saveSettings,
+        applySettings: applySettings,
+        applyPosColors: applyPosColors,
         // late-bound cross-module couplings (resolved after the factories below)
-        closeAbout: function () { aboutApi && aboutApi.close(); },
-        closeSettings: function () { settingsApi && settingsApi.close(); },
-        isCinemaOpen: function () { return cinemaApi && cinemaApi.isOpen(); },
-        closeCinema: function () { cinemaApi && cinemaApi.close(); },
-        isMiniOn: function () { return miniApi && miniApi.isOn(); },
-        exitMini: function () { miniApi && miniApi.exit(); },
+        closeAbout: function () {
+            aboutApi && aboutApi.close();
+        },
+        closeSettings: function () {
+            settingsApi && settingsApi.close();
+        },
+        isCinemaOpen: function () {
+            return cinemaApi && cinemaApi.isOpen();
+        },
+        closeCinema: function () {
+            cinemaApi && cinemaApi.close();
+        },
+        isMiniOn: function () {
+            return miniApi && miniApi.isOn();
+        },
+        exitMini: function () {
+            miniApi && miniApi.exit();
+        },
         // v2.6.0: workspace build-pane render hook (editor renders the tab,
         // workspace fills the pane — late-bound so neither imports the other)
         renderWorkspaceTab: function () {
-            if (!workspaceApi) { renderWorkspaceMissing(); return; }
-            try { workspaceApi.render(); }
-            catch (e) { console.error('workspace render failed', e); renderWorkspaceMissing(); }
+            if (!workspaceApi) {
+                renderWorkspaceMissing();
+                return;
+            }
+            try {
+                workspaceApi.render();
+            } catch (e) {
+                console.error('workspace render failed', e);
+                renderWorkspaceMissing();
+            }
         },
         // v2.6.0: load the workspace draft into the app (shared state, both
         // panes see it; used by the build pane's load-to-app action)
         loadWorkspaceDraft: loadWorkspaceDraft,
         // share / video export DOM refs
-        shareCardBtn: shareCardBtn, shareOverlay: shareOverlay, sharePreview: sharePreview,
-        shareTemplate: shareTemplate, shareAccent: shareAccent, shareTranslation: shareTranslation,
-        shareRomaji: shareRomaji, shareCss: shareCss, shareTplExportBtn: shareTplExportBtn,
-        shareTplImportBtn: shareTplImportBtn, shareTplFile: shareTplFile, shareCopyBtn: shareCopyBtn,
-        shareDownloadBtn: shareDownloadBtn, shareCloseBtn: shareCloseBtn,
-        videoOverlay: videoOverlay, videoStatus: videoStatus, videoProgressFill: videoProgressFill,
-        videoStartBtn: videoStartBtn, videoCancelBtn: videoCancelBtn,
+        shareCardBtn: shareCardBtn,
+        shareOverlay: shareOverlay,
+        sharePreview: sharePreview,
+        shareTemplate: shareTemplate,
+        shareAccent: shareAccent,
+        shareTranslation: shareTranslation,
+        shareRomaji: shareRomaji,
+        shareCss: shareCss,
+        shareTplExportBtn: shareTplExportBtn,
+        shareTplImportBtn: shareTplImportBtn,
+        shareTplFile: shareTplFile,
+        shareCopyBtn: shareCopyBtn,
+        shareDownloadBtn: shareDownloadBtn,
+        shareCloseBtn: shareCloseBtn,
+        videoOverlay: videoOverlay,
+        videoStatus: videoStatus,
+        videoProgressFill: videoProgressFill,
+        videoStartBtn: videoStartBtn,
+        videoCancelBtn: videoCancelBtn,
         // search / mini / cinema / about / settings DOM refs
-        searchOverlay: searchOverlay, searchInput: searchInput, searchResults: searchResults, searchCount: searchCount,
-        miniBtn: miniBtn, miniBar: miniBar, miniDrag: miniDrag, miniInfo: miniInfo,
-        miniTitle: miniTitle, miniLine: miniLine, miniPlayBtn: miniPlayBtn, miniPlayIcon: miniPlayIcon,
-        miniPrevBtn: miniPrevBtn, miniNextBtn: miniNextBtn, miniProgress: miniProgress,
-        miniProgressFill: miniProgressFill, miniExpandBtn: miniExpandBtn,
-        cinemaBtn: cinemaBtn, cinemaOverlay: cinemaOverlay, cinemaLyrics: cinemaLyrics,
-        cinemaExitBtn: cinemaExitBtn, cinemaPlayerSlot: cinemaPlayerSlot, playerControls: playerControls,
-        aboutBtn: aboutBtn, aboutOverlay: aboutOverlay, aboutCloseBtn: aboutCloseBtn,
-        aboutSubnav: aboutSubnav, aboutBody: aboutBody,
-        changelogBtn: changelogBtn, changelogOverlay: changelogOverlay, changelogBody: changelogBody, changelogCloseBtn: changelogCloseBtn,
+        searchOverlay: searchOverlay,
+        searchInput: searchInput,
+        searchResults: searchResults,
+        searchCount: searchCount,
+        miniBtn: miniBtn,
+        miniBar: miniBar,
+        miniDrag: miniDrag,
+        miniInfo: miniInfo,
+        miniTitle: miniTitle,
+        miniLine: miniLine,
+        miniPlayBtn: miniPlayBtn,
+        miniPlayIcon: miniPlayIcon,
+        miniPrevBtn: miniPrevBtn,
+        miniNextBtn: miniNextBtn,
+        miniProgress: miniProgress,
+        miniProgressFill: miniProgressFill,
+        miniExpandBtn: miniExpandBtn,
+        cinemaBtn: cinemaBtn,
+        cinemaOverlay: cinemaOverlay,
+        cinemaLyrics: cinemaLyrics,
+        cinemaExitBtn: cinemaExitBtn,
+        cinemaPlayerSlot: cinemaPlayerSlot,
+        playerControls: playerControls,
+        aboutBtn: aboutBtn,
+        aboutOverlay: aboutOverlay,
+        aboutCloseBtn: aboutCloseBtn,
+        aboutSubnav: aboutSubnav,
+        aboutBody: aboutBody,
+        changelogBtn: changelogBtn,
+        changelogOverlay: changelogOverlay,
+        changelogBody: changelogBody,
+        changelogCloseBtn: changelogCloseBtn,
         checkUpdateBtn: checkUpdateBtn,
-        guideOverlay: guideOverlay, guideBody: guideBody, guideDots: guideDots, guideCounter: guideCounter,
-        guidePrevBtn: guidePrevBtn, guideNextBtn: guideNextBtn, guideSkipBtn: guideSkipBtn, watchGuideBtn: watchGuideBtn,
-        settingsBtn: settingsBtn, settingsOverlay: settingsOverlay, settingsCloseBtn: settingsCloseBtn,
-        settingsTabs: settingsTabs, settingsPanels: settingsPanels, colorOptions: colorOptions,
-        langList: langList, resetSettingsBtn: resetSettingsBtn,
-        settingsExportBtn: settingsExportBtn, settingsImportBtn: settingsImportBtn, settingsImportFile: settingsImportFile,
-        settingsSubnav: settingsSubnav, settingsBody: settingsBody,
-        appearanceFonts: appearanceFonts, appearanceSizes: appearanceSizes,
+        guideOverlay: guideOverlay,
+        guideBody: guideBody,
+        guideDots: guideDots,
+        guideCounter: guideCounter,
+        guidePrevBtn: guidePrevBtn,
+        guideNextBtn: guideNextBtn,
+        guideSkipBtn: guideSkipBtn,
+        watchGuideBtn: watchGuideBtn,
+        settingsBtn: settingsBtn,
+        settingsOverlay: settingsOverlay,
+        settingsCloseBtn: settingsCloseBtn,
+        settingsTabs: settingsTabs,
+        settingsPanels: settingsPanels,
+        colorOptions: colorOptions,
+        langList: langList,
+        resetSettingsBtn: resetSettingsBtn,
+        settingsExportBtn: settingsExportBtn,
+        settingsImportBtn: settingsImportBtn,
+        settingsImportFile: settingsImportFile,
+        settingsSubnav: settingsSubnav,
+        settingsBody: settingsBody,
+        appearanceFonts: appearanceFonts,
+        appearanceSizes: appearanceSizes,
         appearanceCinema: document.getElementById('appearanceCinema'),
         appearanceLayout: document.getElementById('appearanceLayout'),
-        lyricsControls: lyricsControls, shortcutControls: shortcutControls,
-        themeControls: themeControls, generalControls: generalControls, sidebarControls: sidebarControls,
+        lyricsControls: lyricsControls,
+        shortcutControls: shortcutControls,
+        themeControls: themeControls,
+        generalControls: generalControls,
+        sidebarControls: sidebarControls,
         // v2.1.1: mobile shell / cover / library render hooks
-        renderBottomNav: renderBottomNav, renderPlayerExt: renderPlayerExt, updateMobileNow: updateMobileNow,
-        openCoverViewer: openCoverViewer, closeCoverViewer: closeCoverViewer,
-        openLibrary: openLibrary, closeLibrary: closeLibrary
+        renderBottomNav: renderBottomNav,
+        renderPlayerExt: renderPlayerExt,
+        updateMobileNow: updateMobileNow,
+        openCoverViewer: openCoverViewer,
+        closeCoverViewer: closeCoverViewer,
+        openLibrary: openLibrary,
+        closeLibrary: closeLibrary
     };
     videoApi = window.__lyricexVideoExport(ctx);
     shareApi = window.__lyricexShare(ctx);

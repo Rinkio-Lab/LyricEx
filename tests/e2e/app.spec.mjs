@@ -29,12 +29,18 @@ test.beforeEach(async ({ page }) => {
 
 async function openApp(page, url = '/') {
     await page.addInitScript(() => {
-        try { localStorage.setItem('lyricex-guide-seen', '1'); } catch (_) { /* noop */ }
+        try {
+            localStorage.setItem('lyricex-guide-seen', '1');
+        } catch (_) {
+            /* noop */
+        }
         // page.route cannot intercept fetches issued from the service-worker
         // scope, which would make manifest stubs unreliable — neuter SW here.
         try {
             if (navigator.serviceWorker) navigator.serviceWorker.register = () => Promise.resolve(undefined);
-        } catch (_) { /* noop */ }
+        } catch (_) {
+            /* noop */
+        }
     });
     await page.goto(url);
     // deterministic assertions: wait until boot has run (theme applied etc.)
@@ -83,10 +89,11 @@ test('workspace build tab: alternating JP/CN LRC auto-splits (v2.7.0)', async ({
     await expect(page.locator('.view-editor [data-editor-pane="build"]')).toHaveCount(1);
     await expect(page.locator('[data-editor-pane="build"] .ws-wrap')).toBeVisible();
     // paste an alternating NetEase-inline LRC into the main box only
-    const alt = '[00:08.55](ready set and find out[00:09.83]\n' +
-                '[00:09.83]ready set and find out[00:10.85]\n' +
-                '[00:08.55](准备好 亲自去确认[00:09.83]\n' +
-                '[00:09.83]准备好 亲自去确认[00:10.85]';
+    const alt =
+        '[00:08.55](ready set and find out[00:09.83]\n' +
+        '[00:09.83]ready set and find out[00:10.85]\n' +
+        '[00:08.55](准备好 亲自去确认[00:09.83]\n' +
+        '[00:09.83]准备好 亲自去确认[00:10.85]';
     await page.fill('[data-ws-lrc="main"]', alt);
     await page.click('[data-ws-parse]');
     // parse: 2 original lines (translations back-filled into the trans box)
@@ -131,8 +138,7 @@ test('settings export/import controls exist and export downloads JSON (v2.8.0)',
 test('uploads an example package and renders lyrics + views', async ({ page }) => {
     const errors = watchErrors(page);
     await openApp(page);
-    await page.setInputFiles('#fileInput',
-        join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip'));
+    await page.setInputFiles('#fileInput', join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip'));
     // lyrics view renders lines once the zip is parsed
     await expect(page.locator('.view-lyrics .lyric-line').first()).toBeVisible({ timeout: 10000 });
     const lineCount = await page.locator('.view-lyrics .lyric-line').count();
@@ -207,8 +213,7 @@ test('file:// direct-open still boots under the strict CSP meta', async ({ brows
 test('share card + poster render without canvas taint (v2.8.1)', async ({ page }) => {
     const errors = watchErrors(page);
     await openApp(page);
-    await page.setInputFiles('#fileInput',
-        join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip'));
+    await page.setInputFiles('#fileInput', join(ROOT, 'examples', 'MyGO!!!!! - エガクミライ-lyrics-package.zip'));
     await expect(page.locator('.view-lyrics .lyric-line').first()).toBeVisible({ timeout: 10000 });
 
     // share card: the button may be folded into the ⋯ drawer
@@ -222,10 +227,14 @@ test('share card + poster render without canvas taint (v2.8.1)', async ({ page }
     // preview must be a rendered PNG — the SVG <foreignObject> path can resolve
     // with a TAINTED canvas (Chrome); the taint probe must fall back to the 2D
     // renderer or toDataURL throws SecurityError and the preview stays blank
-    await page.waitForFunction(() => {
-        const src = document.getElementById('sharePreview').getAttribute('src') || '';
-        return src.startsWith('data:image/png');
-    }, null, { timeout: 10000 });
+    await page.waitForFunction(
+        () => {
+            const src = document.getElementById('sharePreview').getAttribute('src') || '';
+            return src.startsWith('data:image/png');
+        },
+        null,
+        { timeout: 10000 }
+    );
     await page.click('#shareCloseBtn');
 
     // 竖屏海报 download from the editor view
@@ -295,10 +304,11 @@ test('help center: nav, search, and body follows the locale fallback chain (v2.9
     await page.click('.help-nav-list a[data-target="help-faq"]');
     await expect(page.locator('.help-nav-list a[data-target="help-faq"]')).toHaveClass(/active/);
     const faqTarget = await page.evaluate(() => document.getElementById('help-faq').offsetTop - 14);
-    await expect.poll(() =>
-        page.evaluate(() => Math.round(document.getElementById('helpContent').scrollTop)),
-        { timeout: 5000 }
-    ).toBeGreaterThanOrEqual(faqTarget - 2);
+    await expect
+        .poll(() => page.evaluate(() => Math.round(document.getElementById('helpContent').scrollTop)), {
+            timeout: 5000
+        })
+        .toBeGreaterThanOrEqual(faqTarget - 2);
 
     // search filters both cards and the nav list; Esc restores
     // 'song/lyric' matches only the netease chapter — quick's body also
@@ -343,13 +353,21 @@ test('song library: Open button label + multi-source chooser (v2.9.3)', async ({
         route.fulfill({
             contentType: 'application/json',
             body: JSON.stringify({
-                songs: [{
-                    title: '多源示例歌', artist: 'Demo', source: '示例源',
-                    file: 'examples/a.zip',
-                    sources: [{ label: '源 A', file: 'examples/a.zip' }, { label: '源 B', file: 'examples/b.zip' }]
-                }]
+                songs: [
+                    {
+                        title: '多源示例歌',
+                        artist: 'Demo',
+                        source: '示例源',
+                        file: 'examples/a.zip',
+                        sources: [
+                            { label: '源 A', file: 'examples/a.zip' },
+                            { label: '源 B', file: 'examples/b.zip' }
+                        ]
+                    }
+                ]
             })
-        }));
+        })
+    );
     await openApp(page);
     // v2.9.4: the sidebar button now opens the standalone library view; the
     // sample-pack modal lives inside that view behind the "示例包" button
@@ -377,7 +395,11 @@ test('library view: folder import, rows, search, detail, play (v2.9.4)', async (
     await page.setInputFiles('#libDirInput', 'tests/e2e/fixtures/library');
     await page.waitForSelector('.lib-row');
     // the import-finished dialog (if any) closes itself after the progress row
-    await page.locator('#dialogOverlay .dialog-primary').first().click().catch(() => {});
+    await page
+        .locator('#dialogOverlay .dialog-primary')
+        .first()
+        .click()
+        .catch(() => {});
     await expect(page.locator('.lib-row')).toHaveCount(2);
     await expect(page.locator('.lib-row').filter({ hasText: '测试歌曲' })).toContainText('测试歌手');
     await expect(page.locator('.lib-row').filter({ hasText: '裸音源' })).toContainText('ID3歌手');

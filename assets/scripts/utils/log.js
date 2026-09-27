@@ -12,10 +12,16 @@
     try {
         var stored = root.localStorage && root.localStorage.getItem('lyricex-log-level');
         if (stored && stored in LEVELS) current = LEVELS[stored];
-    } catch (_) { /* storage may be blocked (private mode) — stay at debug */ }
+    } catch (_) {
+        /* storage may be blocked (private mode) — stay at debug */
+    }
 
     function ts() {
-        try { return new Date().toISOString().slice(11, 23); } catch (_) { return ''; }
+        try {
+            return new Date().toISOString().slice(11, 23);
+        } catch (_) {
+            return '';
+        }
     }
 
     function emit(level, tag, args) {
@@ -26,26 +32,42 @@
             var fn = root.console && (root.console[level] || root.console.log);
             if (!fn) return;
             fn.apply(root.console, [prefix].concat(Array.prototype.slice.call(args)));
-        } catch (_) { /* a broken console must never take the app down */ }
+        } catch (_) {
+            /* a broken console must never take the app down */
+        }
     }
 
     function setLevel(level) {
         if (!(level in LEVELS)) return;
         current = LEVELS[level];
-        try { root.localStorage && root.localStorage.setItem('lyricex-log-level', level); } catch (_) { /* ignore */ }
+        try {
+            root.localStorage && root.localStorage.setItem('lyricex-log-level', level);
+        } catch (_) {
+            /* ignore */
+        }
     }
 
     function getLevel() {
         var name = 'debug';
-        Object.keys(LEVELS).forEach(function (k) { if (LEVELS[k] === current) name = k; });
+        Object.keys(LEVELS).forEach(function (k) {
+            if (LEVELS[k] === current) name = k;
+        });
         return name;
     }
 
     root.__lyricexLog = {
-        debug: function (tag) { emit('debug', tag, Array.prototype.slice.call(arguments, 1)); },
-        info: function (tag) { emit('info', tag, Array.prototype.slice.call(arguments, 1)); },
-        warn: function (tag) { emit('warn', tag, Array.prototype.slice.call(arguments, 1)); },
-        error: function (tag) { emit('error', tag, Array.prototype.slice.call(arguments, 1)); },
+        debug: function (tag) {
+            emit('debug', tag, Array.prototype.slice.call(arguments, 1));
+        },
+        info: function (tag) {
+            emit('info', tag, Array.prototype.slice.call(arguments, 1));
+        },
+        warn: function (tag) {
+            emit('warn', tag, Array.prototype.slice.call(arguments, 1));
+        },
+        error: function (tag) {
+            emit('error', tag, Array.prototype.slice.call(arguments, 1));
+        },
         setLevel: setLevel,
         getLevel: getLevel
     };

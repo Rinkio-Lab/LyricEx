@@ -65,7 +65,7 @@
         height: 32px;
         font-size: 16px;
     }
-    .player-row .vol-wrap input[type="range"] {
+    .player-row .vol-wrap input[type='range'] {
         width: 40px;
     }
     .player-row .time-display {
@@ -135,7 +135,7 @@
         height: 28px;
         font-size: 14px;
     }
-    .player-row .vol-wrap input[type="range"] {
+    .player-row .vol-wrap input[type='range'] {
         width: 32px;
     }
     .player-row .time-display {
@@ -237,7 +237,7 @@
     .mini-bar .mini-progress {
         width: 80px;
     }
-    .editor-offset input[type="range"] {
+    .editor-offset input[type='range'] {
         width: 120px;
     }
 }
@@ -294,7 +294,9 @@
 }
 
 /* print study sheet — only the sheet shows on paper */
-@page { margin: 14mm; }
+@page {
+    margin: 14mm;
+}
 @media print {
     #app,
     .about-overlay,
@@ -304,16 +306,53 @@
     .guide-overlay,
     .changelog-overlay,
     .cinema-overlay,
-    .mini-bar { display: none !important; }
-    #printSheet { display: block !important; background: #fff; color: #111; }
-    #printSheet h1 { font-size: 22px; margin-bottom: 12px; }
-    #printSheet .print-line { page-break-inside: avoid; margin-bottom: 18px; border-bottom: 1px solid #ddd; }
-    #printSheet .print-line h2 { font-size: 18px; color: #111; margin: 4px 0; }
-    #printSheet .print-line .pt { font-size: 13px; color: #444; }
-    #printSheet .study-table-wrap table { border-collapse: collapse; width: 100%; margin: 8px 0; }
-    #printSheet .study-table-wrap td { border: 1px solid #999; padding: 4px 6px; font-size: 12px; color: #111; background: #fff; page-break-inside: avoid; }
-    #printSheet .study-table-wrap td.row-label { background: #f0f0f0; font-weight: 600; }
-    #printSheet .no-analysis { font-size: 12px; color: #777; }
+    .mini-bar {
+        display: none !important;
+    }
+    #printSheet {
+        display: block !important;
+        background: #fff;
+        color: #111;
+    }
+    #printSheet h1 {
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+    #printSheet .print-line {
+        page-break-inside: avoid;
+        margin-bottom: 18px;
+        border-bottom: 1px solid #ddd;
+    }
+    #printSheet .print-line h2 {
+        font-size: 18px;
+        color: #111;
+        margin: 4px 0;
+    }
+    #printSheet .print-line .pt {
+        font-size: 13px;
+        color: #444;
+    }
+    #printSheet .study-table-wrap table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 8px 0;
+    }
+    #printSheet .study-table-wrap td {
+        border: 1px solid #999;
+        padding: 4px 6px;
+        font-size: 12px;
+        color: #111;
+        background: #fff;
+        page-break-inside: avoid;
+    }
+    #printSheet .study-table-wrap td.row-label {
+        background: #f0f0f0;
+        font-weight: 600;
+    }
+    #printSheet .no-analysis {
+        font-size: 12px;
+        color: #777;
+    }
 }
 
 /* =========================== v2.1.1: MOBILE THREE-TIER LAYOUT ===========================
@@ -423,7 +462,9 @@
 
 /* help view (v2.9.1): narrow screens — nav becomes a sticky horizontal chip bar */
 @media (max-width: 860px) {
-    .view-help { flex-direction: column; }
+    .view-help {
+        flex-direction: column;
+    }
     .help-nav {
         width: auto;
         flex-shrink: 0;
@@ -439,12 +480,35 @@
         z-index: 3;
         background: var(--bg, #fff);
     }
-    .help-nav-title { display: none; }
-    .help-lang { flex-shrink: 0; margin: 0 8px 0 0; }
-    .help-search { flex-shrink: 0; margin: 0; }
-    .help-search input { width: 140px; }
-    .help-nav-list { flex-direction: row; gap: 2px; flex-wrap: nowrap; }
-    .help-nav-list a { border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
-    .help-nav-list a.active { border-left: none; border-bottom-color: var(--accent); }
-    .help-content { padding: 16px 16px 20px; }
+    .help-nav-title {
+        display: none;
+    }
+    .help-lang {
+        flex-shrink: 0;
+        margin: 0 8px 0 0;
+    }
+    .help-search {
+        flex-shrink: 0;
+        margin: 0;
+    }
+    .help-search input {
+        width: 140px;
+    }
+    .help-nav-list {
+        flex-direction: row;
+        gap: 2px;
+        flex-wrap: nowrap;
+    }
+    .help-nav-list a {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+    }
+    .help-nav-list a.active {
+        border-left: none;
+        border-bottom-color: var(--accent);
+    }
+    .help-content {
+        padding: 16px 16px 20px;
+    }
 }

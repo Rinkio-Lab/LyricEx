@@ -3,19 +3,56 @@
 function makeEl() {
     return {
         style: { setProperty() {}, removeProperty() {}, display: '' },
-        classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
-        addEventListener() {}, removeEventListener() {}, setPointerCapture() {}, appendChild() {},
-        dataset: {}, innerHTML: '', textContent: '', value: '',
-        querySelector() { return null; }, querySelectorAll() { return []; },
-        closest() { return null; }, getBoundingClientRect() { return { left: 0, top: 0, width: 100, height: 10 }; },
-        offsetTop: 0, offsetHeight: 0, offsetLeft: 0, offsetWidth: 0,
-        clientHeight: 0, clientWidth: 0, scrollTop: 0, scrollHeight: 0,
-        setAttribute() {}, removeAttribute() {}, getAttribute() { return null; },
-        click() {}, remove() {},
+        classList: {
+            add() {},
+            remove() {},
+            toggle() {},
+            contains() {
+                return false;
+            }
+        },
+        addEventListener() {},
+        removeEventListener() {},
+        setPointerCapture() {},
+        appendChild() {},
+        dataset: {},
+        innerHTML: '',
+        textContent: '',
+        value: '',
+        querySelector() {
+            return null;
+        },
+        querySelectorAll() {
+            return [];
+        },
+        closest() {
+            return null;
+        },
+        getBoundingClientRect() {
+            return { left: 0, top: 0, width: 100, height: 10 };
+        },
+        offsetTop: 0,
+        offsetHeight: 0,
+        offsetLeft: 0,
+        offsetWidth: 0,
+        clientHeight: 0,
+        clientWidth: 0,
+        scrollTop: 0,
+        scrollHeight: 0,
+        setAttribute() {},
+        removeAttribute() {},
+        getAttribute() {
+            return null;
+        },
+        click() {},
+        remove() {}
     };
 }
 const byId = new Map();
-function gid(id) { if (!byId.has(id)) byId.set(id, makeEl()); return byId.get(id); }
+function gid(id) {
+    if (!byId.has(id)) byId.set(id, makeEl());
+    return byId.get(id);
+}
 globalThis.window = globalThis;
 globalThis.document = {
     getElementById: gid,
@@ -26,23 +63,28 @@ globalThis.document = {
     head: makeEl(),
     addEventListener() {},
     documentElement: { lang: '' },
-    body: makeEl(),
+    body: makeEl()
 };
 Object.defineProperty(globalThis, 'navigator', {
-    value: { language: 'zh-CN', mediaSession: undefined }, configurable: true,
+    value: { language: 'zh-CN', mediaSession: undefined },
+    configurable: true
 });
 globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} };
 globalThis.requestAnimationFrame = () => 0;
 globalThis.cancelAnimationFrame = () => {};
 Object.defineProperty(globalThis, 'performance', {
-    value: { now: () => 0 }, configurable: true,
+    value: { now: () => 0 },
+    configurable: true
 });
 globalThis.matchMedia = () => ({ matches: false });
 globalThis.getComputedStyle = () => ({ getPropertyValue: () => '' });
 let exportedBlob = null;
 globalThis.URL = {
-    createObjectURL(b) { exportedBlob = b; return 'blob:x'; },
-    revokeObjectURL() {},
+    createObjectURL(b) {
+        exportedBlob = b;
+        return 'blob:x';
+    },
+    revokeObjectURL() {}
 };
 globalThis.alert = () => {};
 globalThis.confirm = () => true;
@@ -50,8 +92,10 @@ globalThis.print = () => {}; // v2.0.0: print study sheet no-op in smoke test
 
 let failures = 0;
 function ok(name, cond) {
-    if (!cond) { failures++; console.error(`FAIL ${name}`); }
-    else console.log(`ok ${name}`);
+    if (!cond) {
+        failures++;
+        console.error(`FAIL ${name}`);
+    } else console.log(`ok ${name}`);
 }
 
 // load in the same order as index.html
@@ -134,7 +178,7 @@ ok('audition snap select', api.getSettings().auditionSnap === 'end');
 // LRC load (lyrics-only path)
 const fakeLrc = {
     name: 'test.lrc',
-    text: async () => '[ti:T]\n[ar:A]\n[00:01.00]hello world\n[00:02.50]second line\n',
+    text: async () => '[ti:T]\n[ar:A]\n[00:01.00]hello world\n[00:02.50]second line\n'
 };
 await api.loadLrc(fakeLrc);
 const data = api.data();
@@ -179,9 +223,18 @@ ok('lib loaded', !!lib && typeof lib.parseLRC === 'function');
 
 // ---- ZIP loading paths (fake JSZip + Audio) ----
 globalThis.Audio = class {
-    constructor() { this.currentTime = 0; this.volume = 0.8; this.playbackRate = 1; this.duration = 100; this.preload = ''; this.src = ''; }
+    constructor() {
+        this.currentTime = 0;
+        this.volume = 0.8;
+        this.playbackRate = 1;
+        this.duration = 100;
+        this.preload = '';
+        this.src = '';
+    }
     addEventListener() {}
-    play() { return Promise.resolve(); }
+    play() {
+        return Promise.resolve();
+    }
     pause() {}
 };
 function zipEntry(json) {
@@ -192,12 +245,26 @@ function fakeZip(files) {
 }
 // 1) LyricEx manifest package
 fakeZip({
-    'manifest.json': zipEntry(JSON.stringify({
-        format: 'lyricex-package', version: 1, title: 'Manifest Song', artist: 'MA',
-        audio: 'audio.mp3', lyricsFile: 'lyrics.json', config: { lyricOffset: 0 },
-    })),
-    'lyrics.json': zipEntry(JSON.stringify({ lyrics: [{ time: 1, text: 'one' }, { time: 2, text: 'two' }] })),
-    'audio.mp3': zipEntry(''),
+    'manifest.json': zipEntry(
+        JSON.stringify({
+            format: 'lyricex-package',
+            version: 1,
+            title: 'Manifest Song',
+            artist: 'MA',
+            audio: 'audio.mp3',
+            lyricsFile: 'lyrics.json',
+            config: { lyricOffset: 0 }
+        })
+    ),
+    'lyrics.json': zipEntry(
+        JSON.stringify({
+            lyrics: [
+                { time: 1, text: 'one' },
+                { time: 2, text: 'two' }
+            ]
+        })
+    ),
+    'audio.mp3': zipEntry('')
 });
 await api.loadZip({ name: 'm.lxp.zip' });
 ok('manifest package loaded', api.data() && api.data().title === 'Manifest Song');
@@ -206,11 +273,14 @@ ok('manifest lyrics count', api.data().lyrics.length === 2);
 
 // 2) legacy 群友 package
 fakeZip({
-    'song.json': zipEntry(JSON.stringify({
-        title: 'Legacy Song', lyrics: [{ time: 0, text: 'a' }],
-        config: { lyricOffset: -0.3 },
-    })),
-    'x.mp3': zipEntry(''),
+    'song.json': zipEntry(
+        JSON.stringify({
+            title: 'Legacy Song',
+            lyrics: [{ time: 0, text: 'a' }],
+            config: { lyricOffset: -0.3 }
+        })
+    ),
+    'x.mp3': zipEntry('')
 });
 await api.loadZip({ name: 'l.zip' });
 ok('legacy package loaded', api.data() && api.data().title === 'Legacy Song');
@@ -219,7 +289,7 @@ ok('legacy sourceFormat', api.data().sourceFormat === 'legacy');
 // 3) zip with .lrc + mp3
 fakeZip({
     'a.lrc': zipEntry('[ti:LRC Song]\n[00:05.00]abc\n[00:06.00]def\n'),
-    'a.mp3': zipEntry(''),
+    'a.mp3': zipEntry('')
 });
 await api.loadZip({ name: 'lr.zip' });
 ok('zip-lrc loaded', api.data() && api.data().title === 'LRC Song');
@@ -228,32 +298,49 @@ ok('zip-lrc sourceFormat', api.data().sourceFormat === 'lrc');
 // 4) invalid manifest → graceful error, no crash
 fakeZip({
     'manifest.json': zipEntry(JSON.stringify({ format: 'evil', version: 9 })),
-    'a.mp3': zipEntry(''),
+    'a.mp3': zipEntry('')
 });
 await api.loadZip({ name: 'bad.zip' });
 ok('invalid manifest did not crash', true);
 
 // 5) v1.6.0: ruby annotation + per-word karaoke rendering
 fakeZip({
-    'song.json': zipEntry(JSON.stringify({
-        title: 'Ruby Song', lyrics: [
-            { time: 0, text: '時計は6時', analysis: [
-                { kanji: '時計', hiragana: 'とけい' },
-                { kanji: 'は', hiragana: 'は' },
-                { kanji: '6時', hiragana: 'ろくじ' }
-            ], words: [{ text: '時計は', start: 0, end: 1 }, { text: '6時', start: 1, end: 2 }] },
-            { time: 2, text: 'hello world', words: [
-                { text: 'hello', start: 2, end: 2.5 }, { text: 'world', start: 2.5, end: 3 }
-            ] }
-        ]
-    })),
+    'song.json': zipEntry(
+        JSON.stringify({
+            title: 'Ruby Song',
+            lyrics: [
+                {
+                    time: 0,
+                    text: '時計は6時',
+                    analysis: [
+                        { kanji: '時計', hiragana: 'とけい' },
+                        { kanji: 'は', hiragana: 'は' },
+                        { kanji: '6時', hiragana: 'ろくじ' }
+                    ],
+                    words: [
+                        { text: '時計は', start: 0, end: 1 },
+                        { text: '6時', start: 1, end: 2 }
+                    ]
+                },
+                {
+                    time: 2,
+                    text: 'hello world',
+                    words: [
+                        { text: 'hello', start: 2, end: 2.5 },
+                        { text: 'world', start: 2.5, end: 3 }
+                    ]
+                }
+            ]
+        })
+    )
 });
 await api.loadZip({ name: 'ruby.zip' });
 api.switchView('lyrics');
 const viewHtml = gid('viewContent').innerHTML;
-ok('ruby rendered for analysis lines',
-    viewHtml.includes('<ruby>時計<rt>とけい</rt></ruby>') &&
-    viewHtml.includes('6<ruby>時<rt>ろくじ</rt></ruby>'));
+ok(
+    'ruby rendered for analysis lines',
+    viewHtml.includes('<ruby>時計<rt>とけい</rt></ruby>') && viewHtml.includes('6<ruby>時<rt>ろくじ</rt></ruby>')
+);
 ok('word spans render on analysis-free line', viewHtml.includes('<span class="w" data-w="0">hello</span>'));
 api.switchView('study');
 ok('study view with ruby header renders', true);
@@ -283,13 +370,20 @@ ok('saveBookmark no-op without AB', api.getLoopMarks().length === 0);
 
 // v2.0.0 #13: instrumental detection from the manifest
 fakeZip({
-    'manifest.json': zipEntry(JSON.stringify({
-        format: 'lyricex-package', version: 1, title: 'Inst Song',
-        audio: 'audio.mp3', instrumental: 'offvocal.mp3', lyricsFile: 'lyrics.json', config: {},
-    })),
+    'manifest.json': zipEntry(
+        JSON.stringify({
+            format: 'lyricex-package',
+            version: 1,
+            title: 'Inst Song',
+            audio: 'audio.mp3',
+            instrumental: 'offvocal.mp3',
+            lyricsFile: 'lyrics.json',
+            config: {}
+        })
+    ),
     'lyrics.json': zipEntry(JSON.stringify({ lyrics: [{ time: 0, text: 'one' }] })),
     'audio.mp3': zipEntry(''),
-    'offvocal.mp3': zipEntry(''),
+    'offvocal.mp3': zipEntry('')
 });
 await api.loadZip({ name: 'inst.zip' });
 ok('instrumental detected', api.hasInstrumental() === true);
@@ -306,13 +400,21 @@ ok('instrumental editor entry rendered', gid('viewContent').innerHTML.includes('
 
 // v2.0.0 #22/#31: manifest v2 with folder paths + cover
 fakeZip({
-    'manifest.json': zipEntry(JSON.stringify({
-        format: 'lyricex-package', version: 2, title: 'V2 Song', artist: 'VA',
-        audio: 'assets/audio.mp3', cover: 'assets/cover.jpg', lyricsFile: 'lyrics/lyrics.json', config: {},
-    })),
+    'manifest.json': zipEntry(
+        JSON.stringify({
+            format: 'lyricex-package',
+            version: 2,
+            title: 'V2 Song',
+            artist: 'VA',
+            audio: 'assets/audio.mp3',
+            cover: 'assets/cover.jpg',
+            lyricsFile: 'lyrics/lyrics.json',
+            config: {}
+        })
+    ),
     'lyrics/lyrics.json': zipEntry(JSON.stringify({ lyrics: [{ time: 0, text: '一', lang: 'ja' }] })),
     'assets/audio.mp3': zipEntry(''),
-    'assets/cover.jpg': zipEntry(''),
+    'assets/cover.jpg': zipEntry('')
 });
 await api.loadZip({ name: 'v2.zip' });
 ok('manifest v2 loaded', api.data() && api.data().title === 'V2 Song');

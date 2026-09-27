@@ -11,7 +11,10 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 let failures = 0;
-const ok = (cond, msg) => { console.log((cond ? 'ok ' : 'FAIL ') + msg); if (!cond) failures++; };
+const ok = (cond, msg) => {
+    console.log((cond ? 'ok ' : 'FAIL ') + msg);
+    if (!cond) failures++;
+};
 
 /** 'v2.4.2' → [2,4,2]; compare [major,minor,patch] numerically */
 function parseVersion(v) {
@@ -38,7 +41,10 @@ if (cacheMatch && headMatch) {
     ok(!!cacheV && !!headV, 'versions parse');
     if (cacheV && headV) {
         const c = cmpVersion(cacheV, headV);
-        ok(c >= 0, `sw CACHE ${cacheMatch[1]} >= CHANGELOG ${headMatch[1]} (cache must be bumped past the newest entry)`);
+        ok(
+            c >= 0,
+            `sw CACHE ${cacheMatch[1]} >= CHANGELOG ${headMatch[1]} (cache must be bumped past the newest entry)`
+        );
         ok(c === 0, `sw CACHE ${cacheMatch[1]} === CHANGELOG ${headMatch[1]} (keep them in lockstep)`);
     }
 }
@@ -62,8 +68,14 @@ async function walk(dir, acc = []) {
     return acc;
 }
 const all = await walk(root);
-const isProd = (p) => !p.includes('node_modules') && !p.includes('\\tests\\') && !p.includes('/tests/')
-    && !p.includes('\\.github\\') && !p.includes('/.github/') && !p.includes('\\scripts\\') && !p.includes('/scripts/');
+const isProd = (p) =>
+    !p.includes('node_modules') &&
+    !p.includes('\\tests\\') &&
+    !p.includes('/tests/') &&
+    !p.includes('\\.github\\') &&
+    !p.includes('/.github/') &&
+    !p.includes('\\scripts\\') &&
+    !p.includes('/scripts/');
 const ext = (p) => extname(p).toLowerCase();
 const bytes = (p) => Buffer.byteLength(readFileSync(p));
 const sum = (arr) => arr.reduce((n, p) => n + bytes(p), 0);

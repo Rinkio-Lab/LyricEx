@@ -13,8 +13,12 @@
     'use strict';
 
     root.__lyricexCinema = function (ctx) {
-        var cinemaBtn = ctx.cinemaBtn, cinemaOverlay = ctx.cinemaOverlay, cinemaLyrics = ctx.cinemaLyrics,
-            cinemaExitBtn = ctx.cinemaExitBtn, cinemaPlayerSlot = ctx.cinemaPlayerSlot, playerControls = ctx.playerControls;
+        var cinemaBtn = ctx.cinemaBtn,
+            cinemaOverlay = ctx.cinemaOverlay,
+            cinemaLyrics = ctx.cinemaLyrics,
+            cinemaExitBtn = ctx.cinemaExitBtn,
+            cinemaPlayerSlot = ctx.cinemaPlayerSlot,
+            playerControls = ctx.playerControls;
 
         var cinemaOpen = false;
 
@@ -46,11 +50,18 @@
             ctx.lyrics.forEach(function (line, idx) {
                 const isActive = idx === ctx.activeLineIndex;
                 const isNear = !isActive && Math.abs(idx - ctx.activeLineIndex) <= 2;
-                html += '<div class="cinema-line' +
+                html +=
+                    '<div class="cinema-line' +
                     (isActive ? ' active' : '') +
                     (isNear ? ' near' : '') +
-                    '" data-index="' + idx + '"' + ctx.langAttr(line) + '>' +
-                    '<span class="cinema-text">' + ctx.lineTextHTML(line, idx) + '</span>' +
+                    '" data-index="' +
+                    idx +
+                    '"' +
+                    ctx.langAttr(line) +
+                    '>' +
+                    '<span class="cinema-text">' +
+                    ctx.lineTextHTML(line, idx) +
+                    '</span>' +
                     ctx.subLineHTML(line) +
                     '</div>';
             });
@@ -97,8 +108,12 @@
             renderLyrics: renderCinemaLyrics,
             refreshActive: refreshActive,
             clearActive: clearActive,
-            container: function () { return cinemaLyrics; },
-            isOpen: function () { return cinemaOpen; },
+            container: function () {
+                return cinemaLyrics;
+            },
+            isOpen: function () {
+                return cinemaOpen;
+            },
             bind: bind
         };
     };

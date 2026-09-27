@@ -7,14 +7,16 @@
    themselves and feed them to their own zip writer. */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
 
     var AUDIO_EXTS = ['mp3', 'm4a', 'wav', 'aac', 'ogg', 'flac'];
 
     // Sanitize a user-supplied file name to a safe zip entry name
     // (basename only, no path traversal, ASCII-ish-safe, keep extension).
     u.sanitizeMediaName = function (name, fallback, ext) {
-        var base = String(name == null ? '' : name).split(/[\\/]/).pop();
+        var base = String(name == null ? '' : name)
+            .split(/[\\/]/)
+            .pop();
         base = (base || '').replace(/[^a-zA-Z0-9._\-\u4e00-\u9fff\u3040-\u30ff]/g, '_').trim();
         if (!base) base = fallback;
         // force the canonical extension when the caller knows the media type

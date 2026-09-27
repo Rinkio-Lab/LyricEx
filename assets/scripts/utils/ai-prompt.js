@@ -16,9 +16,10 @@
      {"results":[{"time":15.3,"text":"…","analysis":"romaji,hiragana,kanji,POS,meaning|…"}]} */
 (function (root) {
     'use strict';
-    var u = root.__lyricexUtils = root.__lyricexUtils || {};
+    var u = (root.__lyricexUtils = root.__lyricexUtils || {});
 
-    var SYSTEM = '# 角色\n' +
+    var SYSTEM =
+        '# 角色\n' +
         '你是日语形态素分析引擎，把歌词拆成最细粒度的单词并输出结构化 JSON。\n' +
         '你只做分析，不做任何解释。\n\n' +
         '# 输出格式（严格）\n' +
@@ -51,10 +52,12 @@
 
     // Format a lyric chunk as the input text: [mm:ss.x] line (+ translation line)
     function formatLines(lines) {
-        return lines.map(function (l) {
-            var t = '[' + u.formatPromptTime(l.time) + '] ' + l.text;
-            return l.translation ? t + '\n[' + u.formatPromptTime(l.time) + '] ' + l.translation : t;
-        }).join('\n');
+        return lines
+            .map(function (l) {
+                var t = '[' + u.formatPromptTime(l.time) + '] ' + l.text;
+                return l.translation ? t + '\n[' + u.formatPromptTime(l.time) + '] ' + l.translation : t;
+            })
+            .join('\n');
     }
 
     u.formatPromptTime = function (t) {
@@ -70,7 +73,11 @@
         opts = opts || {};
         var body = SYSTEM + formatLines(lines);
         if (opts.chunkCount && opts.chunkCount > 1) {
-            body += '\n\n（注意：这是第 ' + (opts.chunkIndex + 1) + ' / ' + opts.chunkCount +
+            body +=
+                '\n\n（注意：这是第 ' +
+                (opts.chunkIndex + 1) +
+                ' / ' +
+                opts.chunkCount +
                 ' 段，只分析本段给出的歌词行，输出完整 JSON。）';
         }
         return body;
