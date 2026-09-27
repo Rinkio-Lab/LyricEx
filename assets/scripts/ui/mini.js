@@ -40,7 +40,7 @@
             if (ctx.isCinemaOpen()) ctx.closeCinema();
             miniOn = true;
             ctx.app.classList.add('mini-mode');
-            miniBar.style.display = 'flex';
+            miniBar.classList.remove('hidden');
             updateMiniBar();
             ctx.updateFollowPill();
         }
@@ -48,7 +48,7 @@
         function exitMini() {
             miniOn = false;
             ctx.app.classList.remove('mini-mode');
-            miniBar.style.display = 'none';
+            miniBar.classList.add('hidden');
             ctx.updateFollowPill();
             ctx.scrollLyricToActive('instant');
         }

@@ -27,6 +27,9 @@
     transition:
         color var(--transition),
         border-color var(--transition);
+    /* v3.2.1: the logo opens 关于 on click — no text selection, pointer affordance */
+    user-select: none;
+    cursor: pointer;
 }
 .sidebar-brand span {
     color: var(--accent);
@@ -36,6 +39,11 @@
     flex-direction: column;
     gap: 4px;
     margin-bottom: 20px;
+}
+/* v3.2.1: bottom sidebar block pushing the upload area down (was inline) */
+.sidebar-section--spacer {
+    flex: 1;
+    justify-content: flex-end;
 }
 .sidebar-label {
     font-size: 11px;
@@ -242,6 +250,12 @@
 }
 .player-row .ctrl-btn:active {
     transform: scale(0.92);
+}
+/* v3.2.1: compact ctrl button for the drawer volume toggle (was inline 28px) */
+.ctrl-btn--compact {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
 }
 .player-row .ctrl-btn.playing {
     color: var(--accent);

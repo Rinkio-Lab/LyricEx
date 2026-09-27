@@ -302,6 +302,8 @@
                     ['end', 'snapEnd']
                 ]
             },
+            // v3.2.1: help center follows the global UI language unless disabled
+            { group: 'general', key: 'helpFollowLocale', type: 'toggle', labelKey: 'helpFollowLocale' },
             // v2.1.1: cinema backdrop effects (外观 → 影院)
             {
                 group: 'appearance',
@@ -434,6 +436,7 @@
             auditionAutoPause: 'fa-pause-circle',
             directionMode: 'fa-arrows-alt-h',
             auditionSnap: 'fa-crosshairs',
+            helpFollowLocale: 'fa-globe',
             cinemaUseCover: 'fa-image',
             cinemaBlur: 'fa-tint',
             cinemaBrightness: 'fa-sun',
@@ -444,14 +447,16 @@
             cinemaGlass: 'fa-window-restore'
         };
         const SIDEBAR_ICONS = {
-            lyrics: 'fa-music',
-            study: 'fa-book',
-            mixed: 'fa-layer-group',
-            editor: 'fa-edit',
+            // v3.2.1: mirror the REAL sidebar glyphs (index.html) — settings
+            // showed study/mixed/editor with different icons than the sidebar
+            lyrics: 'fa-file-alt',
+            study: 'fa-school',
+            mixed: 'fa-table',
+            editor: 'fa-sliders-h',
             cinema: 'fa-tv',
-            mini: 'fa-window-minimize',
+            mini: 'fa-window-restore',
             theme: 'fa-moon',
-            about: 'fa-info-circle'
+            about: 'fa-address-card'
         };
         const EXT_ICONS = {
             vol: 'fa-volume-up',
@@ -476,7 +481,7 @@
         function applySidebarVisibility() {
             SIDEBAR_ITEMS.forEach(function (item) {
                 const btn = document.querySelector('[data-sidebar-item="' + item[0] + '"]');
-                if (btn) btn.style.display = ctx.settings.sidebar[item[0]] ? '' : 'none';
+                if (btn) btn.classList.toggle('hidden', !ctx.settings.sidebar[item[0]]);
             });
             // collapse a section (label included) once every button in it is hidden
             document.querySelectorAll('.sidebar-section').forEach(function (sec) {
@@ -484,9 +489,9 @@
                 if (!btns.length) return;
                 let anyVisible = false;
                 btns.forEach(function (b) {
-                    if (b.style.display !== 'none') anyVisible = true;
+                    if (!b.classList.contains('hidden')) anyVisible = true;
                 });
-                sec.style.display = anyVisible ? '' : 'none';
+                sec.classList.toggle('hidden', !anyVisible);
             });
         }
 
@@ -511,6 +516,21 @@
                 });
                 row.appendChild(box);
                 sidebarControls.appendChild(row);
+            });
+        }
+
+        // v3.2.1: 页面动画 off → 动画速度 select is disabled + row greyed;
+        // syncAnimationDependents() re-runs it after the toggle flips.
+        function applyAnimationDependents(row, sel) {
+            const off = !ctx.getSetting('animations');
+            sel.disabled = off;
+            row.classList.toggle('setting-disabled', off);
+        }
+        function syncAnimationDependents() {
+            const rows = generalControls.querySelectorAll('.setting-row');
+            rows.forEach(function (row) {
+                const sel = row.querySelector('select[aria-label="' + t('animationSpeed') + '"]');
+                if (sel) applyAnimationDependents(row, sel);
             });
         }
 
@@ -551,6 +571,8 @@
                         ctx.setSetting(def.key, sel.value);
                     });
                     row.appendChild(sel);
+                    // v3.2.1: 页面动画 off → the speed select is dead and greyed
+                    if (def.key === 'animationSpeed') applyAnimationDependents(row, sel);
                 } else if (def.type === 'text') {
                     const inp = document.createElement('input');
                     inp.type = 'text';
@@ -585,6 +607,8 @@
                     box.checked = !!val;
                     box.addEventListener('change', function () {
                         ctx.setSetting(def.key, box.checked);
+                        // v3.2.1: toggling 页面动画 re-greys the speed select
+                        if (def.key === 'animations') syncAnimationDependents();
                     });
                     row.appendChild(box);
                 }

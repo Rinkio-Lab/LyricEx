@@ -58,7 +58,7 @@
 <div class="app" id="app" data-theme="light">
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">Lyric<span>Ex</span></div>
+        <div class="sidebar-brand" id="sidebarBrand" role="button" tabindex="0" data-i18n-title="about" title="关于">Lyric<span>Ex</span></div>
         <div class="sidebar-section">
             <div class="sidebar-label" data-i18n="view">视图</div>
             <button class="sidebar-btn active" data-view="lyrics" data-sidebar-item="lyrics" data-i18n-title="lyrics">
@@ -114,7 +114,7 @@
                 <span class="label" data-i18n="about">关于</span>
             </button>
         </div>
-        <div class="sidebar-section" style="flex:1;justify-content:flex-end;">
+        <div class="sidebar-section sidebar-section--spacer">
             <div class="sidebar-label" data-i18n="lyricPack">歌词包</div>
             <div class="upload-area" id="uploadArea">
                 <span class="icon"><i class="fas fa-file-import"></i></span>
@@ -124,11 +124,11 @@
             </div>
         </div>
         <!-- v2.0.0: recent packages + multi-package queue -->
-        <div class="sidebar-section recent-section" id="recentSection" style="display:none;">
+        <div class="sidebar-section recent-section hidden" id="recentSection">
             <div class="sidebar-label" data-i18n="recentTitle">最近打开</div>
             <div class="recent-list" id="recentList"></div>
         </div>
-        <div class="sidebar-section queue-section" id="queueSection" style="display:none;">
+        <div class="sidebar-section queue-section hidden" id="queueSection">
             <div class="sidebar-label" data-i18n="queueTitle">连播队列</div>
             <div class="queue-list" id="queueList"></div>
         </div>
@@ -146,14 +146,14 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v3.2.0 · 2026</div>
+                        <div class="version">v3.2.1 · 2026</div>
                         <div class="slogan" data-i18n="aboutSlogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
                         <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
                         <h3 data-i18n="developer">开发者</h3>
                         <p data-i18n-html="aboutBuiltBy">由 <a href="#" target="_blank">Rinkio</a> 构建</p>
                         <p>
-                            <span style="font-size:13px;color:var(--text-muted);">
-                                <i class="fas fa-envelope" style="margin-right:4px;"></i>
+                            <span class="about-mail">
+                                <i class="fas fa-envelope"></i>
                                 <a href="mailto:limebow2@gmail.com">limebow2@gmail.com</a>
                             </span>
                         </p>
@@ -322,7 +322,7 @@
             <div class="settings-footer">
                 <button class="close-btn" id="settingsExportBtn" title=""><i class="fas fa-download"></i><span class="label" data-i18n="settingsExport">导出设置</span></button>
                 <button class="close-btn" id="settingsImportBtn" title=""><i class="fas fa-upload"></i><span class="label" data-i18n="settingsImport">导入设置</span></button>
-                <input type="file" id="settingsImportFile" accept=".json,application/json" style="display:none">
+                <input type="file" id="settingsImportFile" accept=".json,application/json" class="hidden">
                 <button class="close-btn danger-btn" id="resetSettingsBtn"><i class="fas fa-undo"></i><span class="label" data-i18n="resetDefaults">恢复默认设置</span></button>
                 <button class="close-btn" id="settingsCloseBtn" data-i18n="close">关闭</button>
             </div>
@@ -336,7 +336,7 @@
         <div class="view-container" id="viewContainer">
             <div id="viewContent"></div>
             <!-- v1.4.4: auto-follow resume pill (main views) -->
-            <button class="follow-pill" id="followPill" style="display:none;" data-i18n-title="followLyrics" title="跟随">
+            <button class="follow-pill hidden" id="followPill" data-i18n-title="followLyrics" title="跟随">
                 <i class="fas fa-location-arrow"></i>
                 <span class="label" data-i18n="followLyrics">跟随</span>
             </button>
@@ -344,14 +344,14 @@
 
         <!-- PLAYER -->
         <div class="player-controls" id="playerControls">
-            <div class="spectrum-row" id="spectrumRow" style="display:none;">
+            <div class="spectrum-row hidden" id="spectrumRow">
                 <canvas id="spectrumCanvas"></canvas>
             </div>
             <div class="player-row">
                 <!-- v2.1.1: desktop cover entry — hidden on mobile (the top bar
                      has #mobileCoverBtn there); shown by updateMobileNow() when a
                      cover exists, opens #coverViewer -->
-                <button class="player-cover-btn" id="playerCoverBtn" data-i18n-title="coverView" title="查看封面" style="display:none;">
+                <button class="player-cover-btn hidden" id="playerCoverBtn" data-i18n-title="coverView" title="查看封面">
                     <i class="fas fa-image"></i>
                 </button>
                 <div class="progress-wrap">
@@ -384,9 +384,9 @@
                 <div class="mode-wrap">
                     <button class="mode-btn" id="loopBtn" title="单曲循环">
                         <i class="fas fa-redo"></i>
-                        <span class="badge" id="loopBadge" style="display:none;">1</span>
+                        <span class="badge hidden" id="loopBadge">1</span>
                     </button>
-                    <button class="mode-btn" id="auditionToggleBtn" data-i18n-title="trackToggleTitle" title="播放音轨：原声 / 伴奏" style="display:none;">
+                    <button class="mode-btn hidden" id="auditionToggleBtn" data-i18n-title="trackToggleTitle" title="播放音轨：原声 / 伴奏">
                         <i class="fas fa-music" id="auditionToggleIcon"></i>
                         <span class="track-label" id="auditionToggleLabel">原声</span>
                     </button>
@@ -394,15 +394,15 @@
                 <div class="player-ext" id="playerExt"></div>
                 <button class="player-ext-toggle" id="playerExtToggle" data-i18n-title="moreControls" title="更多控制">
                     <i class="fas fa-ellipsis-h"></i>
-                    <span class="badge" id="playerExtBadge" style="display:none;">0</span>
+                    <span class="badge hidden" id="playerExtBadge">0</span>
                 </button>
             </div>
             <!-- v2.1.1: extension-control drawer — renderPlayerExt() moves every
                  non-pinned .ext-item here; opened by playerExtToggle -->
-            <div class="player-drawer" id="playerDrawer" style="display:none;">
+            <div class="player-drawer hidden" id="playerDrawer">
                 <div class="ext-item" data-ext="vol">
                     <div class="vol-wrap">
-                        <button class="ctrl-btn" id="muteBtn" data-i18n-title="mute" title="静音" style="width:28px;height:28px;font-size:16px;">
+                        <button class="ctrl-btn ctrl-btn--compact" id="muteBtn" data-i18n-title="mute" title="静音">
                             <span class="icon" id="muteIconWrap"><i class="fas fa-volume-up"></i></span>
                         </button>
                         <input type="range" id="volumeSlider" min="0" max="100" value="80" data-i18n-title="volumeLabel" title="音量" />
@@ -430,7 +430,7 @@
                 <div class="ext-item" data-ext="ab">
                     <button class="mode-btn" id="abToggleBtn" title="AB 循环">
                         <i class="fas fa-sync-alt"></i>
-                        <span class="badge ab" id="abBadge" style="display:none;">AB</span>
+                        <span class="badge ab hidden" id="abBadge">AB</span>
                     </button>
                 </div>
                 <div class="ext-item" data-ext="ab">
@@ -444,7 +444,7 @@
                 <div class="ext-item" data-ext="marks">
                     <button class="mode-btn" id="marksToggleBtn" data-i18n-title="loopMarks" title="循环书签">
                         <i class="fas fa-bookmark"></i>
-                        <span class="badge" id="marksBadge" style="display:none;">0</span>
+                        <span class="badge hidden" id="marksBadge">0</span>
                     </button>
                 </div>
                 <div class="ext-item" data-ext="share">
@@ -453,15 +453,14 @@
                     </button>
                 </div>
             </div>
-            <div class="marks-panel" id="marksPanel" style="display:none;">
+            <div class="marks-panel hidden" id="marksPanel">
                 <div class="marks-list" id="marksList"></div>
-            </div>
             </div>
         </div>
     </main>
 
     <!-- MINI MODE BAR (v1.5.0) – inside .app so dark-theme CSS vars apply -->
-    <div class="mini-bar" id="miniBar" style="display:none;">
+    <div class="mini-bar hidden" id="miniBar">
         <button class="mini-drag" id="miniDrag" title="拖动"><i class="fas fa-grip-vertical"></i></button>
         <div class="mini-info" id="miniInfo">
             <div class="mini-title" id="miniTitle">&ndash;</div>
@@ -488,7 +487,7 @@
             <div class="cinema-lyrics" id="cinemaLyrics"></div>
             <div id="cinemaPlayerSlot"></div>
             <!-- v1.4.4: auto-follow resume pill (cinema mode) -->
-            <button class="follow-pill cinema-pill" id="cinemaFollowPill" style="display:none;" data-i18n-title="followLyrics" title="跟随">
+            <button class="follow-pill cinema-pill hidden" id="cinemaFollowPill" data-i18n-title="followLyrics" title="跟随">
                 <i class="fas fa-location-arrow"></i>
                 <span class="label" data-i18n="followLyrics">跟随</span>
             </button>
@@ -558,7 +557,7 @@
                 <div class="share-row share-tpl-btns">
                     <button class="close-btn small" id="shareTplExportBtn" data-i18n="tplExport">导出模板</button>
                     <button class="close-btn small" id="shareTplImportBtn" data-i18n="tplImport">导入模板</button>
-                    <input type="file" id="shareTplFile" accept=".json" style="display:none" />
+                    <input type="file" id="shareTplFile" accept=".json" class="hidden" />
                 </div>
             </div>
             <div class="share-footer">
@@ -591,7 +590,7 @@
             <div class="mobile-title" id="mobileTitle" data-i18n="waitingUpload">等待上传</div>
             <div class="mobile-artist" id="mobileArtist"></div>
         </div>
-        <button class="mobile-cover-btn" id="mobileCoverBtn" data-i18n-title="coverView" title="查看封面" style="display:none;">
+        <button class="mobile-cover-btn hidden" id="mobileCoverBtn" data-i18n-title="coverView" title="查看封面">
             <i class="fas fa-image"></i>
         </button>
         <button class="mobile-more-btn" id="mobileMoreBtn" data-i18n-title="topbarMore" title="设置与关于">
@@ -599,7 +598,7 @@
         </button>
     </div>
     <!-- top drawer: settings / about / theme -->
-    <div class="top-drawer" id="topDrawer" style="display:none;">
+    <div class="top-drawer hidden" id="topDrawer">
         <button class="drawer-item" id="topThemeBtn"><i class="fas fa-moon"></i> <span data-i18n="darkMode">暗黑模式</span></button>
         <button class="drawer-item" id="topSettingsBtn"><i class="fas fa-cog"></i> <span data-i18n="settings">设置</span></button>
         <button class="drawer-item" id="topAboutBtn"><i class="fas fa-address-card"></i> <span data-i18n="about">关于</span></button>
@@ -616,7 +615,7 @@
         </button>
     </nav>
     <!-- more drawer: modes / upload / library / recent / queue -->
-    <div class="more-drawer" id="moreDrawer" style="display:none;">
+    <div class="more-drawer hidden" id="moreDrawer">
         <button class="drawer-item" id="moreCinemaBtn"><i class="fas fa-tv"></i> <span data-i18n="cinemaMode">影院模式</span></button>
         <button class="drawer-item" id="moreMiniBtn"><i class="fas fa-window-restore"></i> <span data-i18n="miniMode">迷你模式</span></button>
         <button class="drawer-item" id="moreUploadBtn"><i class="fas fa-file-import"></i> <span data-i18n="uploadZip">上传 .zip / .lrc</span></button>
@@ -632,7 +631,7 @@
     </div>
 
     <!-- LANGUAGE DRAWER (v2.3.1): compact second-level picker for 界面语言 -->
-    <div class="lang-drawer" id="langDrawer" style="display:none;" role="dialog" aria-modal="true" data-i18n-title="interfaceLang">
+    <div class="lang-drawer hidden" id="langDrawer" role="dialog" aria-modal="true" data-i18n-title="interfaceLang">
         <div class="lang-drawer-head">
             <span data-i18n="interfaceLang">界面语言</span>
             <button class="lang-drawer-close" id="langDrawerClose" data-i18n="close"><i class="fas fa-times"></i></button>
@@ -671,7 +670,7 @@
     <div class="dialog-overlay" id="dialogOverlay" role="dialog" aria-modal="true" data-i18n-title="dialogTitle" aria-label="提示">
         <div class="dialog-modal">
             <div class="dialog-message" id="dialogMessage"></div>
-            <div class="dialog-input-row" style="display:none;">
+            <div class="dialog-input-row hidden">
                 <input type="text" id="dialogInput" autocomplete="off" spellcheck="false" />
             </div>
             <div class="dialog-footer" id="dialogFooter"></div>
@@ -680,7 +679,7 @@
 </div>
 
 <!-- PRINT SHEET (v2.0.0 #17): hidden on screen, shown by @media print -->
-<div class="print-sheet" id="printSheet" style="display:none;"></div>
+<div class="print-sheet hidden" id="printSheet"></div>
 
 <!-- I18N: core + registry load first. The loader then pulls ONLY the current
      locale's fallback chain (+ zh terminal) — bootstrapping every language was

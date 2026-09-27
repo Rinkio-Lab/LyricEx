@@ -237,6 +237,8 @@
         directionLtr: '強制 LTR',
         langChange: '変更',
         langNotReset: '言語とテキスト方向はリセットされません',
+        /* v3.2.1: help center follows the global UI language */
+        helpFollowLocale: 'ヘルプは表示言語に追従',
 
         /* study table labels */
         romaji: 'ローマ字',
@@ -321,6 +323,15 @@
         updateOpen: 'GitHub Release ページを開きますか？',
         updateLatest: '最新バージョンです',
         updateFailed: 'アップデート確認に失敗しました。ネットワークを確認してください',
+        /* v3.2.1: update-check dialog polish */
+        updateChecking: 'アップデートを確認中…',
+        updateNoNotes: '（このチャネルには更新説明がありません）',
+        updateMockTag: 'ローカル模擬',
+        updateApiRaw: 'API の生レスポンスを表示',
+        updateNotesLabel: '更新内容',
+        updateChannel: 'データチャネル',
+        updateCurrentVer: '現在のバージョン',
+        updateGoRelease: 'Release ページを開く',
         clAdded: '追加',
         clChanged: '変更',
         clFixed: '修正',

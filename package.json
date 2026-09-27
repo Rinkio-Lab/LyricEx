@@ -1,6 +1,6 @@
-﻿{
+{
   "name": "lyricex",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "private": true,
   "description": "纯前端歌词鉴赏工具：歌词/学习/混合/编辑四视图、逐字卡拉OK、汉字注音、时间轴编辑与导出。零运行时依赖（vendor/ 本地化）。",
   "scripts": {
@@ -11,10 +11,10 @@
     "e2e:install": "playwright install chromium",
     "release-check": "node scripts/release-check.mjs",
     "format": "prettier --write \"assets/**/*.js\" \"tests/**/*.mjs\" \"scripts/**/*.mjs\" \"*.mjs\" \"assets/**/*.css\" \"*.json\"",
-    "precommit": "npm run format \u0026\u0026 npm run lint \u0026\u0026 npm test"
+    "precommit": "npm run format && npm run lint && npm test"
   },
   "engines": {
-    "node": "\u003e=18"
+    "node": ">=18"
   },
   "license": "MIT",
   "devDependencies": {

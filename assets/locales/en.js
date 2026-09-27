@@ -238,6 +238,8 @@
         directionLtr: 'Force LTR',
         langChange: 'Change',
         langNotReset: 'Interface language and text direction are not reset',
+        /* v3.2.1: help center follows the global UI language */
+        helpFollowLocale: 'Help follows interface language',
 
         /* study table labels */
         romaji: 'Romaji',
@@ -324,6 +326,15 @@
         updateOpen: 'Open the GitHub release page?',
         updateLatest: 'You are up to date',
         updateFailed: 'Update check failed, please check your network and retry',
+        /* v3.2.1: update-check dialog polish */
+        updateChecking: 'Checking for updates…',
+        updateNoNotes: '(no release notes from this channel)',
+        updateMockTag: 'local mock',
+        updateApiRaw: 'Show raw API payload',
+        updateNotesLabel: 'What is new',
+        updateChannel: 'Channel',
+        updateCurrentVer: 'Current version',
+        updateGoRelease: 'Open release page',
         clAdded: 'Added',
         clChanged: 'Changed',
         clFixed: 'Fixed',

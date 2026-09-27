@@ -308,6 +308,22 @@
             });
         });
         var body = rootEl.querySelector('#libBody');
+        // v3.2.1: a cover blob that fails to decode (stale/corrupt object URL)
+        // swaps to the placeholder glyph — capture-phase so lazy <img> errors
+        // count (inline onerror would violate the CSP script-src 'self')
+        body.addEventListener(
+            'error',
+            function (e) {
+                var img = e.target;
+                if (img && img.tagName === 'IMG' && img.classList.contains('lib-cover')) {
+                    var ph = root.document.createElement('div');
+                    ph.className = 'lib-cover lib-cover-placeholder';
+                    ph.innerHTML = '<i class="fas fa-music"></i>';
+                    img.replaceWith(ph);
+                }
+            },
+            true
+        );
         body.addEventListener('scroll', function () {
             if (state.tab === 'all' || state.tab === 'favorites' || state.tab === 'recent') {
                 if (body.scrollTop + body.clientHeight >= body.scrollHeight - 80) {

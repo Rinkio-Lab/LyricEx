@@ -3,10 +3,12 @@
    the actual file input, view switching, zh/ja/ar locale switching with RTL
    direction, modal focus trapping, axe-core a11y scan, and a clean console. */
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { join, dirname } from 'node:path';
 
 const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
+const PKG_VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
 
 /** collect page errors + console errors; assert clean at test end */
 function watchErrors(page) {
@@ -22,9 +24,25 @@ function watchErrors(page) {
     so the onboarding modal never intercepts clicks in smoke tests */
 // e2e targets UI behaviour, not caching: page.route cannot intercept fetches
 // issued from the service-worker scope, so SW caching would make manifest stubs
-// unreliable. Disable the SW for every test.
+// unreliable. Disable the SW for every test. Also stub the v3.2.0+ update check:
+// a real GitHub request on a restricted network returns 403, and Chromium logs
+// that as console.error, which trips the clean-console assertions below.
 test.beforeEach(async ({ page }) => {
     await page.route('**/sw.js', (route) => route.abort());
+    await page.route('https://api.github.com/**', (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ tag_name: 'v' + PKG_VERSION, body: '' })
+        })
+    );
+    await page.route('https://raw.githubusercontent.com/**', (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'text/plain; charset=utf-8',
+            body: '# Changelog\n\n## v' + PKG_VERSION + '（2026-01-01 · e2e stub）\n'
+        })
+    );
 });
 
 async function openApp(page, url = '/') {

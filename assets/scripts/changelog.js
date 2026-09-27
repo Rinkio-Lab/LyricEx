@@ -10,6 +10,30 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.2.1',
+            date: '2026-09-27',
+            changes: [
+                {
+                    type: 'added',
+                    text: '帮助页跟随全局语言：默认按界面语言显示正文，右上角手动切换后记住独立选择；设置 → 通用新增「帮助页跟随全局语言」开关'
+                },
+                {
+                    type: 'added',
+                    text: '检查更新弹窗升级：点击立即显示加载圈；发现新版本左侧更新说明、右侧数据通道与当前版本分栏，API 原始返回可折叠查看；localStorage.lyricex-update-mock 可模拟本地新版本调试'
+                },
+                {
+                    type: 'added',
+                    text: '自动化格式化：Prettier 工具链（.prettierrc + npm run format），npm run precommit 一键 格式化 → lint → 全量测试'
+                },
+                { type: 'added', text: '帮助 FAQ 新增「如何测试检查更新」条目（三语），给出本地模拟键用法' },
+                {
+                    type: 'fixed',
+                    text: '侧边栏与设置图标统一（歌词/学习/混合/编辑/迷你/关于）；主题切换图标反置（改为指示当前主题）；动画关闭时速度选项变灰不可选；库封面图片加载失败自动替换占位音符；侧边栏 Logo 不可选中、点击可开关于'
+                },
+                { type: 'changed', text: '版本号 3.2.0 → 3.2.1；Service Worker 缓存名 bump 为 lyricex-v3.2.1' }
+            ]
+        },
+        {
             version: '3.2.0',
             date: '2026-09-27',
             changes: [

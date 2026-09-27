@@ -431,6 +431,8 @@
         // v1.6.3: motion — animations toggle + speed (scales --transition)
         animations: true,
         animationSpeed: 'normal', // slow | normal | fast
+        // v3.2.1: help center follows the global UI language unless disabled
+        helpFollowLocale: true,
         // sidebar entry visibility (Settings is always shown, so it isn't listed)
         sidebar: {
             lyrics: true,

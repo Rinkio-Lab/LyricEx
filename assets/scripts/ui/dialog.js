@@ -26,10 +26,21 @@
         return b;
     }
 
+    // v3.2.1: minimal escaping so opts.html callers can embed untrusted text
+    // (e.g. GitHub release notes) without breaking out of the dialog markup.
+    function escapeHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     function close(result) {
         if (!overlay) return;
         overlay.classList.remove('open');
-        inputRow.style.display = 'none';
+        inputRow.classList.add('hidden');
         footerEl.innerHTML = '';
         messageEl.textContent = '';
         inputEl.value = '';
@@ -41,8 +52,13 @@
     function open(kind, message, defaultValue, opts) {
         if (currentResolve) close(null); // a second dialog while one is open: cancel the first
         opts = opts || {};
-        messageEl.textContent = String(message == null ? '' : message);
-        inputRow.style.display = kind === 'prompt' ? '' : 'none';
+        // v3.2.1: opts.html lets the update-check dialog render release notes
+        // (left/right split + collapsible API payload) as markup; callers must
+        // escape untrusted text themselves (see escapeHtml).
+        if (opts.html) messageEl.innerHTML = String(message == null ? '' : message);
+        else messageEl.textContent = String(message == null ? '' : message);
+        messageEl.classList.toggle('dialog-html', !!opts.html);
+        inputRow.classList.toggle('hidden', kind !== 'prompt');
         if (kind === 'prompt') inputEl.value = defaultValue == null ? '' : String(defaultValue);
         if (kind === 'alert') {
             footerEl.appendChild(
@@ -57,9 +73,13 @@
                 })
             );
             footerEl.appendChild(
-                makeButton(t('dialogOk'), opts.danger ? 'dialog-danger' : 'dialog-primary', function () {
-                    close(true);
-                })
+                makeButton(
+                    opts.okLabel || t('dialogOk'),
+                    opts.danger ? 'dialog-danger' : 'dialog-primary',
+                    function () {
+                        close(true);
+                    }
+                )
             );
         } else if (kind === 'prompt') {
             footerEl.appendChild(
@@ -72,6 +92,12 @@
                     close(inputEl.value);
                 })
             );
+        } else if (kind === 'loading') {
+            // v3.2.1: busy state for the update check — spinner + text, no
+            // buttons; Esc/backdrop cancel (resolves null) while a fetch runs.
+            messageEl.innerHTML =
+                '<span class="dialog-spinner" aria-hidden="true"></span>' +
+                escapeHtml(String(message == null ? '' : message));
         }
         overlay.classList.add('open');
         if (kind === 'prompt') inputEl.focus();
@@ -122,6 +148,9 @@
         },
         prompt: function (message, defaultValue) {
             return open('prompt', message, defaultValue);
+        },
+        loading: function (message) {
+            return open('loading', message);
         },
         closeAll: function () {
             close(null);

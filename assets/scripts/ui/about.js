@@ -154,7 +154,7 @@
                 return '<span class="dot' + (i === guideStep ? ' active' : '') + '"></span>';
             }).join('');
             guideCounter.textContent = guideStep + 1 + ' / ' + GUIDE_STEPS.length;
-            guidePrevBtn.style.display = guideStep === 0 ? 'none' : '';
+            guidePrevBtn.classList.toggle('hidden', guideStep === 0);
             guideNextBtn.textContent = guideStep === GUIDE_STEPS.length - 1 ? t('guideDone') : t('guideNext');
         }
 

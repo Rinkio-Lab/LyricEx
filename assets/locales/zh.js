@@ -237,6 +237,8 @@
         directionLtr: '强制从左到右',
         langChange: '更改',
         langNotReset: '界面语言与文本方向不会被重置',
+        /* v3.2.1: help center follows the global UI language */
+        helpFollowLocale: '帮助页跟随全局语言',
 
         /* study table labels */
         romaji: '罗马音',
@@ -321,6 +323,15 @@
         updateOpen: '是否前往 GitHub Release 页面查看？',
         updateLatest: '已是最新版本',
         updateFailed: '检查更新失败，请检查网络后重试',
+        /* v3.2.1: update-check dialog polish */
+        updateChecking: '正在检查更新…',
+        updateNoNotes: '（此通道未提供更新说明）',
+        updateMockTag: '本地模拟',
+        updateApiRaw: '查看 API 原始返回',
+        updateNotesLabel: '更新内容',
+        updateChannel: '数据通道',
+        updateCurrentVer: '当前版本',
+        updateGoRelease: '前往 Release 页',
         clAdded: '新增',
         clChanged: '变更',
         clFixed: '修复',

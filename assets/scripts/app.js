@@ -402,7 +402,8 @@
         app.style.setProperty('--time-tag-size', settings.timeTagSize + 'px');
         app.style.setProperty('--editor-text-size', settings.editorTextSize + 'px');
         app.style.setProperty('--furigana-size', settings.furiganaSize + 'px');
-        spectrumRow.style.display = settings.spectrum ? 'block' : 'none';
+        spectrumRow.classList.toggle('hidden', !settings.spectrum);
+        spectrumRow.style.display = settings.spectrum ? 'block' : '';
         volume = settings.volume;
         volumeSlider.value = volume;
         const normSpeed = (function (v) {
@@ -467,19 +468,25 @@
     // standalone help-content.js module (add a language there like a locale dict).
     // The UI chrome (search/pager/labels/header) follows the global UI locale.
     let helpObserver = null;
-    function getHelpLang() {
-        const saved = (typeof localStorage !== 'undefined' && localStorage.getItem('lyricex-help-locale')) || '';
-        if (saved === 'zh' || saved === 'ja' || saved === 'en') return saved;
+    // v3.2.1: by default the help center follows the global UI language on
+    // every open (settings.helpFollowLocale, 设置 → 通用). When the user turns
+    // that off (or picks a help language directly, which flips it off), the
+    // standalone choice persisted in 'lyricex-help-locale' wins.
+    function resolveToHelpLang(loc) {
         const i = window.__i18n;
-        if (!i) return 'zh';
         const seen = {};
-        let loc = i._current || 'zh';
+        let cur = loc || (i && i._current) || 'zh';
         for (;;) {
-            if (loc === 'zh' || loc === 'ja' || loc === 'en') return loc;
-            const next = i._resolveFallback ? i._resolveFallback(loc, seen) : null;
+            if (cur === 'zh' || cur === 'ja' || cur === 'en') return cur;
+            const next = i && i._resolveFallback ? i._resolveFallback(cur, seen) : null;
             if (!next || next === 'zh') return 'zh';
-            loc = next;
+            cur = next;
         }
+    }
+    function getHelpLang() {
+        if (settings.helpFollowLocale !== false) return resolveToHelpLang();
+        const saved = (typeof localStorage !== 'undefined' && localStorage.getItem('lyricex-help-locale')) || '';
+        return saved === 'zh' || saved === 'ja' || saved === 'en' ? saved : resolveToHelpLang();
     }
     // body + chapter titles live in help-content.js; fall back to the zh block
     // when a language (or the module itself, e.g. in tests) is missing
@@ -645,6 +652,12 @@
                     localStorage.setItem('lyricex-help-locale', btn.getAttribute('data-help-lang'));
                 } catch (_) {
                     /* noop */
+                }
+                // v3.2.1: picking a help language means "stop following the
+                // global locale" — persist that so the choice sticks
+                if (settings.helpFollowLocale !== false) {
+                    settings.helpFollowLocale = false;
+                    saveSettings();
                 }
                 renderHelpView();
             });
@@ -902,10 +915,13 @@
     }
 
     function openLangDrawer() {
-        if (langDrawer) langDrawer.style.display = 'flex';
+        if (langDrawer) {
+            langDrawer.classList.remove('hidden');
+            langDrawer.style.display = 'flex';
+        }
     }
     function closeLangDrawer() {
-        if (langDrawer) langDrawer.style.display = 'none';
+        if (langDrawer) langDrawer.classList.add('hidden');
     }
 
     window.__onLocaleChange = function (locale) {
@@ -943,7 +959,9 @@
     }
 
     function setThemeIcon(theme) {
-        const icon = theme === 'dark' ? 'fa-sun' : theme === 'system' ? 'fa-adjust' : 'fa-moon';
+        // v3.2.1: icon mirrors the CURRENT theme (dark → moon, light → sun),
+        // matching themeLabel — the old mapping was inverted (dark showed sun)
+        const icon = theme === 'dark' ? 'fa-moon' : theme === 'system' ? 'fa-adjust' : 'fa-sun';
         themeIconWrap.innerHTML = '<i class="fas ' + icon + '"></i>';
     }
 
@@ -1715,13 +1733,15 @@
 
     function updateFollowPill() {
         if (miniApi.isOn()) {
-            followPill.style.display = 'none';
-            cinemaFollowPill.style.display = 'none';
+            followPill.classList.add('hidden');
+            cinemaFollowPill.classList.add('hidden');
             return;
         }
         const paused = !followEnabled && !!getLyricsScrollTarget();
-        followPill.style.display = paused && !cinemaApi.isOpen() ? 'flex' : 'none';
-        cinemaFollowPill.style.display = paused && cinemaApi.isOpen() ? 'flex' : 'none';
+        followPill.classList.toggle('hidden', !(paused && !cinemaApi.isOpen()));
+        followPill.style.display = paused && !cinemaApi.isOpen() ? 'flex' : '';
+        cinemaFollowPill.classList.toggle('hidden', !(paused && cinemaApi.isOpen()));
+        cinemaFollowPill.style.display = paused && cinemaApi.isOpen() ? 'flex' : '';
     }
 
     function bindScrollInteractions(container) {
@@ -2189,7 +2209,7 @@
 
     function updateTrackToggle() {
         const has = !!instrumentalUrl;
-        auditionToggleBtn.style.display = has ? '' : 'none';
+        auditionToggleBtn.classList.toggle('hidden', !has);
         const orig = mainTrackMode === 'original';
         auditionToggleBtn.classList.toggle('active', !orig); // 伴奏 = engaged special mode
         auditionToggleIcon.className = orig ? 'fas fa-headphones' : 'fas fa-music';
@@ -2225,7 +2245,8 @@
     function toggleLoop() {
         loopMode = window.__lyricexUtils.nextLoopMode(loopMode);
         loopBtn.classList.toggle('active', loopMode !== 'none');
-        loopBadge.style.display = loopMode === 'none' ? 'none' : 'block';
+        loopBadge.classList.toggle('hidden', loopMode === 'none');
+        loopBadge.style.display = loopMode === 'none' ? '' : 'block';
         loopBadge.textContent = loopMode === 'single' ? '1' : t('loopLineBadge');
         loopBtn.title = loopMode === 'line' ? t('loopLine') : t('shortcutLoop');
     }
@@ -2233,7 +2254,8 @@
     function toggleAB() {
         abEnabled = !abEnabled;
         abToggleBtn.classList.toggle('active', abEnabled);
-        abBadge.style.display = abEnabled ? 'block' : 'none';
+        abBadge.classList.toggle('hidden', !abEnabled);
+        abBadge.style.display = abEnabled ? 'block' : '';
         if (!abEnabled) {
             abPointA = null;
             abPointB = null;
@@ -2282,14 +2304,14 @@
         abPointB = null;
         abEnabled = false;
         abToggleBtn.classList.remove('active');
-        abBadge.style.display = 'none';
+        abBadge.classList.add('hidden');
         updateABDisplay();
         renderMarks();
     }
 
     function toggleMarksPanel() {
-        marksPanel.style.display = marksPanel.style.display === 'none' ? 'block' : 'none';
-        if (marksPanel.style.display === 'block') renderMarks();
+        marksPanel.classList.toggle('hidden', !marksPanel.classList.contains('hidden'));
+        if (!marksPanel.classList.contains('hidden')) renderMarks();
     }
 
     function removeMark(id) {
@@ -2302,8 +2324,9 @@
 
     function renderMarks() {
         marksBadge.textContent = loopMarks.length;
-        marksBadge.style.display = loopMarks.length ? 'block' : 'none';
-        if (marksPanel.style.display === 'none') return;
+        marksBadge.classList.toggle('hidden', !loopMarks.length);
+        marksBadge.style.display = loopMarks.length ? 'block' : '';
+        if (marksPanel.classList.contains('hidden')) return;
         if (!loopMarks.length) {
             marksList.innerHTML = '<div class="marks-empty">' + t('marksEmpty') + '</div>';
             return;
@@ -2655,7 +2678,7 @@
                 .list()
                 .then(function (all) {
                     const list = window.__lyricexUtils.pruneRecent(all, 10);
-                    recentSection.style.display = list.length ? '' : 'none';
+                    recentSection.classList.toggle('hidden', !list.length);
                     // v2.1.1: mirror the list into the mobile more-drawer too
                     const targets = [recentList, mobileRecentList].filter(Boolean);
                     targets.forEach(function (el) {
@@ -2715,7 +2738,7 @@
     }
 
     function renderQueue() {
-        queueSection.style.display = queue.length ? '' : 'none';
+        queueSection.classList.toggle('hidden', !queue.length);
         // v2.1.1: mirror the list into the mobile more-drawer too
         const targets = [queueList, mobileQueueList].filter(Boolean);
         targets.forEach(function (el) {
@@ -2790,23 +2813,27 @@
             (pinned.indexOf(el.dataset.ext) !== -1 ? playerExt : playerDrawer).appendChild(el);
         });
         const inDrawer = playerDrawer.querySelectorAll('.ext-item[data-ext]').length;
-        playerExtToggle.style.display = inDrawer ? '' : 'none';
+        playerExtToggle.classList.toggle('hidden', !inDrawer);
         if (playerExtBadge) {
-            playerExtBadge.style.display = inDrawer ? 'block' : 'none';
+            playerExtBadge.classList.toggle('hidden', !inDrawer);
+            playerExtBadge.style.display = inDrawer ? 'block' : '';
             playerExtBadge.textContent = inDrawer;
         }
     }
 
     function toggleDrawer(drawer) {
         if (!drawer) return;
-        const wasOpen = drawer.style.display === 'flex';
+        const wasOpen = !drawer.classList.contains('hidden');
         closeAllDrawers();
-        if (!wasOpen) drawer.style.display = 'flex';
+        if (!wasOpen) {
+            drawer.classList.remove('hidden');
+            drawer.style.display = 'flex';
+        }
     }
 
     function closeAllDrawers() {
         [topDrawer, moreDrawer, playerDrawer, langDrawer].forEach(function (d) {
-            if (d) d.style.display = 'none';
+            if (d) d.classList.add('hidden');
         });
         [mobileMoreBtn, bottomMoreBtn, playerExtToggle].forEach(function (b) {
             if (b) b.classList.remove('active');
@@ -2822,8 +2849,8 @@
             mobileTitle.textContent = songData.title || t('unknownSong');
             mobileArtist.textContent = songData.artist || '';
         }
-        if (mobileCoverBtn) mobileCoverBtn.style.display = coverUrl ? '' : 'none';
-        if (playerCoverBtn) playerCoverBtn.style.display = coverUrl ? '' : 'none';
+        if (mobileCoverBtn) mobileCoverBtn.classList.toggle('hidden', !coverUrl);
+        if (playerCoverBtn) playerCoverBtn.classList.toggle('hidden', !coverUrl);
     }
 
     function openCoverViewer() {
@@ -3083,33 +3110,33 @@
         document.addEventListener('click', function (e) {
             if (
                 topDrawer &&
-                topDrawer.style.display === 'flex' &&
+                !topDrawer.classList.contains('hidden') &&
                 !topDrawer.contains(e.target) &&
                 !(mobileMoreBtn && mobileMoreBtn.contains(e.target))
             )
-                topDrawer.style.display = 'none';
+                topDrawer.classList.add('hidden');
             if (
                 moreDrawer &&
-                moreDrawer.style.display === 'flex' &&
+                !moreDrawer.classList.contains('hidden') &&
                 !moreDrawer.contains(e.target) &&
                 !(bottomMoreBtn && bottomMoreBtn.contains(e.target))
             )
-                moreDrawer.style.display = 'none';
+                moreDrawer.classList.add('hidden');
             if (
                 langDrawer &&
-                langDrawer.style.display === 'flex' &&
+                !langDrawer.classList.contains('hidden') &&
                 !langDrawer.contains(e.target) &&
                 !(langChangeBtn && langChangeBtn.contains(e.target)) &&
                 !(guideGlobeBtn && guideGlobeBtn.contains(e.target))
             )
-                langDrawer.style.display = 'none';
+                langDrawer.classList.add('hidden');
             if (
                 playerDrawer &&
-                playerDrawer.style.display === 'flex' &&
+                !playerDrawer.classList.contains('hidden') &&
                 !playerDrawer.contains(e.target) &&
                 !(playerExtToggle && playerExtToggle.contains(e.target))
             )
-                playerDrawer.style.display = 'none';
+                playerDrawer.classList.add('hidden');
         });
         document.addEventListener('keydown', function (e) {
             if (e.key !== 'Escape') return;
@@ -3995,6 +4022,20 @@
     settingsApi = window.__lyricexSettings(ctx);
     aboutApi = window.__lyricexAbout(ctx);
     if (window.__lyricexUpdatesInit) window.__lyricexUpdatesInit(ctx);
+
+    // v3.2.1: the sidebar logo opens 关于 (role=button, keyboard accessible)
+    const sidebarBrand = document.getElementById('sidebarBrand');
+    if (sidebarBrand) {
+        sidebarBrand.addEventListener('click', function () {
+            aboutApi.open();
+        });
+        sidebarBrand.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                aboutApi.open();
+            }
+        });
+    }
 
     bindMobileEvents();
     init();
