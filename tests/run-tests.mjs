@@ -193,7 +193,7 @@ eq('font unknown preset fallback', lib.fontStack('nope', ''), 'var(--font)');
 // runs as a subprocess; a failing suite fails the whole run. Previously this
 // file only tested lib, so other suites could break unnoticed.
 const { execFileSync } = await import('child_process');
-const suites = ['i18n-check.mjs', 'boot-smoke.mjs', 'lang-switch.mjs', 'utils-test.mjs', 'library-test.mjs'];
+const suites = ['i18n-check.mjs', 'boot-smoke.mjs', 'lang-switch.mjs', 'utils-test.mjs', 'library-test.mjs', 'updates-test.mjs'];
 for (const name of suites) {
     try {
         execFileSync(process.execPath, ['tests/' + name], { stdio: 'inherit' });

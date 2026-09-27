@@ -18,7 +18,7 @@
          as same-origin for 'self' (verified 2026-09). frame-ancestors only
          works as an HTTP header, not in <meta>. -->
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; font-src 'self'; object-src 'none'; base-uri 'self'" />
+          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob: https://api.github.com https://raw.githubusercontent.com; font-src 'self'; object-src 'none'; base-uri 'self'" />
     <!-- App icons (favicon.io pack), in favicon.io's canonical order: apple-touch →
          32 → 16 → manifest. favicon.ico kept as an explicit legacy-tab fallback
          because it lives in assets/icons/ (no root auto-fallback). Relative paths stay
@@ -146,7 +146,7 @@
                     <section class="about-section brand-section" data-nav="navAboutOverview">
                         <span class="logo-icon"><i class="fas fa-music"></i></span>
                         <h2>Lyric<span>Ex</span></h2>
-                        <div class="version">v3.1.0 · 2026</div>
+                        <div class="version">v3.2.0 · 2026</div>
                         <div class="slogan" data-i18n="aboutSlogan">歌词鉴赏工具 · 支持 .lrc / LyricEx 包 / 群友歌词包</div>
                         <!-- v2.5.1: h2 -> h3 so heading order steps by one (axe heading-order) -->
                         <h3 data-i18n="developer">开发者</h3>
@@ -200,6 +200,7 @@
             <div class="about-footer">
                 <button class="close-btn" id="watchGuideBtn" data-i18n="watchGuide">观看指引</button>
                 <button class="close-btn" id="changelogBtn" data-i18n="viewChangelog">更新日志</button>
+                <button class="close-btn" id="checkUpdateBtn" data-i18n="checkUpdate">检查更新</button>
                 <button class="close-btn" id="aboutCloseBtn" data-i18n="close">关闭</button>
             </div>
         </div>
@@ -725,6 +726,8 @@
 <!-- v2.8.1: native dialog system (alert/confirm/prompt) — before app.js so the
      rest of the UI can call window.__lyricexDialog at interaction time -->
 <script src="assets/scripts/ui/dialog.js"></script>
+<!-- v3.2.0: update check (about button + silent startup check) — needs dialog + i18n -->
+<script src="assets/scripts/updates.js"></script>
 <!-- v2.9.4: local song library (metadata -> IndexedDB store -> UI) -->
 <script src="assets/scripts/library/metadata.js"></script>
 <script src="assets/scripts/library/library-db.js"></script>

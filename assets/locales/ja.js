@@ -308,6 +308,12 @@
         /* v2.0.0: about sub-nav + in-app changelog */
         'navAboutOverview': '概要',
         'viewChangelog': '更新履歴',
+        /* v3.2.0: update check */
+        'checkUpdate': 'アップデートを確認',
+        'updateFound': '新しいバージョンがあります',
+        'updateOpen': 'GitHub Release ページを開きますか？',
+        'updateLatest': '最新バージョンです',
+        'updateFailed': 'アップデート確認に失敗しました。ネットワークを確認してください',
         'clAdded': '追加',
         'clChanged': '変更',
         'clFixed': '修正',

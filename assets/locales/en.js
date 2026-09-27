@@ -308,6 +308,12 @@
         /* v2.0.0: about sub-nav + in-app changelog */
         'navAboutOverview': 'Overview',
         'viewChangelog': 'Changelog',
+        /* v3.2.0: update check */
+        'checkUpdate': 'Check for updates',
+        'updateFound': 'A new version is available',
+        'updateOpen': 'Open the GitHub release page?',
+        'updateLatest': 'You are up to date',
+        'updateFailed': 'Update check failed, please check your network and retry',
         'clAdded': 'Added',
         'clChanged': 'Changed',
         'clFixed': 'Fixed',

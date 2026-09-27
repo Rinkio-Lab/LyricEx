@@ -84,6 +84,8 @@
     const changelogOverlay = document.getElementById('changelogOverlay');
     const changelogBody = document.getElementById('changelogBody');
     const changelogCloseBtn = document.getElementById('changelogCloseBtn');
+    // v3.2.0: update check button (about footer)
+    const checkUpdateBtn = document.getElementById('checkUpdateBtn');
 
     // v2.0.0: transpose / loop bookmarks / recent + queue
     const transposeDown = document.getElementById('transposeDown');
@@ -3079,6 +3081,7 @@
         aboutBtn: aboutBtn, aboutOverlay: aboutOverlay, aboutCloseBtn: aboutCloseBtn,
         aboutSubnav: aboutSubnav, aboutBody: aboutBody,
         changelogBtn: changelogBtn, changelogOverlay: changelogOverlay, changelogBody: changelogBody, changelogCloseBtn: changelogCloseBtn,
+        checkUpdateBtn: checkUpdateBtn,
         guideOverlay: guideOverlay, guideBody: guideBody, guideDots: guideDots, guideCounter: guideCounter,
         guidePrevBtn: guidePrevBtn, guideNextBtn: guideNextBtn, guideSkipBtn: guideSkipBtn, watchGuideBtn: watchGuideBtn,
         settingsBtn: settingsBtn, settingsOverlay: settingsOverlay, settingsCloseBtn: settingsCloseBtn,
@@ -3105,6 +3108,7 @@
     cinemaApi = window.__lyricexCinema(ctx);
     settingsApi = window.__lyricexSettings(ctx);
     aboutApi = window.__lyricexAbout(ctx);
+    if (window.__lyricexUpdatesInit) window.__lyricexUpdatesInit(ctx);
 
     bindMobileEvents();
     init();

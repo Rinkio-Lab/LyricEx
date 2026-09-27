@@ -10,6 +10,14 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.2.0',
+            date: '2026-09-27',
+            changes: [
+                { type: 'added', text: '关于 → 检查更新：手动按钮 + 启动静默检查（6 小时节流防限流），双通道检测（GitHub Releases API，404 降级解析 raw CHANGELOG 头部），发现新版本弹原生确认框可跳转 Release 页；无新版 / 静默失败不出声' },
+                { type: 'test', text: '更新检测单元测试（版本解析 / 比较 / CHANGELOG 头部解析）+ e2e（模拟 API 返回新版本、确认跳转）' },
+            ],
+        },
+        {
             version: '3.1.0',
             date: '2026-09-27',
             changes: [

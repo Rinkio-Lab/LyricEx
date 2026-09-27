@@ -237,6 +237,29 @@ test('share card + poster render without canvas taint (v2.8.1)', async ({ page }
     expect(errors).toEqual([]);
 });
 
+test('about: check update finds a newer release and offers the release page (v3.2.0)', async ({ page }) => {
+    const errors = watchErrors(page);
+    await openApp(page);
+    // override the openApp 404 stub with a fake newer release (route order:
+    // unroute removes the earlier handler, then our mock matches)
+    await page.unroute('**/api.github.com/**');
+    await page.route('**/api.github.com/**', (route) =>
+        route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ tag_name: 'v9.9.9' }) })
+    );
+    await page.click('#aboutBtn');
+    await expect(page.locator('#aboutOverlay')).toBeVisible();
+    await expect(page.locator('#checkUpdateBtn')).toBeVisible();
+    await page.click('#checkUpdateBtn');
+    const msg = page.locator('#dialogOverlay.open .dialog-message');
+    await expect(msg).toContainText('v9.9.9');
+    // confirming offers the release page (headless may or may not open a popup)
+    const popupPromise = page.waitForEvent('popup', { timeout: 3000 }).catch(() => null);
+    await page.click('#dialogOverlay.open .dialog-primary');
+    const popup = await popupPromise;
+    if (popup) await popup.close();
+    expect(errors).toEqual([]);
+});
+
 test('axe-core scan finds no critical or serious violations', async ({ page }) => {
     const errors = watchErrors(page);
     await openApp(page);

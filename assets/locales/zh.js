@@ -308,6 +308,12 @@
         /* v2.0.0: about sub-nav + in-app changelog */
         'navAboutOverview': '概览',
         'viewChangelog': '更新日志',
+        /* v3.2.0: update check */
+        'checkUpdate': '检查更新',
+        'updateFound': '发现新版本',
+        'updateOpen': '是否前往 GitHub Release 页面查看？',
+        'updateLatest': '已是最新版本',
+        'updateFailed': '检查更新失败，请检查网络后重试',
         'clAdded': '新增',
         'clChanged': '变更',
         'clFixed': '修复',
