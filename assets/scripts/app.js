@@ -486,7 +486,7 @@
                     '<section class="help-card" id="help-quick"><h3>' + sections[0].title + '</h3>' + (block.quick || '') + '</section>' +
                     '<section class="help-card" id="help-library"><h3>' + sections[1].title + '</h3>' + (block.library || '') + '</section>' +
                     '<section class="help-card" id="help-netease"><h3>' + sections[2].title + '</h3>' + (block.netease || '') + '</section>' +
-                    '<section class="help-card" id="help-demo"><h3>' + sections[3].title + '</h3><img class="help-demo" src="assets/images/demo.gif" alt="LyricEx demo" loading="lazy"></section>' +
+                    '<section class="help-card" id="help-demo"><h3>' + sections[3].title + '</h3>' + (block.demo || '<img class="help-demo" src="assets/images/demo.gif" alt="LyricEx demo" loading="lazy">') + '</section>' +
                     '<section class="help-card" id="help-faq"><h3>' + sections[4].title + '</h3>' + (block.faq || '') + '</section>' +
                     '<section class="help-card" id="help-contribute"><h3>' + sections[5].title + '</h3>' + (block.contribute || '') + '</section>' +
                     '<section class="help-card" id="help-feedback"><h3>' + sections[6].title + '</h3>' + (block.feedback || '') + '</section>' +
@@ -500,6 +500,30 @@
                 '</div>' +
             '</div>';
         viewContent.innerHTML = html;
+
+        // v3.1.0: demo screenshot carousel (arrow/dot navigation)
+        document.querySelectorAll('.help-carousel').forEach(function (car) {
+            const slides = car.querySelectorAll('.help-carousel-slide');
+            const dotsBox = car.querySelector('.help-carousel-dots');
+            const btnPrev = car.querySelector('.help-carousel-btn.prev');
+            const btnNext = car.querySelector('.help-carousel-btn.next');
+            let carIdx = 0;
+            function carShow(i) {
+                carIdx = (i + slides.length) % slides.length;
+                slides.forEach(function (sl, k) { sl.classList.toggle('active', k === carIdx); });
+                if (dotsBox) dotsBox.querySelectorAll('button').forEach(function (d, k) { d.classList.toggle('active', k === carIdx); });
+            }
+            if (dotsBox) slides.forEach(function (_sl, k) {
+                const dot = document.createElement('button');
+                dot.type = 'button';
+                dot.setAttribute('aria-label', String(k + 1));
+                dot.addEventListener('click', function () { carShow(k); });
+                dotsBox.appendChild(dot);
+            });
+            if (btnPrev) btnPrev.addEventListener('click', function () { carShow(carIdx - 1); });
+            if (btnNext) btnNext.addEventListener('click', function () { carShow(carIdx + 1); });
+            carShow(0);
+        });
 
         // help-page language switch: persist the choice and re-render in place
         document.querySelectorAll('.help-lang-btn').forEach(function (btn) {
