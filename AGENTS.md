@@ -131,6 +131,7 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 
 ### 5. 发布 Release（v3.1.0 起）
 
+- **commit message 一律英文**，格式沿用 v2.5.0（`5c6016a`）风格：首行 `vX.Y.Z: 一句主题`，空行后接 `- 类别: 要点` 列表（toolchain / CI / e2e / a11y / fixes / CHANGELOG…），一行一个要点，全英文；非版本改动用 `type: 主题` 前缀（如 `docs:` / `chore:` / `refactor:`）。禁止中文 commit message（曾犯并已 amend 纠正）。
 - 每个已发布版本用 `gh release create <tag> --title "vX.Y.Z" --notes-file <file>` 创建 GitHub Release（gh 已在本机安装并登录 Rinkio-Lab）。附件默认源码（GitHub 自动附带 zip / tar.gz）；需要安装包时再 `gh release upload <tag> <file>` 追加。
 - tag 与版本号锁步：`vX.Y.Z` = package.json = sw.js CACHE = CHANGELOG 头。
 - Release notes 写法（用户心法，硬规则）：
