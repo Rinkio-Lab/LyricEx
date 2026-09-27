@@ -128,3 +128,15 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 - 命名规范 `x.x.x-someword`：脚本文件名用描述词（如 `render-release-flow.mjs`），**文件头注释标注对应引入版本**（如 `Introduced at v2.8.4`）与用法（依赖、`PLAYWRIGHT_BROWSERS_PATH`、输出路径）；文档版本头沿用 `vX.Y.Z（日期 · 主题词）`。
 - 正式脚本放 `scripts/`，**不带 `_` 前缀**（`_patch-*.mjs` 仅限一次性补丁，跑完即删、不入库）；新增正式脚本须过 lint（`eslint.config.mjs` 已覆盖 `scripts/**/*.mjs`）。
 - 改动流程步骤/截图内容时，**必须重跑对应工具链并同批提交产物**（文档与图同源，禁止只改文档）。
+
+### 5. 发布 Release（v3.1.0 起）
+
+- 每个已发布版本用 `gh release create <tag> --title "vX.Y.Z" --notes-file <file>` 创建 GitHub Release（gh 已在本机安装并登录 Rinkio-Lab）。附件默认源码（GitHub 自动附带 zip / tar.gz）；需要安装包时再 `gh release upload <tag> <file>` 追加。
+- tag 与版本号锁步：`vX.Y.Z` = package.json = sw.js CACHE = CHANGELOG 头。
+- Release notes 写法（用户心法，硬规则）：
+  - 面向用户：写「你能多做什么、少烦什么」，**不写「我们改了什么」**。
+  - 结构：一句话总览 → 分组标签（新增 / 改进 / 修复 / 注意）→ 反馈入口（issues 链接）。
+  - 每条公式：标签 + 动词 + 对象 + 变化 + 好处/场景；短句、一行一件事、具体数字、前后对比（以前…现在…）；emoji 仅作视觉锚点（标题级），别每句加。
+  - 破坏性变更 / 已知问题要醒目、诚实。
+  - **双语硬规则**：notes 中英文段级交替（一中一英间隔），标题也成对（如 `## ✨ 新增 / New`）。
+  - 发布前核对版本号 / 日期 / 链接；不贴 commit log、不写「优化体验」式空话。
