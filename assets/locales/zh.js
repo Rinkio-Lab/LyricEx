@@ -237,6 +237,8 @@
         directionLtr: '强制从左到右',
         langChange: '更改',
         langNotReset: '界面语言与文本方向不会被重置',
+        /* v3.5.0: AI-maintained translations disclaimer (language drawer) */
+        langAiNotice: '部分翻译由 AI 维护，内容可能不准确；如有问题，欢迎在 GitHub 提交 Issue',
         /* v3.2.1: help center follows the global UI language */
         helpFollowLocale: '帮助页跟随全局语言',
 
@@ -314,8 +316,7 @@
         guide5Title: '影院与迷你模式',
         guide5Desc: '按 F 进入全屏影院，按 V 缩成悬浮迷你条，随时随地跟唱。',
         guide6Title: '本地歌曲库',
-        guide6Desc:
-            '侧边栏「我的曲库」：添加文件夹建立本地曲库，搜索 / 筛选 / 歌单 / 收藏，数据只存浏览器、不上传。',
+        guide6Desc: '侧边栏「我的曲库」：添加文件夹建立本地曲库，搜索 / 筛选 / 歌单 / 收藏，数据只存浏览器、不上传。',
         guide7Title: '制包工作区',
         guide7Desc:
             '编辑 → 制包：上传原声 / 伴奏、粘贴 LRC 或网易云歌词 JSON、AI 逐词分析，导出 LyricEx 包（.lxp.zip）。',
@@ -408,7 +409,8 @@
 
         /* v3.3.4: PDF print export */
         exportPdf: 'PDF（打印）',
-        pdfPrintHint: '使用浏览器自带的打印功能导出 PDF（调用打印对话框后选择「另存为 PDF」）。手机浏览器可能无法正常使用此功能。',
+        pdfPrintHint:
+            '使用浏览器自带的打印功能导出 PDF（调用打印对话框后选择「另存为 PDF」）。手机浏览器可能无法正常使用此功能。',
 
         /* v3.3.5: package export options */
         pkgHint: '导出 LyricEx 包（.lxp.zip），可选是否附带媒体文件；不附媒体时包更小、加载更快。',
@@ -425,7 +427,8 @@
 
         /* v3.3.7: study notes video */
         studyVideo: '学习表格视频（mp4）',
-        studyVideoHint: '录制学习笔记视频（需已加载音频）：上方当前歌词行与翻译，下方该行的学习表格（假名 / 罗马音 / 汉字 / 词性 / 释义）。',
+        studyVideoHint:
+            '录制学习笔记视频（需已加载音频）：上方当前歌词行与翻译，下方该行的学习表格（假名 / 罗马音 / 汉字 / 词性 / 释义）。',
 
         /* v3.3.8: share card / poster export config */
         shareCard: '分享卡片',

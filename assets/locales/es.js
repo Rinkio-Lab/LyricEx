@@ -37,6 +37,16 @@
         resetDefaults: 'Restablecer valores predeterminados',
         resetConfirm:
             'Restablece todos los ajustes excepto el idioma y la dirección del texto. No se puede deshacer. ¿Continuar?',
+        dialogOk: 'Aceptar',
+        dialogCancel: 'Cancelar',
+        dialogTitle: 'Aviso',
+        wsModuleMissing:
+            'El módulo de creación de paquetes no está cargado o falló al cargar: comprueba que todos los assets estén desplegados (sobre todo assets/scripts/utils/ y ui/workspace.js) y actualiza dos veces.',
+        settingsExport: 'Exportar ajustes',
+        settingsImport: 'Importar ajustes',
+        settingsImportOk: 'Ajustes importados y aplicados.',
+        settingsImportFail: 'Error al importar: no se pudo leer el archivo.',
+        settingsImportBad: 'Error al importar: el archivo no es un JSON de ajustes válido.',
         themeColor: 'Color del tema',
         default: 'Predeterminado',
         dustyRose: 'Rosa empolvado',
@@ -75,6 +85,75 @@
         libraryLoad: 'Cargar',
         librarySource: 'Abrir',
         librarySourceTitle: 'Elegir fuente',
+        libTitle: 'Mi biblioteca',
+        libAddFolder: 'Añadir carpeta',
+        libSamples: 'Paquetes de ejemplo',
+        libClearAll: 'Vaciar biblioteca',
+        libBatchMode: 'Lote',
+        libBatchDelete: 'Eliminar selección',
+        libBatchCancel: 'Cancelar',
+        libSelected: 'Seleccionado',
+        libSearchPh: 'Buscar título / artista / álbum / letras…',
+        libTabAll: 'Todo',
+        libTabFavorites: 'Favoritos',
+        libTabRecent: 'Recientes',
+        libTabArtists: 'Artistas',
+        libTabAlbums: 'Álbumes',
+        libTabPlaylists: 'Listas',
+        libSortTitle: 'Por título',
+        libSortArtist: 'Por artista',
+        libSortDuration: 'Por duración',
+        libSortAdded: 'Por fecha de adición',
+        libSortPlays: 'Por reproducciones',
+        libSortDir: 'Cambiar orden',
+        libAllArtists: 'Todos los artistas',
+        libAllAlbums: 'Todos los álbumes',
+        libAllGenres: 'Todos los géneros',
+        libAllYears: 'Todos los años',
+        libAllTags: 'Todas las etiquetas',
+        libEmpty: 'La biblioteca está vacía: usa «Añadir carpeta» para importar paquetes de letras o audio',
+        libImporting: 'Importando',
+        libImportDone: 'Importación completada',
+        libAdded: 'Añadido',
+        libSkipped: 'Omitido',
+        libFavorite: 'Marcar como favorito',
+        libUnfavorite: 'Quitar de favoritos',
+        libPlay: 'Reproducir',
+        libDetail: 'Detalles',
+        libAddToPlaylist: 'Añadir a la lista',
+        libPlays: 'reproducciones',
+        libHasLyrics: 'Tiene letras',
+        libNoLyrics: 'Sin letras',
+        libUnknownArtist: 'Artista desconocido',
+        libArtistsCount: 'artistas',
+        libAlbumsCount: 'álbumes',
+        libNewPlaylist: 'Nueva lista',
+        libPlaylistName: 'Nombre de la lista',
+        libRename: 'Renombrar',
+        libOpen: 'Abrir',
+        libSongs: 'canciones',
+        libEmptyPlaylist: 'La lista está vacía',
+        libNoPlaylists: 'Aún no hay listas',
+        libCreate: 'Crear',
+        libConfirmDelete: '¿Eliminar esta canción?',
+        libConfirmClearAll:
+            '¿Vaciar toda la biblioteca? Esta acción solo elimina los registros guardados en el navegador; no toca ningún archivo de tu ordenador. No se puede deshacer.',
+        libConfirmPlaylistDelete: '¿Eliminar esta lista?',
+        libBack: 'Volver',
+        libFieldTitle: 'Título',
+        libFieldArtist: 'Artista',
+        libFieldAlbum: 'Álbum',
+        libFieldGenre: 'Género',
+        libFieldYear: 'Año',
+        libFieldTrack: 'Pista',
+        libFieldDuration: 'Duración',
+        libFieldFormat: 'Formato de origen',
+        libFieldPath: 'Ruta',
+        libFieldAdded: 'Añadida el',
+        libFieldTags: 'Etiquetas (separadas por comas)',
+        libInPlaylists: 'En listas',
+        libLyrics: 'Letras',
+        libEditTitle: 'Editar información de la canción',
         more: 'Más',
         coverView: 'Ver portada',
         topbarMore: 'Configuración y acerca de',
@@ -161,6 +240,11 @@
         directionLtr: 'Forzar LTR',
         langChange: 'Cambiar',
         langNotReset: 'El idioma y la dirección del texto no se restablecen',
+        /* v3.5.0: AI-maintained translations disclaimer (language drawer) */
+        langAiNotice:
+            'Algunas traducciones están mantenidas por IA y pueden ser inexactas. ¿Has encontrado un problema? Crea un Issue en GitHub.',
+        /* v3.2.1: help center follows the global UI language */
+        helpFollowLocale: 'La ayuda sigue el idioma de la interfaz',
 
         /* study table labels */
         romaji: 'Romaji',
@@ -192,6 +276,20 @@
 
         /* about */
         about: 'Acerca de',
+        aboutSlogan:
+            'Herramienta para disfrutar letras · compatible con .lrc / paquetes LyricEx / paquetes de la comunidad',
+        aboutBuiltBy: 'Creado por <a href="#" target="_blank">Rinkio</a>',
+        aboutTechFa: 'Font Awesome 5 · librería de iconos',
+        aboutTechJszip: 'JSZip · descomprimir / empaquetar ZIP',
+        aboutTechWebaudio: 'Web Audio API · espectro / cambio de tono',
+        aboutTechCss: 'CSS nativo · sin frameworks de terceros',
+        aboutTechJs: 'JavaScript nativo · sin frameworks de terceros',
+        aboutLicense:
+            'Proyecto de código abierto bajo la <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">licencia MIT</a>.',
+        aboutGitHub: '· código fuente y versiones',
+        aboutDisclaimer:
+            'Aviso legal: esta herramienta es solo un reproductor de audio de frontend; no almacena ni sirve ningún archivo de audio.<br>Todo el contenido reproducido proviene de tu dispositivo local o de archivos legales que tú proporcionas.<br>Apoya la música original.',
+        clOnlyZh: 'Solo chino',
         developer: 'Desarrollador',
         techUsed: 'Tecnologías utilizadas',
         shortcuts: 'Atajos de teclado',
@@ -215,21 +313,48 @@
         guide2Title: 'Cuatro vistas',
         guide2Desc:
             'En escritorio, cambia entre las vistas Letra / Estudio / Mixta / Editor en la barra lateral; en móvil usa la navegación inferior. La vista Editor permite ajustar la sincronización, editar y exportar.',
-        guide3Title: 'Cine y modo mini',
+        guide3Title: 'Vista de estudio',
         guide3Desc:
-            'Pulsa F para entrar en cine a pantalla completa, V para reducir a una mini barra flotante y cantar donde quieras.',
-        guide4Title: 'Atajos de teclado',
+            'La vista de estudio muestra cada línea con letra original + traducción + romaji + nota + una tabla de estudio (kana / romaji / kanji / clase gramatical / significado), imprimible o exportable como notas de estudio.',
+        guide4Title: 'Anotación inversa',
         guide4Desc:
-            'Espacio para reproducir, ←/→ para retroceder/avanzar, teclas numéricas para saltar, G para seguir; todo personalizable en Configuración → Atajos.',
-        guide5Title: 'Apariencia e idioma',
+            '¿Quieres cantar con letras solo en kana? En Configuración → Visualización de letras, activa «Anotación inversa»: el texto se convierte en kana puro y los kanji originales se muestran en pequeño encima (requiere análisis por palabra en el paquete).',
+        guide5Title: 'Cine y modo mini',
         guide5Desc:
-            'Color de acento, fuentes, tamaño y temas Claro / Oscuro / Sistema se ajustan en Ajustes → Apariencia. El idioma de la interfaz se cambia cuando quieras: botón de globo en la esquina inferior izquierda de esta guía.',
-        guide6Title: 'Exportar / Compartir',
+            'Pulsa F para entrar en cine a pantalla completa, V para reducir a una mini barra flotante y cantar donde quieras.',
+        guide6Title: 'Biblioteca de canciones local',
         guide6Desc:
-            'La vista Editor permite imprimir la ficha de estudio (PDF), exportar notas (Markdown / HTML) y un póster móvil vertical; la tarjeta de compartir del reproductor admite plantillas de tema, importables/exportables en JSON.',
+            '«Mi biblioteca» en la barra lateral: añade carpetas para crear una biblioteca local — búsqueda / filtros / listas / favoritos. Los datos permanecen en el navegador y nunca se suben.',
+        guide7Title: 'Espacio de creación de paquetes',
+        guide7Desc:
+            'Editor → Crear paquete: sube la voz / el instrumental, pega un LRC o un JSON de letras de NetEase, ejecuta el análisis de palabras por IA y exporta un paquete LyricEx (.lxp.zip).',
+        guide8Title: 'Exportación unificada',
+        guide8Desc:
+            'Un solo botón «Exportar» en el editor lo cubre todo: paquete LyricEx, subtítulos (LRC/ASS/SRT), documentos de letras y notas de estudio (TXT/MD/HTML/PDF), vídeo (mp4), tarjetas para compartir y pósteres verticales — todo con vista previa en vivo.',
+        guide9Title: 'Atajos de teclado',
+        guide9Desc:
+            'Espacio para reproducir, ←/→ para retroceder/avanzar, teclas numéricas para saltar, G para seguir; todo personalizable en Configuración → Atajos.',
+        guide10Title: 'Apariencia e idioma',
+        guide10Desc:
+            'Color de acento, fuentes, tamaño y temas Claro / Oscuro / Sistema se ajustan en Ajustes → Apariencia. El idioma de la interfaz se cambia cuando quieras: botón de globo en la esquina inferior izquierda de esta guía.',
         /* v2.0.0: about sub-nav + in-app changelog */
         navAboutOverview: 'Resumen',
         viewChangelog: 'Registro de cambios',
+        /* v3.2.0: update check */
+        checkUpdate: 'Buscar actualizaciones',
+        updateFound: 'Hay una nueva versión',
+        updateOpen: '¿Abrir la página de versiones de GitHub?',
+        updateLatest: 'Ya tienes la última versión',
+        updateFailed: 'Error al buscar actualizaciones; revisa la red e inténtalo de nuevo',
+        /* v3.2.1: update-check dialog polish */
+        updateChecking: 'Buscando actualizaciones…',
+        updateNoNotes: '(este canal no proporciona notas de versión)',
+        updateMockTag: 'simulación local',
+        updateApiRaw: 'Ver respuesta cruda de la API',
+        updateNotesLabel: 'Novedades',
+        updateChannel: 'Canal de datos',
+        updateCurrentVer: 'Versión actual',
+        updateGoRelease: 'Ir a la página de versiones',
         clAdded: 'Añadido',
         clChanged: 'Cambiado',
         clFixed: 'Corregido',
@@ -254,6 +379,87 @@
         marksDelete: 'Eliminar',
         recentTitle: 'Abiertos recientemente',
         queueTitle: 'Cola de reproducción',
+
+        /* v3.3.0: unified export dialog */
+        exportDialog: 'Exportar',
+        exportDialogHint: 'Elige un formato; vista previa y configuración a la derecha.',
+        exportLyricsGroup: 'Exportar letras',
+        exportNotesGroup: 'Exportar notas de estudio',
+        exportPreview: 'Vista previa',
+        exportRun: 'Exportar',
+        exportNoLyrics: 'Carga primero un paquete de letras',
+        exportEmpty: 'No hay formatos disponibles',
+        exportNoPreview: 'Este formato no tiene vista previa',
+
+        /* v3.3.1: subtitle export options */
+        lrcMeta: 'Incluir cabecera de metadatos (título/artista)',
+        lrcTranslation: 'Adjuntar líneas de traducción (misma marca de tiempo)',
+        subTranslation: 'Incluir traducción',
+        srtEndPad: 'Duración sobrante al final (segundos)',
+        assKaraoke: 'Resaltado karaoke palabra por palabra (etiquetas \\k)',
+
+        /* v3.3.2: TXT lyrics export */
+        exportTxt: 'Letras TXT',
+        txtMode: 'Formato',
+        txtModePlain: 'Solo letras',
+        txtModeWithTr: 'Letras + traducción',
+        txtModeTimed: 'Con marcas de tiempo',
+        txtModeTimedTr: 'Marcas de tiempo + traducción',
+
+        /* v3.3.3: Markdown/HTML lyrics export */
+        exportMd: 'Letras Markdown',
+        exportHtml: 'Letras HTML',
+        mdInTr: 'Incluir traducción',
+        mdRuby: 'Anotación furigana (ruby)',
+        mdTimed: 'Con marcas de tiempo',
+        htmlTheme: 'Paleta',
+        htmlThemeLight: 'Clara',
+        htmlThemeDark: 'Oscura',
+
+        /* v3.3.4: PDF print export */
+        exportPdf: 'PDF (impresión)',
+        pdfPrintHint:
+            'Exporta mediante el diálogo de impresión del navegador (elige «Guardar como PDF»). Los navegadores móviles pueden no funcionar correctamente.',
+
+        /* v3.3.5: package export options */
+        pkgHint:
+            'Exporta un paquete LyricEx (.lxp.zip); puedes incluir los archivos multimedia o no. Sin multimedia, el paquete es más pequeño y carga más rápido.',
+        pkgIncludeAudio: 'Incluir audio',
+        pkgIncludeInstrumental: 'Incluir instrumental',
+        pkgIncludeCover: 'Incluir portada',
+
+        /* v3.3.6: lyric video templates */
+        videoTemplate: 'Plantilla visual',
+        videoTplKaraoke: 'Karaoke palabra por palabra',
+        videoTplSimple: 'Letras simples',
+        videoInTr: 'Mostrar traducción en pantalla',
+
+        /* v3.3.7: study notes video */
+        studyVideo: 'Vídeo de la tabla de estudio (mp4)',
+        studyVideoHint:
+            'Graba un vídeo de las notas de estudio (requiere audio): línea de letra y traducción arriba, tabla de estudio de esa línea (kana / romaji / kanji / clase gramatical / significado) abajo.',
+
+        /* v3.3.8: share card / poster export config */
+        shareCardHint:
+            'Exporta la línea de letra actual como tarjeta para compartir horizontal (PNG), con el mismo estilo que el panel de compartir.',
+        posterHint:
+            'Exporta la línea de letra actual como póster vertical (PNG), ideal para fondos de pantalla / compartir en vertical.',
+        cardTemplate: 'Plantilla de tarjeta',
+        cardTplMinimal: 'Mínima',
+        cardTplGradient: 'Degradado',
+        cardTranslation: 'Mostrar traducción',
+        cardRomaji: 'Mostrar romaji',
+
+        /* v3.3.9: study notes export config */
+        exportNotesTxt: 'Notas de estudio TXT',
+        exportNotesPdf: 'PDF (impresión)',
+        notesInTr: 'Incluir traducción',
+        notesInRomaji: 'Incluir romaji',
+        notesInNote: 'Incluir notas',
+        notesInTable: 'Incluir tablas de estudio',
+
+        /* v3.3.10: reverse annotation */
+        reverseRuby: 'Anotación inversa (kana puro, kanji encima)',
 
         /* v2.0.0: export / share */
         printStudy: 'Imprimir ficha de estudio',
@@ -345,6 +551,67 @@
         editorInstChange: 'Cambiar instrumental',
         editorInstRemove: 'Quitar',
 
+        /* v2.6.0: editor workspace tabs */
+        editorTabRefine: 'Pulido',
+        editorEmptyHint:
+            'Aún no hay letras. Crea un paquete en la pestaña «Crear paquete», o sube letras desde la página de inicio.',
+        editorTabBuild: 'Crear paquete',
+        /* v2.6.0: workspace build pane */
+        wsMedia: 'Audio',
+        wsVocal: 'Audio de la voz (obligatorio)',
+        wsInst: 'Instrumental (opcional)',
+        wsNoFile: 'Ningún archivo seleccionado',
+        wsInstHint:
+            'Se recomienda subir voz e instrumental: el paquete generado permite alternar original/instrumental en el reproductor y preescuchar el instrumental de cada línea. El instrumental puede dejarse vacío.',
+        wsLyrics: 'Letras',
+        wsLrcMain: 'Letras japonesas (LRC)',
+        wsLrcTrans: 'Traducción al chino (LRC)',
+        wsOptional: 'opcional',
+        wsLrcPlaceholder: 'Pega letras LRC, p. ej.:\n[00:15.3] 重大な問題抱えて眠る',
+        wsLrcPlaceholderTrans: 'Pega el LRC de traducción (marcas de tiempo alineadas con el original)',
+        wsNetease: 'O pega un JSON de letras de NetEase',
+        wsNeteasePlaceholder: '{&quot;lrc&quot;:{&quot;lyric&quot;:&quot;...&quot;},&quot;tlyric&quot;:{...}}',
+        wsParse: 'Analizar',
+        wsLoadToApp: 'Cargar en reproductor/editor',
+        wsParsedN: '{n} líneas analizadas',
+        wsNeedLrc: 'Pega primero letras LRC o un JSON de NetEase',
+        wsParseEmpty: 'No se encontraron líneas de letras válidas',
+        wsParseFail: 'Error de análisis',
+        wsUpload: 'Subir archivo',
+        wsClear: 'Limpiar',
+        wsMixHint:
+            'Admite LRC alternando una línea en japonés y otra en chino, separado automáticamente en letra original + traducción',
+        wsAi: 'Análisis de palabras por IA',
+        wsChunk: 'Tamaño de segmento',
+        wsChunkPlaceholder: 'vacío = sin segmentar',
+        wsCopyPrompt: 'Copiar instrucciones',
+        wsAiPlaceholder: 'Pega el JSON devuelto por la IA',
+        wsImportAi: 'Importar análisis',
+        wsAiHint: 'Pega las instrucciones en cualquier modelo de lenguaje grande y luego pega aquí el JSON devuelto',
+        wsPart: 'Parte {n}',
+        wsPromptCopied: 'Instrucciones copiadas al portapapeles',
+        wsCopyFail: 'Error al copiar: cópialo manualmente',
+        wsAiOk: '{n} líneas coincidentes',
+        wsAiMiss: ', {n} líneas sin coincidir (diferencia de tiempo o texto)',
+        wsAiApplied: 'Análisis aplicado, listo para exportar',
+
+        /* v3.4.3: word timings import */
+        wsWords: 'Tiempos por palabra (karaoke)',
+        wsWordsPlaceholder: 'Pega el JSON de tiempos por palabra (salida de wk-align)',
+        wsImportWords: 'Importar tiempos por palabra',
+        wsWordsHint:
+            'Tiempos por palabra medidos desde el audio (herramienta LyricEx Karaoke Timings); pega el JSON para emparejarlo automáticamente',
+        wsWordsOk: 'Tiempos por palabra importados para {n} líneas',
+        wsWordsMiss: ', {n} líneas sin coincidir (texto distinto)',
+        wsWordsOffset: 'Se detectó un desfase de {n} s; las marcas de tiempo se recalibraron',
+        wsWordsApplied: 'Tiempos por palabra aplicados, listo para exportar',
+        wsExport: 'Exportar',
+        wsExportPack: 'Exportar paquete LyricEx',
+        wsReset: 'Restablecer',
+        wsNeedAudio: 'Selecciona primero el audio de la voz',
+        wsExported: 'Paquete exportado',
+        wsExportFail: 'Error al exportar',
+
         /* v1.7.0: theme three-state */
         systemTheme: 'Seguir el sistema',
         switchTheme: 'Cambiar tema',
@@ -385,6 +652,23 @@
         shareCopy: 'Copiar al portapapeles',
         shareCopied: 'Copiado',
         shareCopyFailed: 'Error al copiar, usa la descarga',
+
+        /* v2.8.4: help view */
+        help: 'Ayuda',
+        helpQuickStart: 'Inicio rápido',
+        helpNetease: 'Obtener JSON de letras de NetEase',
+        helpDemo: 'Demo',
+        helpFaq: 'Preguntas frecuentes',
+        helpFeedback:
+            '¿Un problema o una sugerencia? Repórtalo en GitHub Issues, con el error de la consola y los pasos para reproducirlo.',
+        helpContents: 'Contenido',
+        helpSearch: 'Buscar en la ayuda…',
+        helpNoResults: 'No hay secciones coincidentes',
+        helpBackToTop: 'Volver arriba',
+        helpPrev: 'Sección anterior',
+        helpNext: 'Sección siguiente',
+        helpFeedbackTitle: 'Comentarios y soporte',
+        helpLangLabel: 'Idioma del texto',
         shareDownload: 'Descargar PNG'
     });
 })();

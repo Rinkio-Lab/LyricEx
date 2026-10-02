@@ -36,6 +36,16 @@
         close: 'Закрыть',
         resetDefaults: 'Сбросить настройки',
         resetConfirm: 'Сбросить все настройки, кроме языка и направления текста. Действие необратимо. Продолжить?',
+        dialogOk: 'ОК',
+        dialogCancel: 'Отмена',
+        dialogTitle: 'Уведомление',
+        wsModuleMissing:
+            'Модуль создания пакета не загружен или не удалось загрузить: убедитесь, что полностью развёрнута папка assets (особенно assets/scripts/utils/ и ui/workspace.js), и обновите страницу дважды.',
+        settingsExport: 'Экспорт настроек',
+        settingsImport: 'Импорт настроек',
+        settingsImportOk: 'Настройки импортированы и применены.',
+        settingsImportFail: 'Ошибка импорта: не удалось прочитать файл.',
+        settingsImportBad: 'Ошибка импорта: файл не является корректным JSON настроек.',
         themeColor: 'Цвет темы',
         default: 'По умолчанию',
         dustyRose: 'Пыльно-розовый',
@@ -57,7 +67,7 @@
         cinemaDarken: 'Затемнение (%)',
         cinemaBorder: 'Рамка (px)',
         cinemaGlass: 'Стеклянный эффект (%)',
-        moreControls: 'Дополнительные настройки',
+        moreControls: 'Дополнительные элементы',
         bottomNavSlot1: 'Нижняя панель, слот 1',
         bottomNavSlot2: 'Нижняя панель, слот 2',
         bottomNavSlot3: 'Нижняя панель, слот 3',
@@ -73,6 +83,75 @@
         libraryLoad: 'Загрузить',
         librarySource: 'Открыть',
         librarySourceTitle: 'Выбрать источник',
+        libTitle: 'Моя библиотека',
+        libAddFolder: 'Добавить папку',
+        libSamples: 'Примеры пакетов',
+        libClearAll: 'Очистить библиотеку',
+        libBatchMode: 'Пакетно',
+        libBatchDelete: 'Удалить выбранное',
+        libBatchCancel: 'Отмена',
+        libSelected: 'Выбрано',
+        libSearchPh: 'Поиск: название / исполнитель / альбом / текст…',
+        libTabAll: 'Всё',
+        libTabFavorites: 'Избранное',
+        libTabRecent: 'Недавние',
+        libTabArtists: 'Исполнители',
+        libTabAlbums: 'Альбомы',
+        libTabPlaylists: 'Плейлисты',
+        libSortTitle: 'По названию',
+        libSortArtist: 'По исполнителю',
+        libSortDuration: 'По длительности',
+        libSortAdded: 'По дате добавления',
+        libSortPlays: 'По числу воспроизведений',
+        libSortDir: 'Изменить порядок сортировки',
+        libAllArtists: 'Все исполнители',
+        libAllAlbums: 'Все альбомы',
+        libAllGenres: 'Все жанры',
+        libAllYears: 'Все годы',
+        libAllTags: 'Все теги',
+        libEmpty: 'Библиотека пуста — используйте «Добавить папку», чтобы импортировать пакеты текстов или аудио',
+        libImporting: 'Импорт…',
+        libImportDone: 'Импорт завершён',
+        libAdded: 'Добавлено',
+        libSkipped: 'Пропущено',
+        libFavorite: 'В избранное',
+        libUnfavorite: 'Убрать из избранного',
+        libPlay: 'Слушать',
+        libDetail: 'Подробнее',
+        libAddToPlaylist: 'В плейлист',
+        libPlays: 'воспроизведений',
+        libHasLyrics: 'Есть текст',
+        libNoLyrics: 'Без текста',
+        libUnknownArtist: 'Неизвестный исполнитель',
+        libArtistsCount: 'исполнителей',
+        libAlbumsCount: 'альбомов',
+        libNewPlaylist: 'Новый плейлист',
+        libPlaylistName: 'Название плейлиста',
+        libRename: 'Переименовать',
+        libOpen: 'Открыть',
+        libSongs: 'песен',
+        libEmptyPlaylist: 'Плейлист пуст',
+        libNoPlaylists: 'Плейлистов пока нет',
+        libCreate: 'Создать',
+        libConfirmDelete: 'Удалить эту песню?',
+        libConfirmClearAll:
+            'Очистить всю библиотеку? Это действие удалит только записи библиотеки, сохранённые в браузере; файлы на вашем компьютере не будут затронуты. Действие необратимо.',
+        libConfirmPlaylistDelete: 'Удалить этот плейлист?',
+        libBack: 'Назад',
+        libFieldTitle: 'Название',
+        libFieldArtist: 'Исполнитель',
+        libFieldAlbum: 'Альбом',
+        libFieldGenre: 'Жанр',
+        libFieldYear: 'Год',
+        libFieldTrack: 'Трек',
+        libFieldDuration: 'Длительность',
+        libFieldFormat: 'Исходный формат',
+        libFieldPath: 'Путь',
+        libFieldAdded: 'Добавлено',
+        libFieldTags: 'Теги (через запятую)',
+        libInPlaylists: 'В плейлистах',
+        libLyrics: 'Текст',
+        libEditTitle: 'Изменить информацию о песне',
         more: 'Ещё',
         coverView: 'Просмотр обложки',
         topbarMore: 'Настройки и о программе',
@@ -159,6 +238,11 @@
         directionLtr: 'Принудительно LTR',
         langChange: 'Изменить',
         langNotReset: 'Язык и направление текста не сбрасываются',
+        /* v3.5.0: AI-maintained translations disclaimer (language drawer) */
+        langAiNotice:
+            'Некоторые переводы поддерживаются ИИ и могут быть неточными. Нашли проблему? Сообщите о ней через Issue на GitHub.',
+        /* v3.2.1: help center follows the global UI language */
+        helpFollowLocale: 'Справка следует за языком интерфейса',
 
         /* study table labels */
         romaji: 'Ромадзи',
@@ -189,6 +273,19 @@
 
         /* about */
         about: 'О программе',
+        aboutSlogan: 'Инструмент для наслаждения текстами · поддерживает .lrc / пакеты LyricEx / пакеты сообщества',
+        aboutBuiltBy: 'Создано <a href="#" target="_blank">Rinkio</a>',
+        aboutTechFa: 'Font Awesome 5 · библиотека иконок',
+        aboutTechJszip: 'JSZip · распаковка / упаковка ZIP',
+        aboutTechWebaudio: 'Web Audio API · спектр / смена тона',
+        aboutTechCss: 'чистый CSS · без сторонних фреймворков',
+        aboutTechJs: 'чистый JavaScript · без сторонних фреймворков',
+        aboutLicense:
+            'Проект распространяется под <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">лицензией MIT</a>.',
+        aboutGitHub: '· исходный код и релизы',
+        aboutDisclaimer:
+            'Дисклеймер: этот инструмент — только фронтенд-плеер; он не хранит и не предоставляет аудиофайлы.<br>Весь воспроизводимый контент берётся с вашего устройства или из легальных файлов, которые вы предоставляете.<br>Поддерживайте оригинальную музыку.',
+        clOnlyZh: 'Только китайский',
         developer: 'Разработчик',
         techUsed: 'Используемые технологии',
         shortcuts: 'Горячие клавиши',
@@ -212,20 +309,47 @@
         guide2Title: 'Четыре режима',
         guide2Desc:
             'На компьютере переключайте виды Текст / Обучение / Микс / Редактор в боковой панели; на телефоне — нижней навигацией. В редакторе можно править тайминги, изменять и экспортировать содержимое.',
-        guide3Title: 'Кино и мини-режим',
-        guide3Desc: 'Нажмите F для полноэкранного кино, V — чтобы свернуть в плавающую мини-панель и петь где угодно.',
-        guide4Title: 'Горячие клавиши',
+        guide3Title: 'Режим изучения',
+        guide3Desc:
+            'Режим изучения показывает каждую строку с оригиналом + переводом + ромадзи + заметкой + таблицей изучения (кана / ромадзи / кандзи / часть речи / значение) — можно распечатать или экспортировать как заметки.',
+        guide4Title: 'Обратная аннотация',
         guide4Desc:
-            'Пробел — воспроизведение, ←/→ — назад/вперёд, цифры — переход, G — следование; всё настраивается в Настройки → Горячие клавиши.',
-        guide5Title: 'Оформление и язык',
-        guide5Desc:
-            'Акцентный цвет, шрифты, размер и темы Светлая / Тёмная / Системная — в Настройках → Оформление. Язык интерфейса меняется в любой момент: кнопка-глобус внизу слева этого руководства.',
-        guide6Title: 'Экспорт / обмен',
+            'Хотите петь по тексту чистой каной? В Настройках → Отображение текста включите «Обратную аннотацию»: текст станет чистой каной, а исходные кандзи будут мелкими буквами сверху (нужен пословный анализ в пакете).',
+        guide5Title: 'Кино и мини-режим',
+        guide5Desc: 'Нажмите F для полноэкранного кино, V — чтобы свернуть в плавающую мини-панель и петь где угодно.',
+        guide6Title: 'Локальная библиотека песен',
         guide6Desc:
-            'В редакторе можно распечатать таблицу изучения (PDF), экспортировать заметки (Markdown / HTML) и вертикальный постер для телефона; карточка обмена в плеере поддерживает шаблоны темы с импортом/экспортом JSON.',
+            '«Моя библиотека» на боковой панели: добавляйте папки, чтобы собрать локальную библиотеку — поиск / фильтры / плейлисты / избранное. Данные остаются в браузере и никуда не отправляются.',
+        guide7Title: 'Рабочая область пакетов',
+        guide7Desc:
+            'Редактор → Создание пакета: загрузите вокал / инструментал, вставьте LRC или JSON текста NetEase, выполните пословный анализ ИИ и экспортируйте пакет LyricEx (.lxp.zip).',
+        guide8Title: 'Единый экспорт',
+        guide8Desc:
+            'Одна кнопка «Экспорт» в редакторе покрывает всё: пакет LyricEx, субтитры (LRC/ASS/SRT), документы с текстом и заметками (TXT/MD/HTML/PDF), видео (mp4), карточки для обмена и вертикальные постеры — всё с предпросмотром в реальном времени.',
+        guide9Title: 'Горячие клавиши',
+        guide9Desc:
+            'Пробел — воспроизведение, ←/→ — назад/вперёд, цифры — переход, G — следование; всё настраивается в Настройки → Горячие клавиши.',
+        guide10Title: 'Оформление и язык',
+        guide10Desc:
+            'Акцентный цвет, шрифты, размер и темы Светлая / Тёмная / Системная — в Настройках → Оформление. Язык интерфейса меняется в любой момент: кнопка-глобус внизу слева этого руководства.',
         /* v2.0.0: about sub-nav + in-app changelog */
         navAboutOverview: 'Обзор',
         viewChangelog: 'Журнал изменений',
+        /* v3.2.0: update check */
+        checkUpdate: 'Проверить обновления',
+        updateFound: 'Доступна новая версия',
+        updateOpen: 'Открыть страницу релизов GitHub?',
+        updateLatest: 'У вас актуальная версия',
+        updateFailed: 'Не удалось проверить обновления. Проверьте сеть и повторите',
+        /* v3.2.1: update-check dialog polish */
+        updateChecking: 'Проверка обновлений…',
+        updateNoNotes: '(этот канал не предоставляет описания обновлений)',
+        updateMockTag: 'локальная имитация',
+        updateApiRaw: 'Показать сырой ответ API',
+        updateNotesLabel: 'Что нового',
+        updateChannel: 'Канал данных',
+        updateCurrentVer: 'Текущая версия',
+        updateGoRelease: 'Перейти к релизам',
         clAdded: 'Добавлено',
         clChanged: 'Изменено',
         clFixed: 'Исправлено',
@@ -250,6 +374,87 @@
         marksDelete: 'Удалить',
         recentTitle: 'Недавно открытые',
         queueTitle: 'Очередь воспроизведения',
+
+        /* v3.3.0: unified export dialog */
+        exportDialog: 'Экспорт',
+        exportDialogHint: 'Выберите формат; предпросмотр и настройки справа.',
+        exportLyricsGroup: 'Экспорт текста',
+        exportNotesGroup: 'Экспорт заметок изучения',
+        exportPreview: 'Предпросмотр',
+        exportRun: 'Экспорт',
+        exportNoLyrics: 'Сначала загрузите пакет текста',
+        exportEmpty: 'Нет доступных форматов',
+        exportNoPreview: 'Для этого формата нет предпросмотра',
+
+        /* v3.3.1: subtitle export options */
+        lrcMeta: 'Включить заголовок с метаданными (название/исполнитель)',
+        lrcTranslation: 'Добавить строки перевода (с тем же таймкодом)',
+        subTranslation: 'Включить перевод',
+        srtEndPad: 'Запас по времени в конце (секунды)',
+        assKaraoke: 'Пословная подсветка караоке (теги \\k)',
+
+        /* v3.3.2: TXT lyrics export */
+        exportTxt: 'Текст TXT',
+        txtMode: 'Формат',
+        txtModePlain: 'Только текст',
+        txtModeWithTr: 'Текст + перевод',
+        txtModeTimed: 'С таймкодами',
+        txtModeTimedTr: 'Таймкоды + перевод',
+
+        /* v3.3.3: Markdown/HTML lyrics export */
+        exportMd: 'Текст Markdown',
+        exportHtml: 'Текст HTML',
+        mdInTr: 'Включить перевод',
+        mdRuby: 'Пометки фуриганы (ruby)',
+        mdTimed: 'С таймкодами',
+        htmlTheme: 'Палитра',
+        htmlThemeLight: 'Светлая',
+        htmlThemeDark: 'Тёмная',
+
+        /* v3.3.4: PDF print export */
+        exportPdf: 'PDF (печать)',
+        pdfPrintHint:
+            'Экспорт через диалог печати браузера (выберите «Сохранить как PDF»). В мобильных браузерах может работать некорректно.',
+
+        /* v3.3.5: package export options */
+        pkgHint:
+            'Экспорт пакета LyricEx (.lxp.zip); медиафайлы можно включить или нет. Без медиа пакет меньше и загружается быстрее.',
+        pkgIncludeAudio: 'Включить аудио',
+        pkgIncludeInstrumental: 'Включить инструментал',
+        pkgIncludeCover: 'Включить обложку',
+
+        /* v3.3.6: lyric video templates */
+        videoTemplate: 'Шаблон экрана',
+        videoTplKaraoke: 'Караоке по словам',
+        videoTplSimple: 'Простой текст',
+        videoInTr: 'Показывать перевод на экране',
+
+        /* v3.3.7: study notes video */
+        studyVideo: 'Видео таблицы изучения (mp4)',
+        studyVideoHint:
+            'Записывает видео с заметками изучения (нужно аудио): сверху — текущая строка текста и перевод, снизу — таблица изучения этой строки (кана / ромадзи / кандзи / часть речи / значение).',
+
+        /* v3.3.8: share card / poster export config */
+        shareCardHint:
+            'Экспортирует текущую строку текста в горизонтальную карточку для обмена (PNG), в том же стиле, что и панель обмена.',
+        posterHint:
+            'Экспортирует текущую строку текста в вертикальный постер (PNG) — для обоев телефона / вертикального обмена.',
+        cardTemplate: 'Шаблон карточки',
+        cardTplMinimal: 'Минимальный',
+        cardTplGradient: 'Градиент',
+        cardTranslation: 'Показывать перевод',
+        cardRomaji: 'Показывать ромадзи',
+
+        /* v3.3.9: study notes export config */
+        exportNotesTxt: 'Заметки изучения TXT',
+        exportNotesPdf: 'PDF (печать)',
+        notesInTr: 'Включить перевод',
+        notesInRomaji: 'Включить ромадзи',
+        notesInNote: 'Включить заметки',
+        notesInTable: 'Включить таблицы изучения',
+
+        /* v3.3.10: reverse annotation */
+        reverseRuby: 'Обратная аннотация (чистая кана, кандзи сверху)',
 
         /* v2.0.0: export / share */
         printStudy: 'Печать таблицы изучения',
@@ -341,6 +546,67 @@
         editorInstChange: 'Заменить инструментал',
         editorInstRemove: 'Удалить',
 
+        /* v2.6.0: editor workspace tabs */
+        editorTabRefine: 'Доводка',
+        editorEmptyHint:
+            'Пока нет текста. Создайте пакет во вкладке «Создание пакета» или загрузите текст с главной страницы.',
+        editorTabBuild: 'Создание пакета',
+        /* v2.6.0: workspace build pane */
+        wsMedia: 'Аудио',
+        wsVocal: 'Вокал (обязательно)',
+        wsInst: 'Инструментал (необязательно)',
+        wsNoFile: 'Файл не выбран',
+        wsInstHint:
+            'Рекомендуется загрузить и вокал, и инструментал: в готовом пакете плеер сможет переключать оригинал/инструментал, а каждую строку можно прослушать с инструменталом. Инструментал можно оставить пустым.',
+        wsLyrics: 'Текст',
+        wsLrcMain: 'Японский текст (LRC)',
+        wsLrcTrans: 'Перевод на китайский (LRC)',
+        wsOptional: 'необязательно',
+        wsLrcPlaceholder: 'Вставьте LRC-текст, например:\n[00:15.3] 重大な問題抱えて眠る',
+        wsLrcPlaceholderTrans: 'Вставьте LRC перевода (таймкоды совпадают с оригиналом)',
+        wsNetease: 'Или вставьте JSON текста NetEase',
+        wsNeteasePlaceholder: '{&quot;lrc&quot;:{&quot;lyric&quot;:&quot;...&quot;},&quot;tlyric&quot;:{...}}',
+        wsParse: 'Разобрать',
+        wsLoadToApp: 'Загрузить в плеер/редактор',
+        wsParsedN: 'Разобрано строк: {n}',
+        wsNeedLrc: 'Сначала вставьте LRC-текст или JSON NetEase',
+        wsParseEmpty: 'Корректные строки текста не найдены',
+        wsParseFail: 'Ошибка разбора',
+        wsUpload: 'Загрузить файл',
+        wsClear: 'Очистить',
+        wsMixHint:
+            'Поддерживается LRC с чередованием японской и китайской строк — автоматически разделяется на оригинал и перевод',
+        wsAi: 'Пословный анализ ИИ',
+        wsChunk: 'Размер сегмента',
+        wsChunkPlaceholder: 'пусто = без сегментации',
+        wsCopyPrompt: 'Скопировать промпт',
+        wsAiPlaceholder: 'Вставьте JSON, возвращённый ИИ',
+        wsImportAi: 'Импортировать анализ',
+        wsAiHint: 'Вставьте промпт в любую большую языковую модель и верните сюда полученный JSON',
+        wsPart: 'Часть {n}',
+        wsPromptCopied: 'Промпт скопирован в буфер обмена',
+        wsCopyFail: 'Не удалось скопировать — скопируйте вручную',
+        wsAiOk: 'Совпало строк: {n}',
+        wsAiMiss: ', {n} строк не совпало (расхождение во времени или тексте)',
+        wsAiApplied: 'Анализ применён, можно экспортировать',
+
+        /* v3.4.3: word timings import */
+        wsWords: 'Тайминг по словам (караоке)',
+        wsWordsPlaceholder: 'Вставьте JSON тайминга по словам (вывод wk-align)',
+        wsImportWords: 'Импортировать тайминг по словам',
+        wsWordsHint:
+            'Тайминг по словам, измеренный по аудио (инструмент LyricEx Karaoke Timings); вставьте JSON для автоматического сопоставления',
+        wsWordsOk: 'Тайминг по словам импортирован для {n} строк',
+        wsWordsMiss: ', {n} строк не совпало (расхождение в тексте)',
+        wsWordsOffset: 'Обнаружено смещение {n} с, таймкоды строк пересчитаны',
+        wsWordsApplied: 'Тайминг по словам применён, можно экспортировать',
+        wsExport: 'Экспорт',
+        wsExportPack: 'Экспорт пакета LyricEx',
+        wsReset: 'Сброс',
+        wsNeedAudio: 'Сначала выберите вокал',
+        wsExported: 'Пакет экспортирован',
+        wsExportFail: 'Ошибка экспорта',
+
         /* v1.7.0: theme three-state */
         systemTheme: 'Как в системе',
         switchTheme: 'Переключить тему',
@@ -381,6 +647,23 @@
         shareCopy: 'Скопировать в буфер обмена',
         shareCopied: 'Скопировано',
         shareCopyFailed: 'Не удалось скопировать, используйте скачивание',
+
+        /* v2.8.4: help view */
+        help: 'Справка',
+        helpQuickStart: 'Быстрый старт',
+        helpNetease: 'Получение JSON текста NetEase',
+        helpDemo: 'Демо',
+        helpFaq: 'Частые вопросы',
+        helpFeedback:
+            'Нашли проблему или есть предложение? Сообщите в GitHub Issues, приложив ошибку из консоли и шаги воспроизведения.',
+        helpContents: 'Содержание',
+        helpSearch: 'Поиск в справке…',
+        helpNoResults: 'Нет подходящих разделов',
+        helpBackToTop: 'Наверх',
+        helpPrev: 'Предыдущий раздел',
+        helpNext: 'Следующий раздел',
+        helpFeedbackTitle: 'Обратная связь и поддержка',
+        helpLangLabel: 'Язык текста',
         shareDownload: 'Скачать PNG'
     });
 })();

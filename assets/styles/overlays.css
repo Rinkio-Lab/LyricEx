@@ -1621,6 +1621,15 @@
     flex-direction: column;
     gap: 2px;
 }
+/* v3.5.0: AI-maintained translation disclaimer under the language list */
+.lang-drawer-notice {
+    margin: 10px 4px 2px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-color);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
 /* drawer rows override the old inline-grid .lang-option look */
 .lang-list .lang-option {
     display: flex;
@@ -2269,4 +2278,3 @@
         width: 128px;
     }
 }
-

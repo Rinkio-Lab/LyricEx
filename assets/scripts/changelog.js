@@ -10,6 +10,20 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.5.0',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '语言切换抽屉新增 AI 维护翻译声明（设置页与引导页共用抽屉）：提示内容可能不准确、欢迎提交 GitHub Issue，中/日/英三语同步'
+                },
+                {
+                    type: 'changed',
+                    text: '7 门用户语言（ko/fr/es/de/pt-br/ru/ar）按当前 zh 结构全量重写至 553 键：补齐曲库/制包/帮助/统一导出/更新检查等 230 个缺失键，guide1-10 按新引导语义逐门重译，德语人称统一 du，RTL 阿拉伯语层级箭头统一'
+                }
+            ]
+        },
+        {
             version: '3.4.3',
             date: '2026-10-02',
             changes: [

@@ -36,6 +36,16 @@
         close: '닫기',
         resetDefaults: '기본 설정으로 복원',
         resetConfirm: '언어와 텍스트 방향을 제외한 모든 설정을 초기화합니다. 되돌릴 수 없습니다. 계속하시겠습니까?',
+        dialogOk: '확인',
+        dialogCancel: '취소',
+        dialogTitle: '알림',
+        wsModuleMissing:
+            '패키지 생성 모듈이 로드되지 않았거나 로드에 실패했습니다. 전체 assets 폴더(특히 assets/scripts/utils/ 및 ui/workspace.js)가 제대로 배포되었는지 확인한 뒤 새로고침을 두 번 해 주세요.',
+        settingsExport: '설정 내보내기',
+        settingsImport: '설정 가져오기',
+        settingsImportOk: '설정을 가져와 적용했습니다.',
+        settingsImportFail: '설정 가져오기 실패: 파일을 읽을 수 없습니다.',
+        settingsImportBad: '설정 가져오기 실패: 파일이 올바른 설정 JSON이 아닙니다.',
         themeColor: '테마 색상',
         default: '기본',
         dustyRose: '더스티 로즈',
@@ -57,7 +67,7 @@
         cinemaDarken: '어둡게 (%)',
         cinemaBorder: '테두리 (px)',
         cinemaGlass: '유리 효과 (%)',
-        moreControls: '추가 설정',
+        moreControls: '추가 컨트롤',
         bottomNavSlot1: '하단 바 1번 자리',
         bottomNavSlot2: '하단 바 2번 자리',
         bottomNavSlot3: '하단 바 3번 자리',
@@ -73,6 +83,75 @@
         libraryLoad: '불러오기',
         librarySource: '열기',
         librarySourceTitle: '소스 선택',
+        libTitle: '내 곡 라이브러리',
+        libAddFolder: '폴더 추가',
+        libSamples: '예시 패키지',
+        libClearAll: '곡 라이브러리 비우기',
+        libBatchMode: '일괄',
+        libBatchDelete: '선택 항목 삭제',
+        libBatchCancel: '취소',
+        libSelected: '선택됨',
+        libSearchPh: '제목 / 가수 / 앨범 / 가사 검색…',
+        libTabAll: '전체',
+        libTabFavorites: '즐겨찾기',
+        libTabRecent: '최근',
+        libTabArtists: '가수',
+        libTabAlbums: '앨범',
+        libTabPlaylists: '플레이리스트',
+        libSortTitle: '제목순',
+        libSortArtist: '가수순',
+        libSortDuration: '길이순',
+        libSortAdded: '추가된 순서',
+        libSortPlays: '재생 횟수순',
+        libSortDir: '정렬 방향 전환',
+        libAllArtists: '모든 가수',
+        libAllAlbums: '모든 앨범',
+        libAllGenres: '모든 장르',
+        libAllYears: '모든 연도',
+        libAllTags: '모든 태그',
+        libEmpty: '곡 라이브러리가 비어 있습니다. 「폴더 추가」로 가사 패키지나 오디오를 가져오세요',
+        libImporting: '가져오는 중',
+        libImportDone: '가져오기 완료',
+        libAdded: '추가됨',
+        libSkipped: '건너뜀',
+        libFavorite: '즐겨찾기',
+        libUnfavorite: '즐겨찾기 해제',
+        libPlay: '재생',
+        libDetail: '상세',
+        libAddToPlaylist: '플레이리스트에 추가',
+        libPlays: '회 재생',
+        libHasLyrics: '가사 있음',
+        libNoLyrics: '가사 없음',
+        libUnknownArtist: '알 수 없는 가수',
+        libArtistsCount: '명의 가수',
+        libAlbumsCount: '장의 앨범',
+        libNewPlaylist: '새 플레이리스트',
+        libPlaylistName: '플레이리스트 이름',
+        libRename: '이름 바꾸기',
+        libOpen: '열기',
+        libSongs: '곡',
+        libEmptyPlaylist: '플레이리스트가 비어 있습니다',
+        libNoPlaylists: '아직 플레이리스트가 없습니다',
+        libCreate: '만들기',
+        libConfirmDelete: '이 곡을 삭제하시겠습니까?',
+        libConfirmClearAll:
+            '곡 라이브러리를 모두 비우시겠습니까? 이 작업은 브라우저에 저장된 곡 라이브러리 기록만 삭제하며, 컴퓨터의 원본 파일은 삭제하지 않습니다. 되돌릴 수 없습니다.',
+        libConfirmPlaylistDelete: '이 플레이리스트를 삭제하시겠습니까?',
+        libBack: '뒤로',
+        libFieldTitle: '제목',
+        libFieldArtist: '가수',
+        libFieldAlbum: '앨범',
+        libFieldGenre: '장르',
+        libFieldYear: '연도',
+        libFieldTrack: '트랙',
+        libFieldDuration: '길이',
+        libFieldFormat: '소스 형식',
+        libFieldPath: '경로',
+        libFieldAdded: '추가 시간',
+        libFieldTags: '태그 (쉼표로 구분)',
+        libInPlaylists: '소속 플레이리스트',
+        libLyrics: '가사',
+        libEditTitle: '곡 정보 편집',
         more: '더보기',
         coverView: '커버 보기',
         topbarMore: '설정 및 정보',
@@ -159,6 +238,11 @@
         directionLtr: 'LTR 강제',
         langChange: '변경',
         langNotReset: '언어와 텍스트 방향은 초기화되지 않습니다',
+        /* v3.5.0: AI-maintained translations disclaimer (language drawer) */
+        langAiNotice:
+            '일부 번역은 AI가 유지 관리하며 부정확할 수 있습니다. 문제를 발견하면 GitHub에서 Issue를 제출해 주세요.',
+        /* v3.2.1: help center follows the global UI language */
+        helpFollowLocale: '도움말은 표시 언어를 따릅니다',
 
         /* study table labels */
         romaji: '로마자',
@@ -189,6 +273,19 @@
 
         /* about */
         about: '정보',
+        aboutSlogan: '가사 감상 도구 · .lrc / LyricEx 패키지 / 커뮤니티 가사 패키지 지원',
+        aboutBuiltBy: '<a href="#" target="_blank">Rinkio</a> 제작',
+        aboutTechFa: 'Font Awesome 5 · 아이콘 라이브러리',
+        aboutTechJszip: 'JSZip · ZIP 압축 / 해제',
+        aboutTechWebaudio: 'Web Audio API · 스펙트럼 / 음높이 조절',
+        aboutTechCss: '순수 CSS · 타사 프레임워크 없음',
+        aboutTechJs: '순수 JavaScript · 타사 프레임워크 없음',
+        aboutLicense:
+            '<a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT 라이선스</a>로 오픈 소스로 공개되었습니다.',
+        aboutGitHub: '· 소스 코드 및 Release',
+        aboutDisclaimer:
+            '면책 고지: 이 도구는 프론트엔드 오디오 재생 도구일 뿐이며, 어떤 오디오 파일도 저장하거나 제공하지 않습니다.<br>모든 재생 콘텐츠는 사용자 로컬 장치 또는 사용자가 직접 제공한 합법적인 파일에서 가져옵니다.<br>정식 음원을 지원해 주세요.',
+        clOnlyZh: '중국어만',
         developer: '개발자',
         techUsed: '사용 기술',
         shortcuts: '키보드 단축키',
@@ -212,21 +309,48 @@
         guide2Title: '네 가지 보기',
         guide2Desc:
             '데스크톱에서는 사이드바에서 가사 / 학습 / 혼합 / 편집 보기를 전환하고, 모바일에서는 하단 내비게이션을 사용합니다. 편집 보기에서 타임라인을 조정하고 내용을 편집·내보낼 수 있습니다.',
-        guide3Title: '시네마 및 미니 모드',
+        guide3Title: '학습 보기',
         guide3Desc:
-            'F를 누르면 전체 화면 시네마, V를 누르면 떠 있는 미니 바로 축소되어 언제 어디서든 따라 부를 수 있습니다.',
-        guide4Title: '키보드 단축키',
+            '학습 보기는 각 줄을 원문 + 번역 + 로마자 + 메모 + 학습 표(가나 / 로마자 / 한자 / 품사 / 뜻)로 보여 주며, 인쇄하거나 학습 노트로 내보낼 수 있습니다.',
+        guide4Title: '역주석',
         guide4Desc:
-            '스페이스 재생, ←/→ 되감기/빨리감기, 숫자 키 진행 이동, G 따라가기. 모두 설정 → 단축키에서 사용자 지정할 수 있습니다.',
-        guide5Title: '외관 및 언어',
+            '순수 가나 가사로 따라 부르고 싶으신가요? 설정 → 가사 표시에서 「역주석」을 켜세요. 가사가 순수 가나로 바뀌고, 원래 한자가 가나 위에 작은 글씨로 표시됩니다(패키지에 단어별 분석 필요).',
+        guide5Title: '시네마 및 미니 모드',
         guide5Desc:
-            '테마 색상, 글꼴, 글자 크기와 라이트 / 다크 / 시스템 테마는 설정 → 외관에서 조정합니다. UI 언어는 언제든 전환할 수 있습니다 — 이 가이드 왼쪽 아래의 지구본 버튼을 누르세요.',
-        guide6Title: '내보내기 / 공유',
+            'F를 누르면 전체 화면 시네마, V를 누르면 떠 있는 미니 바로 축소되어 언제 어디서든 따라 부를 수 있습니다.',
+        guide6Title: '로컬 곡 라이브러리',
         guide6Desc:
-            '편집 보기에서 학습 표 인쇄(PDF), 노트 내보내기(Markdown / HTML), 세로형 모바일 포스터를 한 번에 만들 수 있습니다. 플레이어 공유 카드는 테마 템플릿을 지원하며 JSON으로 가져오기 / 내보내기가 가능합니다.',
+            '사이드바 「내 곡 라이브러리」: 폴더를 추가해 로컬 곡 라이브러리를 만들 수 있으며, 검색 / 필터 / 플레이리스트 / 즐겨찾기를 지원합니다. 데이터는 브라우저에만 저장되고 업로드되지 않습니다.',
+        guide7Title: '패키지 생성 작업 공간',
+        guide7Desc:
+            '편집 → 패키지 생성: 원곡 / 반주 업로드, LRC 또는 NetEase 가사 JSON 붙여넣기, AI 단어별 분석 후 LyricEx 패키지(.lxp.zip) 내보내기.',
+        guide8Title: '통합 내보내기',
+        guide8Desc:
+            '편집 페이지의 「내보내기」 버튼 하나로 모두 처리: LyricEx 패키지, 자막(LRC/ASS/SRT), 가사 및 학습 노트(TXT/MD/HTML/PDF), 영상(mp4), 공유 카드와 세로형 포스터까지, 모두 실시간 미리 보기를 제공합니다.',
+        guide9Title: '키보드 단축키',
+        guide9Desc:
+            '스페이스 재생, ←/→ 되감기/빨리감기, 숫자 키 진행 이동, G 따라가기. 모두 설정 → 단축키에서 사용자 지정할 수 있습니다.',
+        guide10Title: '외관 및 언어',
+        guide10Desc:
+            '테마 색상, 글꼴, 글자 크기와 라이트 / 다크 / 시스템 테마는 설정 → 외관에서 조정합니다. UI 언어는 언제든 전환할 수 있습니다 — 이 가이드 왼쪽 아래의 지구본 버튼을 누르세요.',
         /* v2.0.0: about sub-nav + in-app changelog */
         navAboutOverview: '개요',
         viewChangelog: '변경 내역',
+        /* v3.2.0: update check */
+        checkUpdate: '업데이트 확인',
+        updateFound: '새 버전 발견',
+        updateOpen: 'GitHub Release 페이지를 열까요?',
+        updateLatest: '이미 최신 버전입니다',
+        updateFailed: '업데이트 확인에 실패했습니다. 네트워크를 확인하고 다시 시도하세요',
+        /* v3.2.1: update-check dialog polish */
+        updateChecking: '업데이트 확인 중…',
+        updateNoNotes: '(이 채널은 업데이트 설명을 제공하지 않습니다)',
+        updateMockTag: '로컬 시뮬레이션',
+        updateApiRaw: 'API 원본 응답 보기',
+        updateNotesLabel: '업데이트 내용',
+        updateChannel: '데이터 채널',
+        updateCurrentVer: '현재 버전',
+        updateGoRelease: 'Release 페이지로 이동',
         clAdded: '추가',
         clChanged: '변경',
         clFixed: '수정',
@@ -251,6 +375,85 @@
         marksDelete: '삭제',
         recentTitle: '최근 연 항목',
         queueTitle: '연속 재생 목록',
+
+        /* v3.3.0: unified export dialog */
+        exportDialog: '내보내기',
+        exportDialogHint: '형식을 선택하고 오른쪽에서 미리 보기와 설정을 하세요.',
+        exportLyricsGroup: '가사 내보내기',
+        exportNotesGroup: '학습 노트 내보내기',
+        exportPreview: '미리 보기',
+        exportRun: '내보내기',
+        exportNoLyrics: '먼저 가사를 불러온 후 내보내세요',
+        exportEmpty: '내보낼 형식이 없습니다',
+        exportNoPreview: '이 형식은 미리 보기를 지원하지 않습니다',
+
+        /* v3.3.1: subtitle export options */
+        lrcMeta: '메타데이터 헤더 포함(제목/가수)',
+        lrcTranslation: '번역 줄 첨부(같은 타임스탬프)',
+        subTranslation: '번역 포함',
+        srtEndPad: '끝 여유 시간(초)',
+        assKaraoke: '노래방 글자별 하이라이트(\k 태그)',
+
+        /* v3.3.2: TXT lyrics export */
+        exportTxt: 'TXT 가사',
+        txtMode: '형식',
+        txtModePlain: '가사 원문만',
+        txtModeWithTr: '원문 + 번역',
+        txtModeTimed: '타임스탬프 포함',
+        txtModeTimedTr: '타임스탬프 + 번역',
+
+        /* v3.3.3: Markdown/HTML lyrics export */
+        exportMd: 'Markdown 가사',
+        exportHtml: 'HTML 가사',
+        mdInTr: '번역 포함',
+        mdRuby: '가나 표기(ruby)',
+        mdTimed: '타임스탬프 포함',
+        htmlTheme: '색상 테마',
+        htmlThemeLight: '밝게',
+        htmlThemeDark: '어둡게',
+
+        /* v3.3.4: PDF print export */
+        exportPdf: 'PDF(인쇄)',
+        pdfPrintHint:
+            '브라우저 기본 인쇄 기능으로 PDF를 내보냅니다(인쇄 대화상자에서 「PDF로 저장」 선택). 모바일 브라우저에서는 제대로 작동하지 않을 수 있습니다.',
+
+        /* v3.3.5: package export options */
+        pkgHint:
+            'LyricEx 패키지(.lxp.zip) 내보내기. 미디어 파일 포함 여부를 선택할 수 있으며, 미디어를 포함하지 않으면 패키지가 더 작고 로드가 빠릅니다.',
+        pkgIncludeAudio: '오디오 포함',
+        pkgIncludeInstrumental: '반주 포함',
+        pkgIncludeCover: '커버 포함',
+
+        /* v3.3.6: lyric video templates */
+        videoTemplate: '화면 템플릿',
+        videoTplKaraoke: '노래방 글자별',
+        videoTplSimple: '심플 가사',
+        videoInTr: '화면에 번역 표시',
+
+        /* v3.3.7: study notes video */
+        studyVideo: '학습 표 영상(mp4)',
+        studyVideoHint:
+            '학습 노트 영상을 녹화합니다(오디오 로드 필요): 위쪽에 현재 가사 줄과 번역, 아래쪽에 해당 줄의 학습 표(가나 / 로마자 / 한자 / 품사 / 뜻).',
+
+        /* v3.3.8: share card / poster export config */
+        shareCardHint: '현재 가사 줄을 가로형 공유 카드(PNG)로 내보냅니다. 공유 패널과 같은 스타일입니다.',
+        posterHint: '현재 가사 줄을 세로형 포스터(PNG)로 내보냅니다. 휴대폰 배경화면 / 세로 공유에 적합합니다.',
+        cardTemplate: '카드 템플릿',
+        cardTplMinimal: '심플',
+        cardTplGradient: '그라데이션',
+        cardTranslation: '번역 표시',
+        cardRomaji: '로마자 표시',
+
+        /* v3.3.9: study notes export config */
+        exportNotesTxt: 'TXT 학습 노트',
+        exportNotesPdf: 'PDF(인쇄)',
+        notesInTr: '번역 포함',
+        notesInRomaji: '로마자 포함',
+        notesInNote: '메모 포함',
+        notesInTable: '학습 표 포함',
+
+        /* v3.3.10: reverse annotation */
+        reverseRuby: '역주석(순수 가나 + 가나 위 한자)',
 
         /* v2.0.0: export / share */
         printStudy: '학습 표 인쇄',
@@ -341,6 +544,66 @@
         editorInstChange: '반주 변경',
         editorInstRemove: '제거',
 
+        /* v2.6.0: editor workspace tabs */
+        editorTabRefine: '정밀 편집',
+        editorEmptyHint:
+            '가사가 없습니다. 「패키지 생성」 페이지에서 가사 패키지를 만들거나, 홈에서 먼저 가사를 업로드하세요.',
+        editorTabBuild: '패키지 생성',
+        /* v2.6.0: workspace build pane */
+        wsMedia: '오디오',
+        wsVocal: '원곡 오디오(필수)',
+        wsInst: '반주 오디오(선택)',
+        wsNoFile: '파일을 선택하지 않음',
+        wsInstHint:
+            '원곡과 반주를 함께 업로드하는 것을 권장합니다. 패키지 생성 후 플레이어에서 「원곡/반주」 전환이 가능하고, 각 가사 줄에서 반주 버전을 미리 들을 수 있습니다. 반주는 비워도 됩니다.',
+        wsLyrics: '가사',
+        wsLrcMain: '일본어 가사(LRC)',
+        wsLrcTrans: '중국어 번역(LRC)',
+        wsOptional: '선택 사항',
+        wsLrcPlaceholder: 'LRC 가사를 붙여 넣으세요. 예:\n[00:15.3] 重大な問題抱えて眠る',
+        wsLrcPlaceholderTrans: '번역 LRC 붙여넣기(원문과 타임스탬프 일치)',
+        wsNetease: '또는 NetEase 가사 JSON 붙여넣기',
+        wsNeteasePlaceholder: '{&quot;lrc&quot;:{&quot;lyric&quot;:&quot;...&quot;},&quot;tlyric&quot;:{...}}',
+        wsParse: '분석',
+        wsLoadToApp: '플레이어/편집기에 불러오기',
+        wsParsedN: '{n}줄 분석됨',
+        wsNeedLrc: '먼저 LRC 가사 또는 NetEase JSON을 붙여 넣으세요',
+        wsParseEmpty: '유효한 가사 줄을 찾지 못했습니다',
+        wsParseFail: '분석 실패',
+        wsUpload: '파일 업로드',
+        wsClear: '비우기',
+        wsMixHint: '일본어 한 줄, 중국어 한 줄이 번갈아 나오는 LRC를 지원하며, 원문과 번역으로 자동 분리됩니다',
+        wsAi: 'AI 단어별 분석',
+        wsChunk: '분할 줄 수',
+        wsChunkPlaceholder: '비워 두면 분할하지 않음',
+        wsCopyPrompt: '프롬프트 복사',
+        wsAiPlaceholder: 'AI가 반환한 JSON 결과 붙여넣기',
+        wsImportAi: '분석 가져오기',
+        wsAiHint: '프롬프트를 아무 대형 언어 모델에 붙여 넣고, 반환된 JSON을 이곳에 다시 붙여 넣으세요',
+        wsPart: '{n}번째 구간',
+        wsPromptCopied: '프롬프트가 클립보드에 복사되었습니다',
+        wsCopyFail: '복사 실패. 직접 선택하여 복사하세요',
+        wsAiOk: '{n}줄 일치',
+        wsAiMiss: '，{n}줄 불일치(시간 또는 텍스트 불일치)',
+        wsAiApplied: '분석이 적용되었습니다. 내보낼 수 있습니다',
+
+        /* v3.4.3: word timings import */
+        wsWords: '글자별 타임라인(노래방)',
+        wsWordsPlaceholder: '글자별 타임라인 JSON 붙여넣기(wk-align 출력)',
+        wsImportWords: '글자별 시간 가져오기',
+        wsWordsHint:
+            '오디오 측정 기반의 글자별 타임라인(LyricEx Karaoke Timings 도구). JSON을 붙여 넣으면 자동으로 매칭됩니다',
+        wsWordsOk: '{n}줄의 글자별 시간 가져옴',
+        wsWordsMiss: '，{n}줄 불일치(텍스트 불일치)',
+        wsWordsOffset: '{n}초의 시간 오프셋이 감지되어 줄 시간이 보정되었습니다',
+        wsWordsApplied: '글자별 시간이 적용되었습니다. 내보낼 수 있습니다',
+        wsExport: '내보내기',
+        wsExportPack: 'LyricEx 패키지 내보내기',
+        wsReset: '초기화',
+        wsNeedAudio: '먼저 원곡 오디오를 선택하세요',
+        wsExported: '패키지가 내보내졌습니다',
+        wsExportFail: '내보내기 실패',
+
         /* v1.7.0: theme three-state */
         systemTheme: '시스템 설정 따르기',
         switchTheme: '테마 전환',
@@ -381,6 +644,22 @@
         shareCopy: '클립보드에 복사',
         shareCopied: '복사됨',
         shareCopyFailed: '복사에 실패했습니다. 다운로드를 사용하세요',
+
+        /* v2.8.4: help view */
+        help: '도움말',
+        helpQuickStart: '빠른 시작',
+        helpNetease: 'NetEase 가사 JSON 가져오기',
+        helpDemo: '데모',
+        helpFaq: '자주 묻는 질문',
+        helpFeedback: '문제나 제안이 있으신가요? GitHub Issues에 콘솔 오류와 재현 단계를 함께 남겨 주세요.',
+        helpContents: '목차',
+        helpSearch: '도움말 검색…',
+        helpNoResults: '일치하는 항목이 없습니다',
+        helpBackToTop: '맨 위로',
+        helpPrev: '이전 섹션',
+        helpNext: '다음 섹션',
+        helpFeedbackTitle: '피드백 및 지원',
+        helpLangLabel: '본문 언어',
         shareDownload: 'PNG 다운로드'
     });
 })();

@@ -237,6 +237,9 @@
         directionLtr: '強制 LTR',
         langChange: '変更',
         langNotReset: '言語とテキスト方向はリセットされません',
+        /* v3.5.0: AI-maintained translations disclaimer (language drawer) */
+        langAiNotice:
+            '一部の翻訳は AI が管理しており、正確でない場合があります。問題を見つけたら GitHub で Issue を報告してください。',
         /* v3.2.1: help center follows the global UI language */
         helpFollowLocale: 'ヘルプは表示言語に追従',
 
@@ -407,16 +410,19 @@
 
         /* v3.3.4: PDF print export */
         exportPdf: 'PDF（印刷）',
-        pdfPrintHint: 'ブラウザー標準の印刷ダイアログで PDF を出力します（「PDF に保存」を選択）。スマホでは正常に動作しない場合があります。',
+        pdfPrintHint:
+            'ブラウザー標準の印刷ダイアログで PDF を出力します（「PDF に保存」を選択）。スマホでは正常に動作しない場合があります。',
 
         /* v3.3.5: package export options */
-        pkgHint: 'LyricEx パッケージ（.lxp.zip）を書き出します。メディアを含めるか選択できます。歌詞のみなら小さく高速に読み込めます。',
+        pkgHint:
+            'LyricEx パッケージ（.lxp.zip）を書き出します。メディアを含めるか選択できます。歌詞のみなら小さく高速に読み込めます。',
         pkgIncludeAudio: '音声を含める',
         pkgIncludeInstrumental: 'カラオケ音源を含める',
         pkgIncludeCover: 'ジャケットを含める',
 
         /* v3.3.6: lyric video templates */
-        videoHint: '歌詞ビデオを録画します（音声が必要）。カラオケ単語モードはパッケージ内の単語タイミングを使います。無い場合は行全体ハイライトに自動フォールバック。',
+        videoHint:
+            '歌詞ビデオを録画します（音声が必要）。カラオケ単語モードはパッケージ内の単語タイミングを使います。無い場合は行全体ハイライトに自動フォールバック。',
         videoTemplate: 'テンプレート',
         videoTplKaraoke: 'カラオケ単語',
         videoTplSimple: 'シンプル歌詞',
@@ -424,7 +430,8 @@
 
         /* v3.3.7: study notes video */
         studyVideo: '学習表ビデオ（mp4）',
-        studyVideoHint: '学習ノートビデオを録画します（音声が必要）：上部に現在の歌詞行と訳詞、下部にその行の学習表（仮名 / ローマ字 / 漢字 / 品詞 / 意味）。',
+        studyVideoHint:
+            '学習ノートビデオを録画します（音声が必要）：上部に現在の歌詞行と訳詞、下部にその行の学習表（仮名 / ローマ字 / 漢字 / 品詞 / 意味）。',
 
         /* v3.3.8: share card / poster export config */
         shareCard: 'シェアカード',

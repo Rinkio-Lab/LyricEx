@@ -238,6 +238,9 @@
         directionLtr: 'Force LTR',
         langChange: 'Change',
         langNotReset: 'Interface language and text direction are not reset',
+        /* v3.5.0: AI-maintained translations disclaimer (language drawer) */
+        langAiNotice:
+            'Some translations are maintained by AI and may be inaccurate. Found an issue? Please report it on GitHub.',
         /* v3.2.1: help center follows the global UI language */
         helpFollowLocale: 'Help follows interface language',
 
@@ -410,16 +413,19 @@
 
         /* v3.3.4: PDF print export */
         exportPdf: 'PDF (print)',
-        pdfPrintHint: 'Exports via the browser\u2019s own print dialog (choose \u201cSave as PDF\u201d). Mobile browsers may not support this properly.',
+        pdfPrintHint:
+            'Exports via the browser\u2019s own print dialog (choose \u201cSave as PDF\u201d). Mobile browsers may not support this properly.',
 
         /* v3.3.5: package export options */
-        pkgHint: 'Exports a LyricEx package (.lxp.zip); optionally ship media files. Lyrics-only packages are smaller and load faster.',
+        pkgHint:
+            'Exports a LyricEx package (.lxp.zip); optionally ship media files. Lyrics-only packages are smaller and load faster.',
         pkgIncludeAudio: 'Include audio',
         pkgIncludeInstrumental: 'Include instrumental',
         pkgIncludeCover: 'Include cover',
 
         /* v3.3.6: lyric video templates */
-        videoHint: 'Records a lyric video (audio required). Karaoke word mode needs per-word timings in the package; without them it falls back to whole-line highlighting.',
+        videoHint:
+            'Records a lyric video (audio required). Karaoke word mode needs per-word timings in the package; without them it falls back to whole-line highlighting.',
         videoTemplate: 'Template',
         videoTplKaraoke: 'Karaoke word',
         videoTplSimple: 'Simple lyrics',
@@ -427,12 +433,14 @@
 
         /* v3.3.7: study notes video */
         studyVideo: 'Study table video (mp4)',
-        studyVideoHint: 'Records a study-notes video (audio required): current lyric + translation on top, that line\u2019s study table (kana / romaji / kanji / POS / meaning) below.',
+        studyVideoHint:
+            'Records a study-notes video (audio required): current lyric + translation on top, that line\u2019s study table (kana / romaji / kanji / POS / meaning) below.',
 
         /* v3.3.8: share card / poster export config */
         shareCard: 'Share card',
         shareCardHint: 'Exports the current lyric line as a horizontal share card (PNG), same look as the share panel.',
-        posterHint: 'Exports the current lyric line as a vertical poster (PNG) for phone wallpapers / vertical sharing.',
+        posterHint:
+            'Exports the current lyric line as a vertical poster (PNG) for phone wallpapers / vertical sharing.',
         cardTemplate: 'Card template',
         cardTplMinimal: 'Minimal',
         cardTplGradient: 'Gradient',
