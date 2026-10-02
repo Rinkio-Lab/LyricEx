@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.12',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'fixed',
+                    text: 'Service Worker 预缓存补上 ui/export-dialog.js（离线打开不再缺脚本）'
+                },
+                {
+                    type: 'changed',
+                    text: 'SW 不再缓存跨域响应（GitHub 检查更新等保持实时获取，避免陈旧数据与存储占用）'
+                },
+                {
+                    type: 'changed',
+                    text: '检查更新的每个请求加 5 秒超时（AbortController），弱网 / 离线快速失败不挂起'
+                }
+            ]
+        },
+        {
             version: '3.3.11',
             date: '2026-10-02',
             changes: [

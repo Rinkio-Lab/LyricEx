@@ -9,7 +9,7 @@
 // Bump this name whenever index.html or any precached asset changes: an
 // unchanged name would keep serving the stale cached document to clients that
 // have not refreshed since the deploy.
-const CACHE = 'lyricex-v3.3.11'; // v3.3.0: unified export dialog — bump cache for re-fetch
+const CACHE = 'lyricex-v3.3.12'; // v3.3.0: unified export dialog — bump cache for re-fetch
 
 // Core assets precached at install: a CACHE bump then serves the new
 // styles/scripts/zh locale on the very next refresh (no cache-warmup lag).
@@ -30,6 +30,7 @@ const PRECACHE = [
     'assets/scripts/modules/pitch-shift.js', 'assets/scripts/modules/audio-graph.js',
     'assets/scripts/modules/recent-store.js', 'assets/scripts/modules/video.js',
     'assets/scripts/ui/video-export.js', 'assets/scripts/ui/share.js', 'assets/scripts/ui/editor.js',
+    'assets/scripts/ui/export-dialog.js',
     'assets/scripts/ui/search.js', 'assets/scripts/ui/mini.js', 'assets/scripts/ui/cinema.js',
     'assets/scripts/ui/about.js', 'assets/scripts/ui/settings.js', 'assets/scripts/app.js',
     'assets/scripts/ui/focus-trap.js',
@@ -76,7 +77,11 @@ self.addEventListener('fetch', (e) => {
             cache.match(e.request).then((hit) => {
                 const network = fetch(e.request)
                     .then((res) => {
-                        if (res && res.status === 200 && (res.type === 'basic' || res.type === 'cors')) {
+                        // Only same-origin ('basic') responses are stored:
+                        // cross-origin calls (GitHub update checks, sample-pack
+                        // manifest) must stay live — caching them wastes storage
+                        // and serves stale release info.
+                        if (res && res.status === 200 && res.type === 'basic') {
                             cache.put(e.request, res.clone());
                         }
                         return res;

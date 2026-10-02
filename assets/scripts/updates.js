@@ -64,9 +64,23 @@
         return m ? m[1] : null;
     }
 
+    // v3.3.12: bound each check to a 5s timeout so a slow/absent network fails
+    // fast instead of hanging the fetch (silent startup check runs 3s in).
+    function fetchWithTimeout(url, options) {
+        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var opts = Object.assign({}, options);
+        if (ctrl) {
+            opts.signal = ctrl.signal;
+            setTimeout(function () {
+                ctrl.abort();
+            }, 5000);
+        }
+        return root.fetch(url, opts);
+    }
+
     async function fetchLatest() {
         try {
-            var res = await root.fetch(API_URL, { headers: { Accept: 'application/vnd.github+json' } });
+            var res = await fetchWithTimeout(API_URL, { headers: { Accept: 'application/vnd.github+json' } });
             if (res.ok) {
                 var data = await res.json();
                 if (data && data.tag_name) {
@@ -84,7 +98,7 @@
             /* fall through to raw CHANGELOG */
         }
         try {
-            var raw = await root.fetch(RAW_URL);
+            var raw = await fetchWithTimeout(RAW_URL);
             if (raw.ok) {
                 var ver = parseChangelogVersion(await raw.text());
                 if (ver) return { tag: ver, body: '', channel: 'CHANGELOG fallback', raw: '' };
