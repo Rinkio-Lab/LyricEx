@@ -98,6 +98,13 @@ const lrcTr = u.buildLrc([{ time: 61, text: '本気', translation: '认真' }], 
 ok('lrc appends translation on same timestamp', lrcTr.includes('[01:01.00]本気') && lrcTr.includes('[01:01.00]认真'));
 const lrcNoMeta = u.buildLrc(lyrics, 0, { meta: false });
 ok('lrc meta off drops headers', !lrcNoMeta.includes('[ti:') && !lrcNoMeta.includes('[ar:'));
+// v3.3.2: TXT lyrics builder
+const txtPlain = u.buildLyricsTxt(lyrics, 0, 'plain');
+ok('txt plain has bare lines', txtPlain === 'a\nb\nc\n');
+const txtTr = u.buildLyricsTxt([{ time: 1, text: '本気', translation: '认真' }], 0, 'withTranslation');
+ok('txt translation indented', txtTr === '本気\n    认真\n');
+const txtTimed = u.buildLyricsTxt(lyrics, 0, 'timed');
+ok('txt timed has stamps', txtTimed.includes('[00:10.00] a') && txtTimed.includes('[00:15.00] c'));
 
 // ---- multi-bookmark loop (v2.0.0 #15) ----
 const marks = [

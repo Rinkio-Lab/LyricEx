@@ -69,6 +69,13 @@
             .trim();
     }
 
+    // [mm:ss.xx] LRC-style timestamp tag for a seconds value
+    function fmtLrcTime(t) {
+        var m = Math.floor(t / 60);
+        var s = (t % 60).toFixed(2);
+        return '[' + String(m).padStart(2, '0') + ':' + String(s).padStart(5, '0') + ']';
+    }
+
     // Build a plain LRC (.lrc) document. opts: { title, artist, meta,
     // includeTranslation } — meta emits [ti:]/[ar:] headers unless meta===false;
     // includeTranslation emits the translation as a second line sharing the
@@ -82,15 +89,31 @@
         }
         lyrics.forEach(function (l) {
             var t = Math.max(0, Number(l.time) - (Number(offset) || 0));
-            var m = Math.floor(t / 60);
-            var s = (t % 60).toFixed(2);
-            var tag = '[' + String(m).padStart(2, '0') + ':' + String(s).padStart(5, '0') + ']';
+            var tag = fmtLrcTime(t);
             var text = clean(lineText(l));
             if (text) out.push(tag + text);
             if (opts.includeTranslation) {
                 var tr = clean(lineTranslation(l));
                 if (tr) out.push(tag + tr);
             }
+        });
+        return out.join('\n') + '\n';
+    };
+
+    // Plain-text lyrics (.txt) builder. mode: 'plain' (bare text) |
+    // 'withTranslation' (text + indented translation) | 'timed' (timestamped) |
+    // 'timedTranslation' (timestamped text + indented translation).
+    u.buildLyricsTxt = function (lyrics, offset, mode) {
+        var out = [];
+        lyrics.forEach(function (l) {
+            var text = clean(lineText(l));
+            var tr = clean(lineTranslation(l));
+            var head = mode === 'timed' || mode === 'timedTranslation'
+                ? fmtLrcTime(Math.max(0, Number(l.time) - (Number(offset) || 0))) + ' '
+                : '';
+            if (text) out.push(head + text);
+            if ((mode === 'withTranslation' || mode === 'timedTranslation') && tr)
+                out.push('    ' + tr);
         });
         return out.join('\n') + '\n';
     };

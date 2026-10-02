@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.3.2（待发布 · TXT 歌词导出配置）
+
+### Added
+- **TXT 歌词导出**：导出弹窗「导出歌词」组新增 TXT 条目，四种格式可选——仅歌词原文 / 原文 + 翻译 / 带时间戳 / 时间戳 + 翻译，实时预览生成内容。
+- **TXT 构建器入 utils**：`buildLyricsTxt(lyrics, offset, mode)` 纯函数，预览与导出共用。
+
+### Changed
+- 版本号 3.3.1 → 3.3.2；Service Worker 缓存名同步 bump（`lyricex-v3.3.2`）。
+
+### Test
+- utils-test 新增 buildLyricsTxt 断言（纯文本 / 翻译缩进 / 时间戳格式）。
+
 ## v3.3.1（待发布 · 字幕导出配置）
 
 ### Added

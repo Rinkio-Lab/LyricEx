@@ -378,6 +378,14 @@
         srtEndPad: 'Trailing duration (seconds)',
         assKaraoke: 'Karaoke word highlighting (\\k tags)',
 
+        /* v3.3.2: TXT lyrics export */
+        exportTxt: 'TXT lyrics',
+        txtMode: 'Format',
+        txtModePlain: 'Lyrics only',
+        txtModeWithTr: 'Lyrics + translation',
+        txtModeTimed: 'With timestamps',
+        txtModeTimedTr: 'Timestamps + translation',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

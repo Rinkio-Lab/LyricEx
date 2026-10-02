@@ -78,6 +78,24 @@
                 '" style="width:64px"></label>'
             );
         }
+        function cfgSelect(id, labelKey, options, value) {
+            var optsHtml = options
+                .map(function (o) {
+                    return (
+                        '<option value="' + o.v + '"' + (o.v === value ? ' selected' : '') + '>' + t(o.k) + '</option>'
+                    );
+                })
+                .join('');
+            return (
+                '<label class="export-cfg-row"><span>' +
+                t(labelKey) +
+                '</span><select data-cfg="' +
+                id +
+                '">' +
+                optsHtml +
+                '</select></label>'
+            );
+        }
         // first N lines of generated text; big lyrics never flood the preview
         function textPreview(text, maxLines) {
             var lines = String(text || '').split('\n');
@@ -275,6 +293,41 @@
                 appCtx.downloadBlob(
                     new Blob([text], { type: 'text/plain;charset=utf-8' }),
                     appCtx.safePackageName() + '.lrc'
+                );
+            }
+        });
+        register({
+            id: 'txt',
+            group: 'lyrics',
+            icon: 'fas fa-file-alt',
+            labelKey: 'exportTxt',
+            kind: 'form',
+            defaults: { mode: 'plain' },
+            renderForm: function (container) {
+                var d = optsStore.txt || (optsStore.txt = Object.assign({}, this.defaults));
+                container.innerHTML = cfgSelect(
+                    'mode',
+                    'txtMode',
+                    [
+                        { v: 'plain', k: 'txtModePlain' },
+                        { v: 'withTranslation', k: 'txtModeWithTr' },
+                        { v: 'timed', k: 'txtModeTimed' },
+                        { v: 'timedTranslation', k: 'txtModeTimedTr' }
+                    ],
+                    d.mode
+                );
+            },
+            renderPreview: function () {
+                var d = optsStore.txt || {};
+                return textPreview(u.buildLyricsTxt(appCtx.lyrics, appCtx.offset, d.mode));
+            },
+            doExport: function () {
+                var d = optsStore.txt || {};
+                appCtx.downloadBlob(
+                    new Blob([u.buildLyricsTxt(appCtx.lyrics, appCtx.offset, d.mode)], {
+                        type: 'text/plain;charset=utf-8'
+                    }),
+                    appCtx.safePackageName() + '.txt'
                 );
             }
         });

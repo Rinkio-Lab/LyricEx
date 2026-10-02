@@ -375,6 +375,14 @@
         srtEndPad: '结尾空余时长（秒）',
         assKaraoke: '卡拉OK逐字高亮（\k 标签）',
 
+        /* v3.3.2: TXT lyrics export */
+        exportTxt: 'TXT 歌词',
+        txtMode: '格式',
+        txtModePlain: '仅歌词原文',
+        txtModeWithTr: '原文 + 翻译',
+        txtModeTimed: '带时间戳',
+        txtModeTimedTr: '带时间戳 + 翻译',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

@@ -375,6 +375,14 @@
         srtEndPad: '末尾の余白（秒）',
         assKaraoke: 'カラオケ単語ハイライト（\\k タグ）',
 
+        /* v3.3.2: TXT lyrics export */
+        exportTxt: 'TXT 歌詞',
+        txtMode: '形式',
+        txtModePlain: '歌詞のみ',
+        txtModeWithTr: '歌詞 + 訳詞',
+        txtModeTimed: 'タイムスタンプ付き',
+        txtModeTimedTr: 'タイムスタンプ + 訳詞',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

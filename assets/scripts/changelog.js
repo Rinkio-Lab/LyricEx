@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.2',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: 'TXT 歌词导出：导出歌词组新增 TXT 条目，四种格式可选（仅歌词原文 / 原文+翻译 / 带时间戳 / 时间戳+翻译），实时预览'
+                },
+                {
+                    type: 'added',
+                    text: 'TXT 构建器入 utils（buildLyricsTxt），预览与导出共用'
+                },
+                {
+                    type: 'test',
+                    text: 'utils-test 新增 buildLyricsTxt 断言'
+                }
+            ]
+        },
+        {
             version: '3.3.1',
             date: '2026-10-02',
             changes: [
