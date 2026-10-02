@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.11',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '帮助页新增「导出指南」章节：统一导出弹窗（导出歌词 / 导出学习笔记）、各格式配置要点、PDF 浏览器打印提示、预览窗说明'
+                },
+                {
+                    type: 'added',
+                    text: '帮助页新增「包格式 v2 详情」章节：目录结构、manifest.json 字段表（含 v2.1 增量）、lyrics.json 结构、加载规则与自动匹配兜底；三语同步'
+                },
+                {
+                    type: 'changed',
+                    text: '帮助卡片样式补充 h4 与 pre（代码块）样式'
+                }
+            ]
+        },
+        {
             version: '3.3.10',
             date: '2026-10-02',
             changes: [

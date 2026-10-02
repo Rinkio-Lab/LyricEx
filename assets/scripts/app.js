@@ -502,6 +502,8 @@
         const sections = [
             { id: 'help-quick', title: titles.quick || 'Quick start', key: 'quick' },
             { id: 'help-library', title: titles.library || 'Song library', key: 'library' },
+            { id: 'help-export', title: titles.export || 'Export guide', key: 'export' },
+            { id: 'help-package', title: titles.package || 'Package format', key: 'package' },
             { id: 'help-netease', title: titles.netease || 'NetEase lyrics JSON', key: 'netease' },
             { id: 'help-demo', title: titles.demo || 'Demo', key: 'demo' },
             { id: 'help-faq', title: titles.faq || 'FAQ', key: 'faq' },
@@ -564,28 +566,38 @@
             '</h3>' +
             (block.library || '') +
             '</section>' +
-            '<section class="help-card" id="help-netease"><h3>' +
+            '<section class="help-card" id="help-export"><h3>' +
             sections[2].title +
+            '</h3>' +
+            (block.export || '') +
+            '</section>' +
+            '<section class="help-card" id="help-package"><h3>' +
+            sections[3].title +
+            '</h3>' +
+            (block.package || '') +
+            '</section>' +
+            '<section class="help-card" id="help-netease"><h3>' +
+            sections[4].title +
             '</h3>' +
             (block.netease || '') +
             '</section>' +
             '<section class="help-card" id="help-demo"><h3>' +
-            sections[3].title +
+            sections[5].title +
             '</h3>' +
             (block.demo || '<img class="help-demo" src="assets/images/demo.gif" alt="LyricEx demo" loading="lazy">') +
             '</section>' +
             '<section class="help-card" id="help-faq"><h3>' +
-            sections[4].title +
+            sections[6].title +
             '</h3>' +
             (block.faq || '') +
             '</section>' +
             '<section class="help-card" id="help-contribute"><h3>' +
-            sections[5].title +
+            sections[7].title +
             '</h3>' +
             (block.contribute || '') +
             '</section>' +
             '<section class="help-card" id="help-feedback"><h3>' +
-            sections[6].title +
+            sections[8].title +
             '</h3>' +
             (block.feedback || '') +
             '</section>' +
