@@ -427,6 +427,14 @@
         cardTranslation: 'Show translation',
         cardRomaji: 'Show romaji',
 
+        /* v3.3.9: study notes export config */
+        exportNotesTxt: 'TXT study notes',
+        exportNotesPdf: 'PDF (print)',
+        notesInTr: 'Include translation',
+        notesInRomaji: 'Include romaji',
+        notesInNote: 'Include notes',
+        notesInTable: 'Include study tables',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

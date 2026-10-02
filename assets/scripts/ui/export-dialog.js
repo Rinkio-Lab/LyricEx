@@ -731,14 +731,76 @@
                     .catch(function () {});
             }
         });
+        function notesCfgRows(itemId) {
+            var d =
+                optsStore[itemId] ||
+                (optsStore[itemId] = {
+                    includeTranslation: true,
+                    includeRomaji: true,
+                    includeNote: true,
+                    includeTable: true
+                });
+            return (
+                cfgCheckbox('includeTranslation', 'notesInTr', d.includeTranslation) +
+                cfgCheckbox('includeRomaji', 'notesInRomaji', d.includeRomaji) +
+                cfgCheckbox('includeNote', 'notesInNote', d.includeNote) +
+                cfgCheckbox('includeTable', 'notesInTable', d.includeTable)
+            );
+        }
+        function notesOpts(itemId) {
+            var d = optsStore[itemId] || {};
+            return {
+                includeTranslation: d.includeTranslation,
+                includeRomaji: d.includeRomaji,
+                includeNote: d.includeNote,
+                includeTable: d.includeTable
+            };
+        }
+        function notesBuild(format, itemId) {
+            var o = notesOpts(itemId);
+            return u.buildStudyNotes(appCtx.lyrics, {
+                title: appCtx.songData && appCtx.songData.title,
+                artist: appCtx.songData && appCtx.songData.artist,
+                format: format,
+                labels: appCtx.labels || {},
+                includeTranslation: o.includeTranslation,
+                includeRomaji: o.includeRomaji,
+                includeNote: o.includeNote,
+                includeTable: o.includeTable
+            });
+        }
+        register({
+            id: 'notes-txt',
+            group: 'notes',
+            icon: 'fas fa-file-alt',
+            labelKey: 'exportNotesTxt',
+            kind: 'form',
+            defaults: { includeTranslation: true, includeRomaji: true, includeNote: true, includeTable: true },
+            renderForm: function (container) {
+                container.innerHTML = notesCfgRows('notes-txt');
+            },
+            renderPreview: function () {
+                return textPreview(notesBuild('txt', 'notes-txt'));
+            },
+            doExport: function () {
+                actions.exportNotes('txt', notesOpts('notes-txt'));
+            }
+        });
         register({
             id: 'notes-md',
             group: 'notes',
             icon: 'fas fa-file-code',
             labelKey: 'exportNotesMd',
-            kind: 'action',
+            kind: 'form',
+            defaults: { includeTranslation: true, includeRomaji: true, includeNote: true, includeTable: true },
+            renderForm: function (container) {
+                container.innerHTML = notesCfgRows('notes-md');
+            },
+            renderPreview: function () {
+                return textPreview(notesBuild('md', 'notes-md'));
+            },
             doExport: function () {
-                actions.exportNotes('md');
+                actions.exportNotes('md', notesOpts('notes-md'));
             }
         });
         register({
@@ -746,9 +808,34 @@
             group: 'notes',
             icon: 'fas fa-file-code',
             labelKey: 'exportNotesHtml',
-            kind: 'action',
+            kind: 'form',
+            defaults: { includeTranslation: true, includeRomaji: true, includeNote: true, includeTable: true },
+            renderForm: function (container) {
+                container.innerHTML = notesCfgRows('notes-html');
+            },
+            renderPreview: function () {
+                return htmlPreview(notesBuild('html', 'notes-html'));
+            },
             doExport: function () {
-                actions.exportNotes('html');
+                actions.exportNotes('html', notesOpts('notes-html'));
+            }
+        });
+        register({
+            id: 'notes-pdf',
+            group: 'notes',
+            icon: 'fas fa-print',
+            labelKey: 'exportNotesPdf',
+            kind: 'form',
+            describe: 'pdfPrintHint',
+            defaults: { includeTranslation: true, includeRomaji: true, includeNote: true, includeTable: true },
+            renderForm: function (container) {
+                container.innerHTML = notesCfgRows('notes-pdf');
+            },
+            renderPreview: function () {
+                return htmlPreview(notesBuild('html', 'notes-pdf'));
+            },
+            doExport: function () {
+                actions.printStudy();
             }
         });
         register({
@@ -778,11 +865,19 @@
             }
         });
         register({
-            id: 'print',
+            id: 'notes-pdf',
             group: 'notes',
             icon: 'fas fa-print',
-            labelKey: 'printStudy',
-            kind: 'action',
+            labelKey: 'exportNotesPdf',
+            kind: 'form',
+            describe: 'pdfPrintHint',
+            defaults: { includeTranslation: true, includeRomaji: true, includeNote: true, includeTable: true },
+            renderForm: function (container) {
+                container.innerHTML = notesCfgRows('notes-pdf');
+            },
+            renderPreview: function () {
+                return htmlPreview(notesBuild('html', 'notes-pdf'));
+            },
             doExport: function () {
                 actions.printStudy();
             }

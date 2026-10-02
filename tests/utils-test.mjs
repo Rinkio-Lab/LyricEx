@@ -201,6 +201,20 @@ ok('notes md skips analysis-free table', !md.includes('hello') || md.indexOf('he
 const htmlNotes = u.buildStudyNotes(noteLyrics, { title: 'Song', format: 'html' });
 ok('notes html doctype', htmlNotes.indexOf('<!DOCTYPE html>') === 0);
 ok('notes html table', htmlNotes.includes('<table') && htmlNotes.includes('<h1>Song</h1>'));
+// v3.3.9: txt format + include* toggles
+const txtNotes = u.buildStudyNotes(noteLyrics, { title: 'Song', format: 'txt', labels: {} });
+ok('notes txt plain heading', txtNotes.startsWith('# Song'));
+ok('notes txt has pipe table', txtNotes.includes('tokei | とけい | 時計'));
+const leanNotes = u.buildStudyNotes(noteLyrics, {
+    title: 'Song',
+    format: 'md',
+    labels: {},
+    includeTranslation: false,
+    includeRomaji: false,
+    includeNote: false,
+    includeTable: false
+});
+ok('notes toggles drop content', !leanNotes.includes('翻译：') && !leanNotes.includes('tokei') && !leanNotes.includes('| romaji'));
 
 // ---- poster (v2.0.0 #19) ----
 const poster = u.buildPosterHTML({ title: 'T', lyricHtml: '歌詞', translation: '译', romaji: 'kashi' });

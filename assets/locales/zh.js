@@ -424,6 +424,14 @@
         cardTranslation: '显示翻译',
         cardRomaji: '显示罗马音',
 
+        /* v3.3.9: study notes export config */
+        exportNotesTxt: 'TXT 学习笔记',
+        exportNotesPdf: 'PDF（打印）',
+        notesInTr: '包含翻译',
+        notesInRomaji: '包含罗马音',
+        notesInNote: '包含备注',
+        notesInTable: '包含学习表格',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

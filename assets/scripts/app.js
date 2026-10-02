@@ -3260,16 +3260,27 @@
         };
     }
 
-    function exportNotes(format) {
+    function exportNotes(format, opts) {
         if (!lyrics.length) return;
-        const doc = window.__lyricexUtils.buildStudyNotes(lyrics, {
-            title: (songData && songData.title) || '',
-            artist: (songData && songData.artist) || '',
-            format: format,
-            labels: studyNotesLabels()
-        });
-        const ext = format === 'html' ? 'html' : 'md';
-        const type = format === 'html' ? 'text/html;charset=utf-8' : 'text/markdown;charset=utf-8';
+        const doc = window.__lyricexUtils.buildStudyNotes(
+            lyrics,
+            Object.assign(
+                {
+                    title: (songData && songData.title) || '',
+                    artist: (songData && songData.artist) || '',
+                    format: format,
+                    labels: studyNotesLabels()
+                },
+                opts || {}
+            )
+        );
+        const ext = format === 'html' ? 'html' : format === 'txt' ? 'txt' : 'md';
+        const type =
+            format === 'html'
+                ? 'text/html;charset=utf-8'
+                : format === 'txt'
+                  ? 'text/plain;charset=utf-8'
+                  : 'text/markdown;charset=utf-8';
         downloadBlob(new Blob([doc], { type: type }), safePackageName() + '-notes.' + ext);
     }
 
@@ -4051,6 +4062,7 @@
         get activeLineIndex() {
             return activeLineIndex;
         },
+        labels: studyNotesLabels(),
         downloadBlob: downloadBlob,
         safePackageName: safePackageName,
         actions: {

@@ -10,6 +10,20 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.9',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '学习笔记导出配置：TXT（新增）/ Markdown / HTML / PDF（打印）四种格式可开关翻译、罗马音、备注与学习表格并实时预览；原「打印学习表」收编为 PDF（打印）条目'
+                },
+                {
+                    type: 'added',
+                    text: 'buildStudyNotes 支持 txt 格式与 include* 内容开关（默认开启，保持原输出）'
+                }
+            ]
+        },
+        {
             version: '3.3.8',
             date: '2026-10-02',
             changes: [

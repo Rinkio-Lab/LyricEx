@@ -424,6 +424,14 @@
         cardTranslation: '訳詞を表示',
         cardRomaji: 'ローマ字を表示',
 
+        /* v3.3.9: study notes export config */
+        exportNotesTxt: 'TXT 学習ノート',
+        exportNotesPdf: 'PDF（印刷）',
+        notesInTr: '訳詞を含める',
+        notesInRomaji: 'ローマ字を含める',
+        notesInNote: 'メモを含める',
+        notesInTable: '学習表を含める',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

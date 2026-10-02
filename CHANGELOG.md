@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.3.9（待发布 · 学习笔记导出配置）
+
+### Added
+- **学习笔记导出配置**：导出学习笔记组的四种格式全部可配置并实时预览——
+  - **TXT**（新增）：纯文本学习笔记（翻译 / 罗马音 / 备注 / 简单分隔表格）。
+  - **Markdown / HTML**：可开关翻译 / 罗马音 / 备注 / 学习表格；HTML 渲染预览。
+  - **PDF（打印）**：升级为打印机图标 + 浏览器打印提示（原「打印学习表」收编），预览渲染笔记文档。
+- `buildStudyNotes` 支持 `txt` 格式与 `includeTranslation / includeRomaji / includeNote / includeTable` 开关（默认开启，保持原输出）。
+
+### Changed
+- 版本号 3.3.8 → 3.3.9；Service Worker 缓存名同步 bump（`lyricex-v3.3.9`）。
+
 ## v3.3.8（待发布 · 分享卡片 / 竖版海报配置）
 
 ### Added
