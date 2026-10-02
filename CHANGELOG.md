@@ -1,5 +1,19 @@
 # Changelog
 
+## v3.4.3（待发布 · 逐字时间轴导入）
+
+### Added
+- **制包页新增「逐字时间轴（卡拉OK）」导入**：粘贴外部工具（LyricEx Karaoke Timings — `wk-align`）生成的词级时间轴 JSON，自动按文本+时间匹配到歌词行，写入 `words` 字段启用逐字卡拉OK高亮。适合平台没有逐字收录的歌曲（如日语老歌——网易云/QQ/酷狗均无词级逐字）。
+
+### Changed
+- 逐字导入检测到音频与歌词时间基准偏移超过 0.15 秒时自动校准行时间（行滚动与卡拉OK高亮同步）；偏移在容差内保持原行时间不变。
+
+### Test
+- utils-test 新增 words 导入断言组：数组/代码围栏解析、文本匹配、重复副歌行按时间最近一对一配对、偏移校准、畸形数据（空数组/空 words/end≤start）拒绝。
+
+### Notes
+- 配套工具仓库：[LyricEx Karaoke Timings](https://github.com/Rinkio-Lab/LyricEx-Karaoke-Timings)（faster-whisper 词级转写 + 官方歌词对齐，时间为真实音频测量）。
+
 ## v3.4.2（待发布 · 网易云 yrc 逐字兜底）
 
 ### Fixed

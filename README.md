@@ -39,7 +39,7 @@ node scripts/serve.mjs
 ## Features
 
 - **Four views** — Lyrics (follow & sing), Study (per-word table: romaji / hiragana / kanji / part-of-speech / meaning), Mixed (both at once), Editor (timeline + export).
-- **Word-by-word karaoke** — highlight follows per-word timing carried in the package (enhanced `.lrc` `<mm:ss.xx>` / ASS `\k` / `.yrc` / `.klyric` import in the editor).
+- **Word-by-word karaoke** — highlight follows per-word timing carried in the package (enhanced `.lrc` `<mm:ss.xx>` / ASS `\k` / `.yrc` / `.klyric` import in the editor; the Build tab can also import word-timing JSON from the external karaoke toolkit when the platform has no word timing).
 - **Furigana & reverse annotation** — kanji with kana on top; flip on 反标注 to render pure kana with kanji riding above (beginner-friendly).
 - **AI word analysis** — build a pack, copy a prompt to any LLM, paste the JSON back; strict validation matches it to your lyrics. No API keys, fully static.
 - **Pack builder workspace** (v2.6.0) — original audio required, optional instrumental track; paste or upload LRC (alternating JP/CN LRC auto-splits into original + translation); NetEase JSON supported; export a v2.1 pack.

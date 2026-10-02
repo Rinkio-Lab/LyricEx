@@ -391,6 +391,77 @@ try {
 }
 ok('ai rejects short analysis', aiThrew);
 
+// ---- word timings import (v3.4.3) ----
+const wtLyrics = [
+    { time: 5, text: '夢ならば どれほど よかったでしょう' },
+    { time: 10, text: '未だに あなたのことを 夢にみる' }
+];
+const parsedWt = u.parseWordTimings(
+    '[{"time":4.95,"text":"夢ならば どれほど よかったでしょう","words":[{"text":"夢なら","start":5.0,"end":5.9},{"text":"ば どれ","start":5.9,"end":6.5},{"text":"ほど よかったでしょう","start":6.5,"end":7.5}]},{"time":9.95,"text":"未だに あなたのことを 夢にみる","words":[{"text":"未だに","start":10.0,"end":10.8},{"text":" あなたのことを","start":10.8,"end":11.6},{"text":" 夢にみる","start":11.6,"end":12.5}]}]'
+);
+eq('wt parse count', parsedWt.results.length, 2);
+eq('wt parse word fields', parsedWt.results[0].words[0], { text: '夢なら', start: 5.0, end: 5.9 });
+const matchedWt = u.matchWordsToLyrics(wtLyrics, parsedWt.results);
+eq('wt matched all', matchedWt.unmatched, []);
+eq('wt attaches words', matchedWt.lyrics[0].words.length, 3);
+eq('wt no calibrate when aligned', matchedWt.calibrated, false);
+eq('wt keeps line time aligned', matchedWt.lyrics[0].time, 5);
+// drift: audio base +2s vs LRC times → offset ≈2 → line times recalibrated
+const driftResults = [
+    { time: 7.0, text: '夢ならば どれほど よかったでしょう', words: [{ text: '夢', start: 7.0, end: 7.4 }, { text: 'ならば', start: 7.4, end: 8.0 }] },
+    { time: 12.0, text: '未だに あなたのことを 夢にみる', words: [{ text: '未だに', start: 12.0, end: 12.7 }, { text: ' あなた', start: 12.7, end: 13.2 }] }
+];
+const calibrated = u.matchWordsToLyrics(wtLyrics, driftResults);
+eq('wt detects offset', Math.round(calibrated.offset * 10) / 10, 2);
+eq('wt recalibrates', calibrated.calibrated, true);
+eq('wt line time recalibrated', Math.round(calibrated.lyrics[0].time * 100) / 100, 6.95);
+// repeated text: each chorus line gets its nearest unused result
+const repLyrics = [
+    { time: 20, text: '今でも あなたは わたしの光' },
+    { time: 60, text: '今でも あなたは わたしの光' }
+];
+const repResults = [
+    { time: 21, text: '今でも あなたは わたしの光', words: [{ text: '今でも', start: 21, end: 21.6 }] },
+    { time: 61, text: '今でも あなたは わたしの光', words: [{ text: '今でも', start: 61, end: 61.6 }] }
+];
+const repMatched = u.matchWordsToLyrics(repLyrics, repResults);
+eq('wt repeated chorus both matched', repMatched.unmatched, []);
+eq('wt repeated nearest first', repMatched.lyrics[0].words[0].start, 21);
+eq('wt repeated nearest second', repMatched.lyrics[1].words[0].start, 61);
+// mismatch: no guess
+const wrongWt = u.matchWordsToLyrics(wtLyrics, [{ time: 5, text: '完全不同的歌词', words: [{ text: 'x', start: 1, end: 2 }] }]);
+eq('wt text mismatch unmatched', wrongWt.unmatched, [0, 1]);
+eq('wt text mismatch no attach', wrongWt.lyrics[0].words, undefined);
+// parse errors
+let wtThrew = false;
+try {
+    u.parseWordTimings('not json');
+} catch (e) {
+    wtThrew = e.name === 'AiImportError';
+}
+ok('wt rejects non-json', wtThrew);
+wtThrew = false;
+try {
+    u.parseWordTimings('{"results":[]}');
+} catch (e) {
+    wtThrew = e.name === 'AiImportError';
+}
+ok('wt rejects empty', wtThrew);
+wtThrew = false;
+try {
+    u.parseWordTimings('[{"time":1,"text":"x","words":[]}]');
+} catch (e) {
+    wtThrew = e.name === 'AiImportError';
+}
+ok('wt rejects empty words', wtThrew);
+wtThrew = false;
+try {
+    u.parseWordTimings('[{"time":1,"text":"x","words":[{"text":"y","start":3,"end":2}]}]');
+} catch (e) {
+    wtThrew = e.name === 'AiImportError';
+}
+ok('wt rejects end<=start', wtThrew);
+
 // ---- AI prompt builder (v2.7.0) ----
 const prompt = u.buildAnalysisPrompt(aiLyrics);
 ok('prompt has role', prompt.includes('日语形态素分析引擎'));

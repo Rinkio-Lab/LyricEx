@@ -1,6 +1,8 @@
 /* LyricEx v2.7.0 – AI analysis result import. Pure; no DOM.
    Parses and validates the JSON an LLM returns for the analysis prompt
    (see utils/ai-prompt.js), then matches entries back onto lyric lines.
+   v3.4.3 also parses/matches word-timing JSON from the karaoke toolkit
+   (github.com/Rinkio-Lab/LyricEx-Karaoke-Timings — wk-align) into `words`.
    Design goals, learned from the friend tool's brittle single-shot import:
    1. Tolerant parsing — strip ```json fences / code blocks and surrounding
       prose before JSON.parse; the model WILL wrap output despite being told
@@ -210,5 +212,167 @@
             return copy;
         });
         return { lyrics: out, unmatched: unmatched };
+    };
+
+    // ---- word timings import (v3.4.3) ----
+    // Parses the JSON produced by the external karaoke toolkit
+    // (github.com/Rinkio-Lab/LyricEx-Karaoke-Timings — wk-align), an array of
+    //   { lineIndex, time, text, words: [{ text, start, end }] }
+    // and attaches per-line `words` for karaoke word highlight.
+    // The toolkit measures timing from the real audio (faster-whisper), so
+    // entry times are audio-truth; official lyric line times (from LRC) may
+    // drift from them (e.g. MV vs album base) — matching is text-first with a
+    // nearest-time pass, then a median offset estimate decides whether line
+    // times are recalibrated so scrolling and karaoke stay in sync.
+    function parseWordTime(v) {
+        return parseEntryTime(v);
+    }
+
+    // Same tolerant extraction as extractJson but for top-level JSON arrays
+    // (the karaoke toolkit emits `[{…},{…}]`, not `{results:[…]}`).
+    function extractArray(text) {
+        var s = String(text == null ? '' : text).trim();
+        s = s.replace(/```(?:json)?\s*([\s\S]*?)```/gi, '$1').trim();
+        var start = s.indexOf('[');
+        if (start < 0) return null;
+        var depth = 0,
+            inStr = false,
+            esc = false;
+        for (var i = start; i < s.length; i++) {
+            var ch = s[i];
+            if (inStr) {
+                if (esc) esc = false;
+                else if (ch === '\\') esc = true;
+                else if (ch === '"') inStr = false;
+                continue;
+            }
+            if (ch === '"') inStr = true;
+            else if (ch === '[') depth++;
+            else if (ch === ']') {
+                depth--;
+                if (depth === 0) return s.slice(start, i + 1);
+            }
+        }
+        return null;
+    }
+
+    u.parseWordTimings = function (text) {
+        var json = extractArray(text) || extractJson(text);
+        if (!json) throw AiImportError('未找到 JSON 数组，请确认粘贴的是逐字时间轴 JSON（wk-align 输出）', ['未找到 JSON 数组']);
+        var data;
+        try {
+            data = JSON.parse(json);
+        } catch (e) {
+            throw AiImportError('JSON 解析失败：' + e.message, ['JSON 语法错误']);
+        }
+        var list = Array.isArray(data) ? data : data && Array.isArray(data.results) ? data.results : null;
+        if (!list) throw AiImportError('返回内容必须是 JSON 数组（或含 results 数组的对象）', ['返回内容必须是数组']);
+        if (!list.length) throw AiImportError('数组不能为空', ['数组不能为空']);
+        var results = list.map(function (o, i) {
+            var label = '第 ' + (i + 1) + ' 条';
+            if (!o || typeof o !== 'object' || Array.isArray(o))
+                throw AiImportError(label + ' 必须是对象', [label + ' 必须是对象']);
+            var time = parseWordTime(o.time);
+            if (time === null) throw AiImportError(label + '的 time 字段无效（需要秒数或 mm:ss）', [label + '的 time 无效']);
+            if (typeof o.text !== 'string' || !o.text.trim())
+                throw AiImportError(label + '的 text 字段必须是非空字符串', [label + '的 text 为空']);
+            if (!Array.isArray(o.words) || !o.words.length)
+                throw AiImportError(label + '的 words 必须是非空数组', [label + '的 words 为空']);
+            var words = o.words.map(function (w, j) {
+                var wl = '第 ' + (i + 1) + ' 条的第 ' + (j + 1) + ' 个词';
+                if (!w || typeof w !== 'object' || Array.isArray(w))
+                    throw AiImportError(wl + ' 必须是对象', [wl + ' 必须是对象']);
+                if (typeof w.text !== 'string' || !w.text.trim())
+                    throw AiImportError(wl + '的 text 字段必须是非空字符串', [wl + '的 text 为空']);
+                var start = Number(w.start);
+                if (!isFinite(start) || start < 0)
+                    throw AiImportError(wl + '的 start 字段无效（需要非负秒数）', [wl + '的 start 无效']);
+                var end = Number(w.end);
+                if (!isFinite(end) || end < 0)
+                    throw AiImportError(wl + '的 end 字段无效（需要非负秒数）', [wl + '的 end 无效']);
+                if (!(end > start)) throw AiImportError(wl + '的 end 必须大于 start', [wl + '的 end 无效']);
+                return { text: w.text, start: start, end: end };
+            });
+            return { time: time, text: o.text, words: words };
+        });
+        return { results: results };
+    };
+
+    // Match word-timing results onto lyric lines, text-first then nearest
+    // (time + estimated offset). Returns { lyrics, unmatched, offset } —
+    // never mutates input. Line times are recalibrated to the first word
+    // start (−0.05s) only when the estimated audio/LRC offset is significant
+    // (> 0.15s); otherwise the pack's line times are left untouched.
+    function median(nums) {
+        if (!nums.length) return 0;
+        var s = nums.slice().sort(function (a, b) { return a - b; });
+        var m = s.length >> 1;
+        return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+    }
+
+    u.matchWordsToLyrics = function (lyrics, results) {
+        // pass 1: unambiguous rows — text that appears exactly once in results
+        var textCount = {};
+        results.forEach(function (r) {
+            var k = normText(r.text);
+            textCount[k] = (textCount[k] || 0) + 1;
+        });
+        var used = {},
+            timeDiffs = [],
+            unmatched = [];
+        var out = lyrics.map(function (line, idx) {
+            var key = normText(line.text);
+            var pick = null;
+            if (textCount[key] === 1) {
+                for (var i = 0; i < results.length; i++) {
+                    if (used[i]) continue;
+                    if (normText(results[i].text) === key) {
+                        pick = i;
+                        break;
+                    }
+                }
+            }
+            if (pick !== null) used[pick] = true;
+            return { line: line, idx: idx, pick: pick };
+        });
+        out.forEach(function (m) {
+            if (m.pick !== null) timeDiffs.push(results[m.pick].time - m.line.time);
+        });
+        var offset = median(timeDiffs);
+        // pass 2: ambiguous rows — same text, nearest time against calibrated line
+        out.forEach(function (m) {
+            if (m.pick !== null) return;
+            var key = normText(m.line.text);
+            var best = -1,
+                bestDiff = Infinity;
+            for (var i = 0; i < results.length; i++) {
+                if (used[i]) continue;
+                if (normText(results[i].text) !== key) continue;
+                var d = Math.abs(results[i].time - (m.line.time + offset));
+                if (d < bestDiff) {
+                    bestDiff = d;
+                    best = i;
+                }
+            }
+            if (best >= 0) used[best] = true;
+            m.pick = best;
+        });
+        var calibrate = Math.abs(offset) > 0.15;
+        var lyricsOut = out.map(function (m) {
+            var line = Object.assign({}, m.line);
+            if (m.pick < 0) {
+                unmatched.push(m.idx);
+                return line;
+            }
+            var r = results[m.pick];
+            line.words = r.words.map(function (w) {
+                return { text: w.text, start: w.start, end: w.end };
+            });
+            if (calibrate && line.words.length) {
+                line.time = Math.max(0, line.words[0].start - 0.05);
+            }
+            return line;
+        });
+        return { lyrics: lyricsOut, unmatched: unmatched, offset: offset, calibrated: calibrate };
     };
 })(typeof window !== 'undefined' ? window : globalThis);

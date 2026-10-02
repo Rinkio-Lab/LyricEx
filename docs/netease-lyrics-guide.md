@@ -2,7 +2,7 @@
 
 > 目标：拿到 LyricEx 制包页可直接粘贴的网易云歌词 JSON。
 > 格式：`{"lrc":{"lyric":"原文 LRC"},"tlyric":{"lyric":"翻译 LRC"},"klyric":{"lyric":"逐字 YRC"}}`
-> 更新时间：v2.8.4 · 接口与命令均已实测
+> 更新时间：v3.4.3 · 接口与命令均已实测
 
 ## 原理
 
@@ -96,3 +96,15 @@ node scripts/fetch-netease-lyrics.mjs --selftest
 ## 应用内帮助页
 
 LyricEx v2.8.4 起侧边栏「系统」组新增**帮助**视图，内嵌本指南要点 + 30 秒演示 GIF；完整指南保留在 `docs/netease-lyrics-guide.md`。
+
+## 方法 D：平台无逐字时——whisper 工具生成（v3.4.3 起）
+
+日语老歌（如 Lemon）在网易云/QQ/酷狗/LRCLIB 常常**没有词级逐字**（`klyric`/`yrc`/`qrc`/`krc`/`hasWordSync` 全为空，已多平台多接口实测确认）。此时可用配套工具仓库 **LyricEx Karaoke Timings**（https://github.com/Rinkio-Lab/LyricEx-Karaoke-Timings）从**音频本身测量**词级时间轴（faster-whisper 词级转写 + 官方歌词对齐，真实数据、非编造）：
+
+```powershell
+$env:HF_ENDPOINT = 'https://hf-mirror.com'   # 国内拉模型走镜像
+uv run wk-transcribe lemon-onvocal.mp3 whisper-lemon.json small   # 音频 → 词级时间戳
+uv run wk-align whisper-lemon.json netease-lemon.json lemon-words.json  # 对齐官方歌词行
+```
+
+`lemon-words.json` 形如 `[{lineIndex,time,text,words:[{text,start,end}]}]`，把**整个文件内容**复制到 LyricEx 制包页「逐字时间轴（卡拉OK）」框，点「导入逐字」：自动按文本+时间匹配到歌词行；检测到音频与歌词时间基准偏移 >0.15 秒时自动校准行时间（行滚动与卡拉OK高亮同步）。

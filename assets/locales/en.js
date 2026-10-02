@@ -581,6 +581,16 @@
         wsAiOk: 'Matched {n} lines',
         wsAiMiss: ', {n} lines unmatched (time or text mismatch)',
         wsAiApplied: 'Analysis applied, ready to export',
+
+        /* v3.4.3: word timings import */
+        wsWords: 'Word Timings (Karaoke)',
+        wsWordsPlaceholder: 'Paste word-timing JSON (wk-align output)',
+        wsImportWords: 'Import Word Timings',
+        wsWordsHint: 'Word timing measured from audio (LyricEx Karaoke Timings tool); paste JSON to auto-match',
+        wsWordsOk: 'Imported word timings for {n} lines',
+        wsWordsMiss: ', {n} lines unmatched (text mismatch)',
+        wsWordsOffset: 'Detected {n}s time offset, line times recalibrated',
+        wsWordsApplied: 'Word timings applied, ready to export',
         wsExport: 'Export',
         wsExportPack: 'Export LyricEx pack',
         wsReset: 'Reset',

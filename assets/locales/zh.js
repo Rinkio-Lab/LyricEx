@@ -577,6 +577,16 @@
         wsAiOk: '已匹配 {n} 行',
         wsAiMiss: '，{n} 行未匹配（时间或文本不一致）',
         wsAiApplied: '分析已应用，可导出',
+
+        /* v3.4.3: word timings import */
+        wsWords: '逐字时间轴（卡拉OK）',
+        wsWordsPlaceholder: '粘贴逐字时间轴 JSON（wk-align 输出）',
+        wsImportWords: '导入逐字',
+        wsWordsHint: '来自音频测量的逐字时间轴（LyricEx Karaoke Timings 工具），粘贴 JSON 自动匹配',
+        wsWordsOk: '已导入 {n} 行逐字',
+        wsWordsMiss: '，{n} 行未匹配（文本不一致）',
+        wsWordsOffset: '检测到时间偏移 {n} 秒，行时间已校准',
+        wsWordsApplied: '逐字已应用，可导出',
         wsExport: '导出',
         wsExportPack: '导出 LyricEx 包',
         wsReset: '重置',

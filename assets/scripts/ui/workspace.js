@@ -25,6 +25,7 @@
         var instrumentalFile = null; // File | null (optional accompaniment)
         var lines = []; // parsed lyric lines (draft)
         var analysisApplied = false; // AI analysis has been merged into lines
+        var wordsApplied = false; // word timings have been merged into lines
         var draftTitle = '';
 
         // ---- render ----
@@ -165,6 +166,27 @@
                 '</div>' +
                 '<div class="ws-status" data-ws-ai-status></div>' +
                 '</div>';
+            // ---- word timings import (v3.4.3) ----
+            h +=
+                '<div class="ws-group"><div class="ws-group-title">' +
+                t('wsWords') +
+                '</div>' +
+                '<textarea class="ws-ai-result" data-ws-words rows="6" spellcheck="false" placeholder="' +
+                t('wsWordsPlaceholder') +
+                '"></textarea>' +
+                '<div class="ws-ai-row">' +
+                '<button type="button" class="editor-btn" data-ws-clear-words><i class="fas fa-times"></i> ' +
+                t('wsClear') +
+                '</button>' +
+                '<button class="editor-btn" data-ws-words-import><i class="fas fa-file-import"></i> ' +
+                t('wsImportWords') +
+                '</button>' +
+                '<span class="ws-ai-hint">' +
+                t('wsWordsHint') +
+                '</span>' +
+                '</div>' +
+                '<div class="ws-status" data-ws-words-status></div>' +
+                '</div>';
             // ---- export group (v2.8.0) ----
             h +=
                 '<div class="ws-group"><div class="ws-group-title">' +
@@ -191,11 +213,13 @@
             var netease = pane.querySelector('[data-ws-netease]');
             var chunk = pane.querySelector('[data-ws-chunk]');
             var ai = pane.querySelector('[data-ws-ai]');
+            var words = pane.querySelector('[data-ws-words]');
             if (main && _lrcMain) main.value = _lrcMain;
             if (trans && _lrcTrans) trans.value = _lrcTrans;
             if (netease && _neteaseText) netease.value = _neteaseText;
             if (chunk && _chunkSize) chunk.value = _chunkSize;
             if (ai && _aiResult) ai.value = _aiResult;
+            if (words && _wordsResult) words.value = _wordsResult;
         }
 
         // textarea contents survive re-render (they are not part of draft state)
@@ -203,13 +227,16 @@
             _lrcTrans = '',
             _neteaseText = '',
             _chunkSize = '',
-            _aiResult = '';
+            _aiResult = '',
+            _wordsResult = '';
 
         function updateStatus() {
             var el = viewContent.querySelector('[data-ws-status]');
             if (el) el.textContent = lines.length ? t('wsParsedN').replace('{n}', lines.length) : '';
             var ai = viewContent.querySelector('[data-ws-ai-status]');
             if (ai && analysisApplied) ai.textContent = t('wsAiApplied');
+            var words = viewContent.querySelector('[data-ws-words-status]');
+            if (words && wordsApplied) words.textContent = t('wsWordsApplied');
         }
 
         // ---- parse ----
@@ -222,6 +249,7 @@
             _neteaseText = neteaseEl ? neteaseEl.value.trim() : '';
             lines = [];
             analysisApplied = false;
+            wordsApplied = false;
             try {
                 if (_neteaseText) {
                     var parsed = U.parseNeteaseLyrics(JSON.parse(_neteaseText));
@@ -381,6 +409,37 @@
             }
         }
 
+        // ---- word timings import (v3.4.3) ----
+        function importWordTimings() {
+            var wEl = viewContent.querySelector('[data-ws-words]');
+            if (!wEl) return;
+            _wordsResult = wEl.value;
+            if (!lines.length) {
+                parseLyrics();
+            }
+            if (!lines.length) {
+                setStatus(t('wsNeedLrc'), true);
+                return;
+            }
+            var st = viewContent.querySelector('[data-ws-words-status]');
+            try {
+                var parsed = U.parseWordTimings(_wordsResult);
+                var matched = U.matchWordsToLyrics(lines, parsed.results);
+                lines = matched.lyrics;
+                wordsApplied = true;
+                if (st) {
+                    var msg = t('wsWordsOk').replace('{n}', String(lines.length - matched.unmatched.length));
+                    if (matched.unmatched.length)
+                        msg += ' ' + t('wsWordsMiss').replace('{n}', String(matched.unmatched.length));
+                    if (matched.calibrated)
+                        msg += ' ' + t('wsWordsOffset').replace('{n}', String(Math.round(matched.offset * 10) / 10));
+                    st.textContent = msg;
+                }
+            } catch (e) {
+                if (st) st.textContent = e && e.message ? e.message : String(e);
+            }
+        }
+
         // ---- export (v2.8.0) ----
         function exportPack() {
             if (!audioFile) {
@@ -475,6 +534,14 @@
                     updateStatus();
                     return;
                 }
+                if (e.target.closest('[data-ws-clear-words]')) {
+                    _wordsResult = '';
+                    wordsApplied = false;
+                    var wordsTa = viewContent.querySelector('[data-ws-words]');
+                    if (wordsTa) wordsTa.value = '';
+                    updateStatus();
+                    return;
+                }
                 if (e.target.closest('[data-ws-parse]')) {
                     parseLyrics();
                     return;
@@ -489,6 +556,10 @@
                 }
                 if (e.target.closest('[data-ws-ai-import]')) {
                     importAiResult();
+                    return;
+                }
+                if (e.target.closest('[data-ws-words-import]')) {
+                    importWordTimings();
                     return;
                 }
                 if (e.target.closest('[data-ws-export]')) {
@@ -571,6 +642,10 @@
                 if (ai) {
                     _aiResult = ai.value;
                 }
+                var words = e.target.closest('[data-ws-words]');
+                if (words) {
+                    _wordsResult = words.value;
+                }
             });
             // drag & drop media onto cards
             viewContent.addEventListener('dragover', function (e) {
@@ -603,12 +678,14 @@
             instrumentalFile = null;
             lines = [];
             analysisApplied = false;
+            wordsApplied = false;
             draftTitle = '';
             _lrcMain = '';
             _lrcTrans = '';
             _neteaseText = '';
             _chunkSize = '';
             _aiResult = '';
+            _wordsResult = '';
             render();
         }
 

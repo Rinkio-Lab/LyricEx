@@ -578,6 +578,16 @@
         wsAiOk: '{n} 行をマッチ',
         wsAiMiss: '、{n} 行が不一致（時間またはテキスト）',
         wsAiApplied: '解析済み、書き出し可',
+
+        /* v3.4.3: word timings import */
+        wsWords: 'ワードタイミング（カラオケ）',
+        wsWordsPlaceholder: 'ワードタイミング JSON を貼り付け（wk-align 出力）',
+        wsImportWords: '逐字をインポート',
+        wsWordsHint: '音声計測による逐字タイミング（LyricEx Karaoke Timings ツール）、JSON を貼り付けて自動マッチ',
+        wsWordsOk: '逐字を {n} 行インポートしました',
+        wsWordsMiss: '、{n} 行が不一致（テキスト）',
+        wsWordsOffset: '時間オフセット {n} 秒を検出、行時間を校正しました',
+        wsWordsApplied: '逐字済み、書き出し可',
         wsExport: '書き出し',
         wsExportPack: 'LyricEx パックを書き出し',
         wsReset: 'リセット',

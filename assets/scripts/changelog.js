@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.4.3',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '制包页新增「逐字时间轴（卡拉OK）」导入：粘贴 LyricEx Karaoke Timings 工具（wk-align）生成的词级时间轴 JSON，按文本+时间自动匹配写入 words，启用逐字卡拉OK高亮'
+                },
+                {
+                    type: 'changed',
+                    text: '逐字导入检测到音频/歌词时间基准偏移 >0.15s 时自动校准行时间，保证行滚动与卡拉OK同步；偏移小时保持原行时间'
+                },
+                {
+                    type: 'test',
+                    text: 'utils-test 新增 words 导入断言组（数组/围栏解析、文本匹配、重复行时间最近配对、偏移校准、畸形数据拒绝）'
+                }
+            ]
+        },
+        {
             version: '3.4.2',
             date: '2026-10-02',
             changes: [
