@@ -432,6 +432,9 @@
         notesInNote: '包含备注',
         notesInTable: '包含学习表格',
 
+        /* v3.3.10: reverse annotation */
+        reverseRuby: '反标注（纯假名 + 假名上标汉字）',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

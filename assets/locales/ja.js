@@ -432,6 +432,9 @@
         notesInNote: 'メモを含める',
         notesInTable: '学習表を含める',
 
+        /* v3.3.10: reverse annotation */
+        reverseRuby: '逆ルビ（かなのみ、かなの上に漢字）',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

@@ -169,6 +169,38 @@
         return out;
     };
 
+    // ===================== REVERSE RUBY (v3.3.10) =====================
+    // Learner mode: 汉字假名混排 → 纯假名，汉字以 <rt> 标在假名上方（与
+    // annotateRuby 方向相反）。Same greedy cursor-scan: each analysis entry whose
+    // kanji appears in the text is replaced by its hiragana reading wrapped as
+    // <ruby>kana<rt>kanji</rt></ruby>. Entries lacking a reading, kana-only
+    // entries and unmatched kanji are skipped (text passes through untouched);
+    // returns null when nothing could be annotated.
+    lib.annotateReverseRuby = function (text, analysis) {
+        if (!Array.isArray(analysis) || analysis.length === 0) return null;
+        var s = String(text == null ? '' : text);
+        var out = [],
+            cursor = 0,
+            used = false;
+        for (var i = 0; i < analysis.length; i++) {
+            var item = analysis[i];
+            var kanji = item && item.kanji != null ? String(item.kanji) : '';
+            var reading = item && item.hiragana != null ? String(item.hiragana) : '';
+            if (!kanji || !reading) continue;
+            if (!/[\u3400-\u4dbf\u4e00-\u9fff]/.test(kanji)) continue; // no ideographs
+            if (kanji === reading) continue; // same surface: nothing to swap
+            var idx = s.indexOf(kanji, cursor);
+            if (idx < 0) continue; // data out of sync with text: skip, never guess
+            if (idx > cursor) out.push({ type: 'text', text: s.slice(cursor, idx) });
+            out.push({ type: 'ruby', text: reading, reading: kanji });
+            cursor = idx + kanji.length;
+            used = true;
+        }
+        if (!used) return null;
+        if (cursor < s.length) out.push({ type: 'text', text: s.slice(cursor) });
+        return out;
+    };
+
     // Katakana → hiragana fold (Unicode blocks are parallel at 0x60 offset) so
     // a katakana surface can anchor against a hiragana reading (メモ帳/めもちょう).
     lib.foldKana = function (s) {
@@ -470,6 +502,7 @@
         subLine: 'auto', // off | auto | translation | romaji
         showFurigana: true,
         showRuby: true, // v1.6.0: kanji ruby in lyric text
+        reverseRuby: false, // v3.3.10: learner mode — pure kana with kanji above
         wordKaraoke: true, // master toggle; needs per-word timing in package
         spectrum: false,
         // v2.1.1: cinema backdrop effects (设置 → 外观 → 影院)

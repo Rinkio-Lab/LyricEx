@@ -252,6 +252,7 @@
             },
             { group: 'lyrics', key: 'showFurigana', type: 'toggle', labelKey: 'furigana' },
             { group: 'lyrics', key: 'showRuby', type: 'toggle', labelKey: 'showRuby' },
+            { group: 'lyrics', key: 'reverseRuby', type: 'toggle', labelKey: 'reverseRuby' },
             { group: 'lyrics', key: 'wordKaraoke', type: 'toggle', labelKey: 'wordKaraoke' },
             { group: 'lyrics', key: 'spectrum', type: 'toggle', labelKey: 'spectrum' },
             {
@@ -428,6 +429,7 @@
             subLine: 'fa-align-left',
             showFurigana: 'fa-italic',
             showRuby: 'fa-language',
+            reverseRuby: 'fa-exchange-alt',
             wordKaraoke: 'fa-music',
             spectrum: 'fa-wave-square',
             defaultView: 'fa-th-large',

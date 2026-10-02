@@ -10,6 +10,20 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.10',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '反标注（设置 → 歌词显示）：开启后歌词渲染为纯假名，原汉字以小字标在假名上方，方便初学者认读；无分析数据自动回退原样'
+                },
+                {
+                    type: 'added',
+                    text: 'lib.annotateReverseRuby(text, analysis) 纯函数入 lib'
+                }
+            ]
+        },
+        {
             version: '3.3.9',
             date: '2026-10-02',
             changes: [

@@ -216,6 +216,18 @@ const leanNotes = u.buildStudyNotes(noteLyrics, {
 });
 ok('notes toggles drop content', !leanNotes.includes('翻译：') && !leanNotes.includes('tokei') && !leanNotes.includes('| romaji'));
 
+// ---- reverse ruby (v3.3.10) ----
+const rev = globalThis.__lyricexLib.annotateReverseRuby('書き連ねても', [
+    { kanji: '書き', hiragana: 'かき' },
+    { kanji: '連', hiragana: 'つら' }
+]);
+ok('reverse ruby swaps kanji to kana', rev !== null && rev[0].text === 'かき');
+ok('reverse ruby keeps kana tail', rev && rev[rev.length - 1].text === 'ねても');
+const revNone = globalThis.__lyricexLib.annotateReverseRuby('アイウエオ', [{ kanji: 'a', hiragana: 'えい' }]);
+ok('reverse ruby null when nothing matches', revNone === null);
+const revSame = globalThis.__lyricexLib.annotateReverseRuby('本気', [{ kanji: '本気', hiragana: 'ほんき' }]);
+ok('reverse ruby whole word kana', revSame !== null && revSame[0].text === 'ほんき' && revSame[0].reading === '本気');
+
 // ---- poster (v2.0.0 #19) ----
 const poster = u.buildPosterHTML({ title: 'T', lyricHtml: '歌詞', translation: '译', romaji: 'kashi' });
 ok('poster portrait dims', poster.includes('1080px') && poster.includes('1920px'));

@@ -1229,6 +1229,19 @@
     // lines (ponytail: combining per-word timing with morpheme-level ruby would
     // need the package to carry the token→morpheme alignment — format v2).
     function rubySegmentsHTML(line) {
+        // v3.3.10: reverse annotation (pure kana, kanji above) wins when on —
+        // learner mode is meant to replace the kanji-mixed reading, not layer
+        // on top of it.
+        if (settings.reverseRuby) {
+            const rev = L.annotateReverseRuby(line.text, line.analysis);
+            if (rev !== null)
+                return rev
+                    .map(function (s) {
+                        if (s.type === 'text') return esc(s.text);
+                        return '<ruby>' + esc(s.text) + '<rt>' + esc(s.reading) + '</rt></ruby>';
+                    })
+                    .join('');
+        }
         if (!settings.showRuby) return null;
         const segs = L.annotateRuby(line.text, line.analysis);
         if (!segs) return null;

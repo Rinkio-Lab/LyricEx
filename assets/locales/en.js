@@ -435,6 +435,9 @@
         notesInNote: 'Include notes',
         notesInTable: 'Include study tables',
 
+        /* v3.3.10: reverse annotation */
+        reverseRuby: 'Reverse annotation (pure kana, kanji above)',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',
