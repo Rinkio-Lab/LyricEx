@@ -383,6 +383,16 @@
         txtModeTimed: 'タイムスタンプ付き',
         txtModeTimedTr: 'タイムスタンプ + 訳詞',
 
+        /* v3.3.3: Markdown/HTML lyrics export */
+        exportMd: 'Markdown 歌詞',
+        exportHtml: 'HTML 歌詞',
+        mdInTr: '訳詞を含める',
+        mdRuby: 'ルビ振り',
+        mdTimed: 'タイムスタンプ付き',
+        htmlTheme: '配色',
+        htmlThemeLight: 'ライト',
+        htmlThemeDark: 'ダーク',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.3.3（待发布 · Markdown / HTML 歌词导出）
+
+### Added
+- **Markdown 歌词导出**：导出歌词组新增 Markdown 条目，可开关翻译（引用块）、假名标注（内联 `<ruby>`）与时间戳，实时预览。
+- **HTML 歌词导出**：导出歌词组新增 HTML 条目，输出自带内联样式的完整网页（标题/歌手/歌词行 + 翻译），可开关翻译与假名标注、切换浅色/深色配色，实时预览。
+- **构建器入 utils**：`buildLyricsMarkdown` / `buildLyricsHtml` 纯函数，预览与导出共用；ruby 分段复用 lib.annotateRuby（不受界面「显示假名」设置影响）。
+
+### Changed
+- 版本号 3.3.2 → 3.3.3；Service Worker 缓存名同步 bump（`lyricex-v3.3.3`）。
+
+### Test
+- utils-test 新增 Markdown / HTML 构建器断言（标题、时间戳、引用翻译、HTML 转义、深色主题、歌手副标题）。
+
 ## v3.3.2（待发布 · TXT 歌词导出配置）
 
 ### Added

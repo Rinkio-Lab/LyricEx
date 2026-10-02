@@ -332,6 +332,102 @@
             }
         });
         register({
+            id: 'md',
+            group: 'lyrics',
+            icon: 'fas fa-file-code',
+            labelKey: 'exportMd',
+            kind: 'form',
+            defaults: { includeTranslation: true, ruby: true, timed: false },
+            renderForm: function (container) {
+                var d = optsStore.md || (optsStore.md = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgCheckbox('includeTranslation', 'mdInTr', d.includeTranslation) +
+                    cfgCheckbox('ruby', 'mdRuby', d.ruby) +
+                    cfgCheckbox('timed', 'mdTimed', d.timed);
+            },
+            renderPreview: function () {
+                var d = optsStore.md || {};
+                return textPreview(
+                    u.buildLyricsMarkdown(appCtx.lyrics, appCtx.offset, {
+                        title: appCtx.songData && appCtx.songData.title,
+                        includeTranslation: d.includeTranslation,
+                        ruby: d.ruby,
+                        timed: d.timed
+                    })
+                );
+            },
+            doExport: function () {
+                var d = optsStore.md || {};
+                appCtx.downloadBlob(
+                    new Blob(
+                        [
+                            u.buildLyricsMarkdown(appCtx.lyrics, appCtx.offset, {
+                                title: appCtx.songData && appCtx.songData.title,
+                                includeTranslation: d.includeTranslation,
+                                ruby: d.ruby,
+                                timed: d.timed
+                            })
+                        ],
+                        { type: 'text/markdown;charset=utf-8' }
+                    ),
+                    appCtx.safePackageName() + '.md'
+                );
+            }
+        });
+        register({
+            id: 'html',
+            group: 'lyrics',
+            icon: 'fas fa-file-code',
+            labelKey: 'exportHtml',
+            kind: 'form',
+            defaults: { includeTranslation: true, ruby: true, theme: 'light' },
+            renderForm: function (container) {
+                var d = optsStore.html || (optsStore.html = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgCheckbox('includeTranslation', 'mdInTr', d.includeTranslation) +
+                    cfgCheckbox('ruby', 'mdRuby', d.ruby) +
+                    cfgSelect(
+                        'theme',
+                        'htmlTheme',
+                        [
+                            { v: 'light', k: 'htmlThemeLight' },
+                            { v: 'dark', k: 'htmlThemeDark' }
+                        ],
+                        d.theme
+                    );
+            },
+            renderPreview: function () {
+                var d = optsStore.html || {};
+                return textPreview(
+                    u.buildLyricsHtml(appCtx.lyrics, appCtx.offset, {
+                        title: appCtx.songData && appCtx.songData.title,
+                        artist: appCtx.songData && appCtx.songData.artist,
+                        includeTranslation: d.includeTranslation,
+                        ruby: d.ruby,
+                        theme: d.theme
+                    })
+                );
+            },
+            doExport: function () {
+                var d = optsStore.html || {};
+                appCtx.downloadBlob(
+                    new Blob(
+                        [
+                            u.buildLyricsHtml(appCtx.lyrics, appCtx.offset, {
+                                title: appCtx.songData && appCtx.songData.title,
+                                artist: appCtx.songData && appCtx.songData.artist,
+                                includeTranslation: d.includeTranslation,
+                                ruby: d.ruby,
+                                theme: d.theme
+                            })
+                        ],
+                        { type: 'text/html;charset=utf-8' }
+                    ),
+                    appCtx.safePackageName() + '.html'
+                );
+            }
+        });
+        register({
             id: 'srt',
             group: 'lyrics',
             icon: 'fas fa-closed-captioning',

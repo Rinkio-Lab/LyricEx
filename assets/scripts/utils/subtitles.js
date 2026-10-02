@@ -209,4 +209,99 @@
               })
             : null;
     };
+
+    // ---- Markdown / HTML lyrics exports (v3.3.3) ----
+    function escHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+    // <ruby> segments from lib.annotateRuby; falls back to escaped text when the
+    // line has no analysis or annotateRuby is unavailable.
+    function rubySegments(line, escFn) {
+        var lib = root.__lyricexLib;
+        if (!lib || typeof lib.annotateRuby !== 'function') return null;
+        var segs = lib.annotateRuby(line.text, line.analysis);
+        if (!segs) return null;
+        return segs
+            .map(function (s) {
+                if (s.type === 'text') return escFn(s.text);
+                if (s.type === 'furigana')
+                    return s.segs
+                        .map(function (g) {
+                            return g.r ? '<ruby>' + escFn(g.t) + '<rt>' + escFn(g.r) + '</rt></ruby>' : escFn(g.t);
+                        })
+                        .join('');
+                return '<ruby>' + escFn(s.text) + '<rt>' + escFn(s.reading) + '</rt></ruby>';
+            })
+            .join('');
+    }
+
+    // Markdown lyrics document. opts: { title, includeTranslation, ruby, timed } —
+    // ruby emits inline <ruby> HTML (GitHub-flavored Markdown renders it), timed
+    // prefixes each line with an `[mm:ss]` code span.
+    u.buildLyricsMarkdown = function (lyrics, offset, opts) {
+        opts = opts || {};
+        var out = [];
+        if (opts.title) out.push('# ' + clean(String(opts.title)), '');
+        lyrics.forEach(function (l) {
+            var ruby = opts.ruby ? rubySegments(l, escHtml) : null;
+            var line = ruby !== null ? ruby : clean(lineText(l));
+            if (opts.timed)
+                line = '`' + fmtLrcTime(Math.max(0, Number(l.time) - (Number(offset) || 0))) + '` ' + line;
+            if (line) out.push(line);
+            if (opts.includeTranslation) {
+                var tr = clean(lineTranslation(l));
+                if (tr) out.push('> ' + tr);
+            }
+            out.push('');
+        });
+        return out.join('\n');
+    };
+
+    // Standalone HTML lyrics document. opts: { title, includeTranslation, ruby,
+    // theme: 'light'|'dark' } — ships its own inline CSS, printable as-is.
+    u.buildLyricsHtml = function (lyrics, offset, opts) {
+        opts = opts || {};
+        var dark = opts.theme === 'dark';
+        var css =
+            ':root{--bg:' +
+            (dark ? '#16171a' : '#f7f7f5') +
+            ';--fg:' +
+            (dark ? '#e8e6e3' : '#26241f') +
+            ';--muted:' +
+            (dark ? '#9a968f' : '#6b675f') +
+            ';--accent:' +
+            (dark ? '#e0a05a' : '#8a5a2b') +
+            '}*{box-sizing:border-box}body{margin:0;padding:32px 20px;background:var(--bg);color:var(--fg);font-family:-apple-system,"Segoe UI","Noto Sans SC","M PLUS Rounded 1c",sans-serif}.wrap{max-width:640px;margin:0 auto}h1{font-size:22px;margin:0 0 4px}h2{font-size:14px;font-weight:400;color:var(--muted);margin:0 0 28px}.line{margin-bottom:22px}.jp{font-size:19px;line-height:1.9;margin:0;font-family:"M PLUS Rounded 1c","Noto Sans SC",sans-serif}.tr{font-size:13.5px;color:var(--muted);margin:6px 0 0}ruby{font-size:19px;line-height:1.9}rt{font-size:9px}';
+        var title = opts.title ? '<h1>' + escHtml(clean(String(opts.title))) + '</h1>' : '';
+        var rows = lyrics
+            .map(function (l) {
+                var ruby = opts.ruby ? rubySegments(l, escHtml) : null;
+                var jp = ruby !== null ? ruby : escHtml(clean(lineText(l)));
+                var tr = opts.includeTranslation ? clean(lineTranslation(l)) : '';
+                return (
+                    '<div class="line"><p class="jp">' +
+                    jp +
+                    '</p>' +
+                    (tr ? '<p class="tr">' + escHtml(tr) + '</p>' : '') +
+                    '</div>'
+                );
+            })
+            .join('\n');
+        var artist = opts.artist ? '<h2>' + escHtml(clean(String(opts.artist))) + '</h2>' : '';
+        return (
+            '<!DOCTYPE html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>' +
+            escHtml(clean(opts.title || '')) +
+            '</title>\n<style>' +
+            css +
+            '</style>\n</head>\n<body>\n<div class="wrap">' +
+            title +
+            artist +
+            rows +
+            '</div>\n</body>\n</html>\n'
+        );
+    };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -386,6 +386,16 @@
         txtModeTimed: 'With timestamps',
         txtModeTimedTr: 'Timestamps + translation',
 
+        /* v3.3.3: Markdown/HTML lyrics export */
+        exportMd: 'Markdown lyrics',
+        exportHtml: 'HTML lyrics',
+        mdInTr: 'Include translation',
+        mdRuby: 'Furigana ruby marks',
+        mdTimed: 'With timestamps',
+        htmlTheme: 'Theme',
+        htmlThemeLight: 'Light',
+        htmlThemeDark: 'Dark',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

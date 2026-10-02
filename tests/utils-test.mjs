@@ -105,6 +105,26 @@ const txtTr = u.buildLyricsTxt([{ time: 1, text: '本気', translation: '认真'
 ok('txt translation indented', txtTr === '本気\n    认真\n');
 const txtTimed = u.buildLyricsTxt(lyrics, 0, 'timed');
 ok('txt timed has stamps', txtTimed.includes('[00:10.00] a') && txtTimed.includes('[00:15.00] c'));
+// v3.3.3: Markdown/HTML lyrics builders
+const mdLyrics = u.buildLyricsMarkdown([{ time: 1, text: '本気', translation: '认真' }], 0, {
+    title: 'T',
+    includeTranslation: true,
+    ruby: false,
+    timed: true
+});
+ok('md has heading', mdLyrics.startsWith('# T'));
+ok('md has timed line and quote', mdLyrics.includes('`[00:01.00]` 本気') && mdLyrics.includes('> 认真'));
+const htmlDoc = u.buildLyricsHtml([{ time: 1, text: '<a>', translation: 'X' }], 0, {
+    title: 'T',
+    artist: 'A',
+    includeTranslation: true,
+    ruby: false,
+    theme: 'dark'
+});
+ok('html is full document', htmlDoc.includes('<!DOCTYPE html>') && htmlDoc.includes('<style>'));
+ok('html escapes text', htmlDoc.includes('&lt;a&gt;'));
+ok('html dark theme applied', htmlDoc.includes('--bg:#16171a'));
+ok('html has artist subheading', htmlDoc.includes('<h2>A</h2>'));
 
 // ---- multi-bookmark loop (v2.0.0 #15) ----
 const marks = [

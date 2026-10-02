@@ -383,6 +383,16 @@
         txtModeTimed: '带时间戳',
         txtModeTimedTr: '带时间戳 + 翻译',
 
+        /* v3.3.3: Markdown/HTML lyrics export */
+        exportMd: 'Markdown 歌词',
+        exportHtml: 'HTML 歌词',
+        mdInTr: '附带翻译',
+        mdRuby: '假名标注（ruby）',
+        mdTimed: '带时间戳',
+        htmlTheme: '配色',
+        htmlThemeLight: '浅色',
+        htmlThemeDark: '深色',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

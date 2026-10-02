@@ -10,6 +10,28 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.3',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: 'Markdown 歌词导出：可开关翻译（引用块）、假名标注（内联 ruby）与时间戳，实时预览'
+                },
+                {
+                    type: 'added',
+                    text: 'HTML 歌词导出：输出自带内联样式的完整网页，可开关翻译与假名标注、切换浅/深配色，实时预览'
+                },
+                {
+                    type: 'added',
+                    text: 'buildLyricsMarkdown / buildLyricsHtml 入 utils，ruby 复用 lib.annotateRuby'
+                },
+                {
+                    type: 'test',
+                    text: 'utils-test 新增 Markdown / HTML 构建器断言'
+                }
+            ]
+        },
+        {
             version: '3.3.2',
             date: '2026-10-02',
             changes: [
