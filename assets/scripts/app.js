@@ -247,7 +247,8 @@
         miniApi = null,
         cinemaApi = null,
         settingsApi = null,
-        aboutApi = null;
+        aboutApi = null,
+        exportApi = null;
 
     // =========================== SETTINGS ===========================
     let settings = L.mergeSettings(null, L.SETTINGS_DEFAULTS);
@@ -3578,7 +3579,11 @@
             openVideo: videoApi.open,
             printStudy: printStudySheet,
             exportNotes: exportNotes,
-            exportPoster: exportPoster
+            exportPoster: exportPoster,
+            // v3.3.0: unified export dialog owns every format
+            openExport: function () {
+                exportApi.open();
+            }
         });
         workspaceApi.bind();
         sidebarStatus.innerHTML = '<span>' + t('waitingUpload') + '</span>';
@@ -3672,6 +3677,7 @@
         cinemaApi.bind();
         shareApi.bind();
         videoApi.bind();
+        exportApi.bind();
 
         document.addEventListener('keydown', handleKeydown);
 
@@ -4015,6 +4021,24 @@
     videoApi = window.__lyricexVideoExport(ctx);
     shareApi = window.__lyricexShare(ctx);
     editorApi = window.__lyricexEditor(ctx);
+    // v3.3.0: unified export dialog — actions injected so this controller never
+    // imports app-level export code (same pattern as editor's bind(actions)).
+    exportApi = window.__lyricexExportDialog({
+        t: t,
+        get lyrics() {
+            return lyrics;
+        },
+        actions: {
+            exportPackage: exportPackageZip,
+            exportLrc: exportLrc,
+            exportSrt: exportSrt,
+            exportAss: exportAss,
+            openVideo: videoApi.open,
+            exportPoster: exportPoster,
+            exportNotes: exportNotes,
+            printStudy: printStudySheet
+        }
+    });
     workspaceApi = window.__lyricexWorkspace(ctx);
     searchApi = window.__lyricexSearch(ctx);
     miniApi = window.__lyricexMini(ctx);

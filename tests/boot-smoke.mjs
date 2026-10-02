@@ -133,6 +133,7 @@ await import('../assets/scripts/ui/mini.js');
 await import('../assets/scripts/ui/cinema.js');
 await import('../assets/scripts/ui/about.js');
 await import('../assets/scripts/ui/settings.js');
+await import('../assets/scripts/ui/export-dialog.js'); // v3.3.0 unified export dialog
 await import('../assets/scripts/help-content.js');
 await import('../assets/scripts/app.js');
 await import('../assets/scripts/ui/focus-trap.js'); // v2.2.0 a11y module (same order as index.html)

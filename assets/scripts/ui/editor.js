@@ -304,38 +304,17 @@
                     '</button>' +
                     '</div></div>';
                 // ---- group: 导出 ----
+                // v3.3.0: all export formats merged behind one button; the
+                // unified export dialog (ui/export-dialog.js) owns the per-
+                // format options + preview.
                 html +=
                     '<div class="editor-group">' +
                     '<div class="editor-group-label">' +
                     t('editorGroupExport') +
                     '</div>' +
                     '<div class="editor-group-body">' +
-                    '<button class="editor-btn" id="exportPackageBtn"><i class="fas fa-archive"></i> ' +
-                    t('exportPackage') +
-                    '</button>' +
-                    '<button class="editor-btn" id="exportLrcBtn"><i class="fas fa-file-alt"></i> ' +
-                    t('exportLrc') +
-                    '</button>' +
-                    '<button class="editor-btn" id="exportSrtBtn"><i class="fas fa-closed-captioning"></i> ' +
-                    t('exportSrt') +
-                    '</button>' +
-                    '<button class="editor-btn" id="exportAssBtn"><i class="fas fa-closed-captioning"></i> ' +
-                    t('exportAss') +
-                    '</button>' +
-                    '<button class="editor-btn" id="exportVideoBtn"><i class="fas fa-video"></i> ' +
-                    t('exportVideo') +
-                    '</button>' +
-                    '<button class="editor-btn" id="printStudyBtn"><i class="fas fa-print"></i> ' +
-                    t('printStudy') +
-                    '</button>' +
-                    '<button class="editor-btn" id="exportNotesBtn"><i class="fas fa-file-code"></i> ' +
-                    t('exportNotesMd') +
-                    '</button>' +
-                    '<button class="editor-btn" id="exportNotesHtmlBtn"><i class="fas fa-file-code"></i> ' +
-                    t('exportNotesHtml') +
-                    '</button>' +
-                    '<button class="editor-btn" id="posterBtn"><i class="fas fa-mobile-alt"></i> ' +
-                    t('exportPoster') +
+                    '<button class="editor-btn" id="exportDialogBtn"><i class="fas fa-download"></i> ' +
+                    t('exportDialog') +
                     '</button>' +
                     '</div></div>';
                 html += '</div>'; // close editor-toolbar
@@ -586,40 +565,8 @@
                     reloadEditorFile();
                     return;
                 }
-                if (e.target.closest('#exportPackageBtn')) {
-                    actions.exportPackage();
-                    return;
-                }
-                if (e.target.closest('#exportLrcBtn')) {
-                    actions.exportLrc();
-                    return;
-                }
-                if (e.target.closest('#exportSrtBtn')) {
-                    actions.exportSrt();
-                    return;
-                }
-                if (e.target.closest('#exportAssBtn')) {
-                    actions.exportAss();
-                    return;
-                }
-                if (e.target.closest('#exportVideoBtn')) {
-                    actions.openVideo();
-                    return;
-                }
-                if (e.target.closest('#printStudyBtn')) {
-                    actions.printStudy();
-                    return;
-                }
-                if (e.target.closest('#exportNotesBtn')) {
-                    actions.exportNotes('md');
-                    return;
-                }
-                if (e.target.closest('#exportNotesHtmlBtn')) {
-                    actions.exportNotes('html');
-                    return;
-                }
-                if (e.target.closest('#posterBtn')) {
-                    actions.exportPoster();
+                if (e.target.closest('#exportDialogBtn')) {
+                    actions.openExport();
                     return;
                 }
                 if (e.target.closest('#importWordsBtn')) {

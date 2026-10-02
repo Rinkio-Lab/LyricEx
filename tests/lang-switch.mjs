@@ -287,6 +287,7 @@ await import('../assets/scripts/ui/mini.js');
 await import('../assets/scripts/ui/cinema.js');
 await import('../assets/scripts/ui/about.js');
 await import('../assets/scripts/ui/settings.js');
+await import('../assets/scripts/ui/export-dialog.js'); // v3.3.0 unified export dialog
 await import('../assets/scripts/app.js');
 
 const i18n = window.__i18n;

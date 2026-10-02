@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.3.0（待发布 · 统一导出弹窗）
+
+### Added
+- **统一导出弹窗**：编辑页导出按钮合并为一个「导出」（替代原 9 个按钮）——弹窗左侧分组侧边栏（导出歌词 / 导出学习笔记两组），右侧为配置区 + 实时预览窗；LRC / SRT / ASS / LyricEx 包 / 歌词视频 / 竖版海报 / 学习笔记（MD、HTML）/ 打印学习表全部收进弹窗，原有功能一键直达。
+- **预览基础设施**：预览渲染 200ms 防抖 + 延迟到下一宏任务执行，配置频繁变化不阻塞主线程（为后续各格式配置与预览铺路）。
+
+### Changed
+- 版本号由 3.2.1 升至 3.3.0；Service Worker 缓存名同步 bump（`lyricex-v3.3.0`）。
+
+### Test
+- i18n-check 动态 id 契约更新（旧导出按钮 id 移除，新增 exportDialogBtn / exportConfig / exportPreviewContent）。
+- e2e 竖版海报用例改为经导出弹窗下载。
+
 ## v3.2.1（待发布 · 十项修复与 Prettier）
 
 ### Added

@@ -10,6 +10,25 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.0',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '统一导出弹窗：编辑页导出按钮合并为一个「导出」——弹窗左侧分组侧边栏（导出歌词 / 导出学习笔记），右侧配置区 + 实时预览窗；LRC / SRT / ASS / LyricEx 包 / 歌词视频 / 竖版海报 / 学习笔记（MD、HTML）/ 打印学习表全部收进弹窗'
+                },
+                {
+                    type: 'added',
+                    text: '预览基础设施：预览渲染 200ms 防抖 + 延迟到下一宏任务执行，配置频繁变化不阻塞主线程，为各格式配置与预览铺路'
+                },
+                { type: 'changed', text: '版本号 3.2.1 → 3.3.0；Service Worker 缓存名 bump 为 lyricex-v3.3.0' },
+                {
+                    type: 'test',
+                    text: 'i18n-check 动态 id 契约更新（旧导出按钮 id 移除，新增 exportDialogBtn / exportConfig / exportPreviewContent）；e2e 竖版海报用例改为经导出弹窗下载'
+                }
+            ]
+        },
+        {
             version: '3.2.1',
             date: '2026-09-27',
             changes: [

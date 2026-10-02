@@ -357,6 +357,17 @@
         recentTitle: '最近開いた',
         queueTitle: '連続再生キュー',
 
+        /* v3.3.0: unified export dialog */
+        exportDialog: 'エクスポート',
+        exportDialogHint: '形式を選び、右側でプレビューと設定。',
+        exportLyricsGroup: '歌詞をエクスポート',
+        exportNotesGroup: '学習ノートをエクスポート',
+        exportPreview: 'プレビュー',
+        exportRun: 'エクスポート',
+        exportNoLyrics: '先に歌詞を読み込んでください',
+        exportEmpty: 'エクスポートできる形式はありません',
+        exportNoPreview: 'この形式にはプレビューがありません',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

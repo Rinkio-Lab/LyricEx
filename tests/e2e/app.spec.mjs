@@ -255,11 +255,14 @@ test('share card + poster render without canvas taint (v2.8.1)', async ({ page }
     );
     await page.click('#shareCloseBtn');
 
-    // 竖屏海报 download from the editor view
+    // 竖屏海报 download from the editor view via the unified export dialog (v3.3.0)
     await page.click('.sidebar-btn[data-view="editor"]');
-    await expect(page.locator('#posterBtn')).toBeVisible();
+    await expect(page.locator('#exportDialogBtn')).toBeVisible();
+    await page.click('#exportDialogBtn');
+    await expect(page.locator('#exportOverlay')).toHaveClass(/open/);
+    await page.click('.export-subnav-item[data-export-item="poster"]');
     const dl = page.waitForEvent('download');
-    await page.click('#posterBtn');
+    await page.click('.export-run-btn');
     expect((await dl).suggestedFilename()).toMatch(/-poster\.png$/);
     expect(errors).toEqual([]);
 });

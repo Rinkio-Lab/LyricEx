@@ -1935,3 +1935,249 @@
 .danger-btn i {
     margin-right: 6px;
 }
+
+/* =========================== v3.3.0: UNIFIED EXPORT DIALOG =========================== */
+.export-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.export-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+.export-modal {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    width: min(880px, 94%);
+    height: min(640px, 88vh);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-hover);
+    display: flex;
+    flex-direction: column;
+    transition:
+        background var(--transition),
+        color var(--transition),
+        border-color var(--transition);
+}
+.export-head {
+    padding: 16px 20px 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+.export-head h4 {
+    font-size: 16px;
+    margin: 0 0 4px;
+}
+.export-head h4 i {
+    color: var(--accent);
+    margin-right: 8px;
+}
+.export-head .small-text {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.export-main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+.export-subnav {
+    width: 178px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border-color);
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+}
+.export-nav-group {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 10px 12px 4px;
+    font-weight: 700;
+}
+.export-subnav-item {
+    text-align: left;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font);
+    border-left: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition:
+        background var(--transition),
+        color var(--transition),
+        border-color var(--transition);
+}
+.export-subnav-item i {
+    width: 15px;
+    text-align: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+.export-subnav-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+.export-subnav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: var(--accent-bg);
+}
+.export-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 18px;
+    gap: 12px;
+    overflow: hidden;
+}
+.export-action-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+.export-action-icon {
+    font-size: 34px;
+    color: var(--accent);
+    opacity: 0.85;
+}
+.export-action-panel h5 {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-primary);
+}
+.export-action-desc {
+    margin: 0 0 8px;
+    font-size: 12px;
+    max-width: 360px;
+    line-height: 1.5;
+}
+.export-run-btn {
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    padding: 7px 26px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: var(--font);
+    border-radius: 4px;
+    transition:
+        background var(--transition),
+        border-color var(--transition);
+}
+.export-run-btn:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+.export-config {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+.export-preview {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-card);
+}
+.export-preview-head {
+    padding: 6px 12px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+.export-preview-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 14px;
+    transition: opacity 0.15s ease;
+}
+.export-preview-content.export-preview-loading {
+    opacity: 0.55;
+}
+.export-preview-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 13px;
+}
+.export-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 13px;
+}
+.export-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border-color);
+}
+.export-footer .close-btn {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    transition:
+        background var(--transition),
+        color var(--transition),
+        border-color var(--transition);
+    font-family: var(--font);
+}
+.export-footer .close-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+@media (max-width: 720px) {
+    .export-modal {
+        width: 96%;
+        height: 92vh;
+    }
+    .export-subnav {
+        width: 128px;
+    }
+}
+

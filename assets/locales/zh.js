@@ -357,6 +357,17 @@
         recentTitle: '最近打开',
         queueTitle: '连播队列',
 
+        /* v3.3.0: unified export dialog */
+        exportDialog: '导出',
+        exportDialogHint: '选择格式，在右侧预览与配置。',
+        exportLyricsGroup: '导出歌词',
+        exportNotesGroup: '导出学习笔记',
+        exportPreview: '预览',
+        exportRun: '导出',
+        exportNoLyrics: '请先加载歌词再导出',
+        exportEmpty: '暂无可导出的格式',
+        exportNoPreview: '此格式暂无预览',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

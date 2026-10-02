@@ -360,6 +360,17 @@
         recentTitle: 'Recent',
         queueTitle: 'Queue',
 
+        /* v3.3.0: unified export dialog */
+        exportDialog: 'Export',
+        exportDialogHint: 'Pick a format; preview and configure on the right.',
+        exportLyricsGroup: 'Export Lyrics',
+        exportNotesGroup: 'Export Study Notes',
+        exportPreview: 'Preview',
+        exportRun: 'Export',
+        exportNoLyrics: 'Load a lyrics package first',
+        exportEmpty: 'No formats available',
+        exportNoPreview: 'No preview for this format',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

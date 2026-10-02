@@ -1,6 +1,6 @@
 {
   "name": "lyricex",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "private": true,
   "description": "纯前端歌词鉴赏工具：歌词/学习/混合/编辑四视图、逐字卡拉OK、汉字注音、时间轴编辑与导出。零运行时依赖（vendor/ 本地化）。",
   "scripts": {
