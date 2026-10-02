@@ -10,6 +10,20 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.13',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'fixed',
+                    text: '移除「PDF（打印）」条目的重复注册（v3.3.9 改造残留，UI 未受影响）'
+                },
+                {
+                    type: 'changed',
+                    text: '「学习表格视频」图标改为摄像机、名称标注（mp4），避免与普通表格导出混淆、便于找到原导出视频功能'
+                }
+            ]
+        },
+        {
             version: '3.3.12',
             date: '2026-10-02',
             changes: [

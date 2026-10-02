@@ -841,7 +841,7 @@
         register({
             id: 'study-video',
             group: 'notes',
-            icon: 'fas fa-table',
+            icon: 'fas fa-video',
             labelKey: 'studyVideo',
             kind: 'form',
             describe: 'studyVideoHint',
@@ -862,24 +862,6 @@
             doExport: function () {
                 var d = optsStore['study-video'] || {};
                 actions.openVideo({ template: 'study', includeTranslation: d.includeTranslation });
-            }
-        });
-        register({
-            id: 'notes-pdf',
-            group: 'notes',
-            icon: 'fas fa-print',
-            labelKey: 'exportNotesPdf',
-            kind: 'form',
-            describe: 'pdfPrintHint',
-            defaults: { includeTranslation: true, includeRomaji: true, includeNote: true, includeTable: true },
-            renderForm: function (container) {
-                container.innerHTML = notesCfgRows('notes-pdf');
-            },
-            renderPreview: function () {
-                return htmlPreview(notesBuild('html', 'notes-pdf'));
-            },
-            doExport: function () {
-                actions.printStudy();
             }
         });
 

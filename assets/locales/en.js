@@ -414,7 +414,7 @@
         videoInTr: 'Show translation',
 
         /* v3.3.7: study notes video */
-        studyVideo: 'Study table video',
+        studyVideo: 'Study table video (mp4)',
         studyVideoHint: 'Records a study-notes video (audio required): current lyric + translation on top, that line\u2019s study table (kana / romaji / kanji / POS / meaning) below.',
 
         /* v3.3.8: share card / poster export config */
