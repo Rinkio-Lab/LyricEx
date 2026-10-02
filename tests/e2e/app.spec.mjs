@@ -312,10 +312,14 @@ test('help center: nav, search, and body follows the locale fallback chain (v2.9
     await openApp(page);
     await page.click('#helpBtn');
     await expect(page.locator('.view-help')).toBeVisible();
-    // 7 chapters since v3.0.0 (Song library added after Quick start)
-    await expect(page.locator('#helpNavList a')).toHaveCount(7);
+    // 9 chapters since v3.3.11 (Export guide + Package format v2 added)
+    await expect(page.locator('#helpNavList a')).toHaveCount(9);
     await expect(page.locator('.help-nav-list a[data-target="help-library"]')).toBeVisible();
+    await expect(page.locator('.help-nav-list a[data-target="help-export"]')).toBeVisible();
+    await expect(page.locator('.help-nav-list a[data-target="help-package"]')).toBeVisible();
     await expect(page.locator('#help-library')).toContainText('添加文件夹');
+    await expect(page.locator('#help-export')).toContainText('浏览器自带打印');
+    await expect(page.locator('#help-package')).toContainText('lyricsFile');
     await expect(page.locator('#helpSearchInput')).toBeVisible();
     // the content pane is the real scroll container (sidebar/other views scroll themselves)
     const overflowY = await page.evaluate(() => getComputedStyle(document.getElementById('helpContent')).overflowY);
