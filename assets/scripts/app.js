@@ -253,7 +253,9 @@
     // =========================== SETTINGS ===========================
     let settings = L.mergeSettings(null, L.SETTINGS_DEFAULTS);
 
-    const RERENDER_KEYS = ['subLine', 'showFurigana', 'wordKaraoke', 'showRuby'];
+    // v3.3.10: reverseRuby re-renders like the other lyric-display toggles —
+    // missing it left the view stale until the user switched views.
+    const RERENDER_KEYS = ['subLine', 'showFurigana', 'wordKaraoke', 'showRuby', 'reverseRuby'];
 
     function saveSettings() {
         try {

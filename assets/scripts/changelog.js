@@ -10,6 +10,16 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.14',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'fixed',
+                    text: '反标注开关即时生效：RERENDER_KEYS 补入 reverseRuby，切换设置不再需要切换视图才刷新'
+                }
+            ]
+        },
+        {
             version: '3.3.13',
             date: '2026-10-02',
             changes: [
