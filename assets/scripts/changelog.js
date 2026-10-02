@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.5.1',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'fixed',
+                    text: '关于页版本号不再写死在 index.html：改为由 app.js 顶部 APP_VERSION 常量自动渲染（v3.5.0 曾漏改导致关于页显示旧版本、更新检查误报新版本）'
+                },
+                {
+                    type: 'changed',
+                    text: 'release-check 新增版本号锁步校验：app.js APP_VERSION === package.json === sw.js CACHE === CHANGELOG 头，任一处漏 bump 直接失败'
+                },
+                {
+                    type: 'test',
+                    text: 'boot-smoke 新增关于页版本渲染断言（渲染结果与 package.json 版本一致）'
+                }
+            ]
+        },
+        {
             version: '3.5.0',
             date: '2026-10-02',
             changes: [

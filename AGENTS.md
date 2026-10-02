@@ -79,6 +79,7 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 - **只要改动了任何会被浏览器缓存的文件（index.html、css、js、locales、字体），就必须同步把 `sw.js` 里的 `CACHE` 常量 bump 一个新值**（如 `lyricex-v2.2.0` → `lyricex-v2.2.1`）。
 - 不 bump 的后果：用户浏览器永远拿到旧资源（这正是"前端没 2.2.0 更新日志/主题没变化/CSS 缓存不死"等历史 bug 的根因）。bump 后用户刷新两次即可（第一次装新 SW 清旧缓存，第二次拉新资源）。
 - 上传 GitHub 前核对：当前 `CACHE` 名 ≥ changelog 最新版本号。
+- **版本号唯一手写来源：`assets/scripts/app.js` 顶部的 `APP_VERSION` 常量**。「关于」页底部版本号（`#appVersion`）由 `assets/scripts/ui/about.js` 从它自动渲染（`v{APP_VERSION} · 年份`），`assets/scripts/updates.js` 解析同一 DOM 判断更新。**任何版本 bump 必须同步改 app.js 的 `APP_VERSION`**（漏改后果：关于页显示旧版本 + 更新检查误报"有新版本"，v3.5.0 曾因漏改翻车）。bump 清单：app.js `APP_VERSION` + sw.js `CACHE` + package.json + CHANGELOG 头 + changelog.js；`npm run release-check` 强制校验五者一致。
 
 ### 2. i18n 语言维护与 fallback 规则
 - 语言注册表唯一来源：`assets/locales/languages.js`（`window.__lyricexLanguages`）；每个条目含 `code / native / maintainedBy / fallback`，RTL 语言可加 `rtl: true`（如 ar）。UI 语言按钮由 app.js 从该表动态生成，`assets/locales/index.js` 的 `t()` 按 fallback 链解析。
@@ -133,7 +134,7 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 
 - **commit message 一律英文**，格式沿用 v2.5.0（`5c6016a`）风格：首行 `vX.Y.Z: 一句主题`，空行后接 `- 类别: 要点` 列表（toolchain / CI / e2e / a11y / fixes / CHANGELOG…），一行一个要点，全英文；非版本改动用 `type: 主题` 前缀（如 `docs:` / `chore:` / `refactor:`）。禁止中文 commit message（曾犯并已 amend 纠正）。
 - 每个已发布版本用 `gh release create <tag> --title "vX.Y.Z" --notes-file <file>` 创建 GitHub Release（gh 已在本机安装并登录 Rinkio-Lab）。附件默认源码（GitHub 自动附带 zip / tar.gz）；需要安装包时再 `gh release upload <tag> <file>` 追加。
-- tag 与版本号锁步：`vX.Y.Z` = package.json = sw.js CACHE = CHANGELOG 头。
+- tag 与版本号锁步：`vX.Y.Z` = package.json = sw.js CACHE = app.js `APP_VERSION` = CHANGELOG 头（见第 1 节「版本号唯一手写来源」）。
 - Release notes 写法（用户心法，硬规则）：
   - 面向用户：写「你能多做什么、少烦什么」，**不写「我们改了什么」**。
   - 结构：一句话总览 → 分组标签（新增 / 改进 / 修复 / 注意）→ 反馈入口（issues 链接）。

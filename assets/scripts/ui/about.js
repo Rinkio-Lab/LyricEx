@@ -19,6 +19,8 @@
             aboutCloseBtn = ctx.aboutCloseBtn,
             aboutSubnav = ctx.aboutSubnav,
             aboutBody = ctx.aboutBody,
+            versionEl = ctx.versionEl,
+            appVersion = ctx.appVersion,
             changelogBtn = ctx.changelogBtn,
             changelogOverlay = ctx.changelogOverlay,
             changelogBody = ctx.changelogBody,
@@ -189,7 +191,16 @@
             }
         }
 
+        // v3.5.0: render the about footer version from app.js APP_VERSION (the
+        // single hand-written source) with the current year; updates.js parses
+        // the same element, so the update check can never lag the real version.
+        function syncAppVersion() {
+            if (!versionEl || !appVersion) return;
+            versionEl.textContent = 'v' + appVersion + ' · ' + new Date().getFullYear();
+        }
+
         function bind() {
+            syncAppVersion();
             aboutBtn.addEventListener('click', openAbout);
             aboutCloseBtn.addEventListener('click', closeAbout);
             aboutOverlay.addEventListener('click', function (e) {

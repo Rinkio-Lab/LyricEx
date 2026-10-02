@@ -2,6 +2,12 @@
 (function () {
     'use strict';
 
+    // v3.5.0: single hand-written app version — the about footer (.version) is
+    // rendered from this by js/ui/about.js, and updates.js parses the same DOM
+    // element. Bump together with sw.js CACHE / package.json / CHANGELOG head
+    // (release-check.mjs enforces the lockstep).
+    var APP_VERSION = '3.5.1';
+
     var L = window.__lyricexLib;
     var esc = L.esc,
         formatTime = L.formatTime;
@@ -76,6 +82,8 @@
     const aboutBtn = document.getElementById('aboutBtn');
     const aboutOverlay = document.getElementById('aboutOverlay');
     const aboutCloseBtn = document.getElementById('aboutCloseBtn');
+    // v3.5.0: about footer version element (rendered from APP_VERSION by about.js)
+    const appVersion = document.getElementById('appVersion');
     const shortcutList = document.getElementById('shortcutList');
     const watchGuideBtn = document.getElementById('watchGuideBtn');
     // v2.0.0: about sub-nav + in-app changelog
@@ -4015,6 +4023,8 @@
         aboutBtn: aboutBtn,
         aboutOverlay: aboutOverlay,
         aboutCloseBtn: aboutCloseBtn,
+        appVersion: APP_VERSION,
+        versionEl: appVersion,
         aboutSubnav: aboutSubnav,
         aboutBody: aboutBody,
         changelogBtn: changelogBtn,

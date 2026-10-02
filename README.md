@@ -73,7 +73,7 @@ npm run release-check   # CACHE/changelog lockstep + size report + full tests
 2. `node tests/run-tests.mjs` — full self-check (i18n / boot smoke / lang switch / utils), ALL PASS.
 3. `npm run e2e` — Playwright real-browser smoke + axe a11y.
 4. `npm run release-check` — SW CACHE vs CHANGELOG lockstep + full tests + asset-size report.
-5. Bump the version anchors together: `sw.js` CACHE, `package.json`, `package-lock.json`, `index.html` footer, `CHANGELOG.md` head — and sync the in-app log `assets/scripts/changelog.js`.
+5. Bump the version anchors together: `app.js` `APP_VERSION`, `sw.js` CACHE, `package.json`, `package-lock.json`, `CHANGELOG.md` head — and sync the in-app log `assets/scripts/changelog.js`. (The about footer version is rendered from `APP_VERSION`, no manual HTML edit.)
 6. Git safety sweep: never stage `*.keystore` / passwords / secrets; run `git status` and confirm before committing.
 7. Commit (one commit per version), push, deploy and refresh twice (cache-first SW), acceptance-test on a real device, then release.
 

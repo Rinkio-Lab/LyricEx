@@ -73,7 +73,7 @@ npm run release-check   # CACHE/changelog 整合 + サイズレポート + 全�
 2. `node tests/run-tests.mjs` — 全量セルフチェック（i18n / 起動スモーク / 言語切替 / utils）、ALL PASS。
 3. `npm run e2e` — Playwright 実ブラウザスモーク + axe アクセシビリティ。
 4. `npm run release-check` — SW CACHE と CHANGELOG の整合 + 全テスト + サイズレポート。
-5. バージョンアンカーをまとめてバンプ：`sw.js` CACHE、`package.json`、`package-lock.json`、`index.html` フッター、`CHANGELOG.md` 見出し——アプリ内更新ログ `assets/scripts/changelog.js` も同期。
+5. バージョンアンカーをまとめてバンプ：`app.js` の `APP_VERSION`、`sw.js` CACHE、`package.json`、`package-lock.json`、`CHANGELOG.md` 見出し——アプリ内更新ログ `assets/scripts/changelog.js` も同期。（「情報」ページのバージョンは `APP_VERSION` から自動描画されるため、HTML の手編集は不要。）
 6. Git 安全確認：`*.keystore` / パスワード / シークレットは絶対にコミットしない。コミット前に `git status` で確認。
 7. コミット（1 バージョン = 1 コミット）、push、デプロイ後に 2 回リフレッシュ（SW キャッシュ優先）、実機で受入テスト、その後リリース。
 

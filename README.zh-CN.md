@@ -77,7 +77,7 @@ npm run release-check   # CACHE/changelog 一致性 + 体积报告 + 全量测�
 2. `node tests/run-tests.mjs` — 全量自检（i18n / 启动冒烟 / 语言切换 / utils），ALL PASS。
 3. `npm run e2e` — Playwright 真实浏览器冒烟 + axe 无障碍。
 4. `npm run release-check` — SW CACHE 与 CHANGELOG 锁步 + 全量测试 + 资源体积报告。
-5. 版本锚点五件套同步 bump：`sw.js` CACHE、`package.json`、`package-lock.json`、`index.html` 页脚、`CHANGELOG.md` 头部——并同步应用内更新日志 `assets/scripts/changelog.js`。
+5. 版本锚点五件套同步 bump：`app.js` 的 `APP_VERSION`、`sw.js` CACHE、`package.json`、`package-lock.json`、`CHANGELOG.md` 头部——并同步应用内更新日志 `assets/scripts/changelog.js`。（关于页版本号由 `APP_VERSION` 自动渲染，无需再手改 HTML。）
 6. Git 安全检查：`*.keystore` / 密码 / 密钥绝不入库；提交前先 `git status` 核对。
 7. 提交（一个版本一个 commit）、push、部署并刷新两次（SW 缓存优先）、真机验收，再发 Release。
 

@@ -1,5 +1,10 @@
 /* LyricEx boot smoke test – runs the real app.js against a minimal DOM shim.
    Run with: node tests/boot-smoke.mjs */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const smokeRoot = fileURLToPath(new URL('..', import.meta.url));
 function makeEl() {
     return {
         style: { setProperty() {}, removeProperty() {}, display: '' },
@@ -141,6 +146,15 @@ await import('../assets/scripts/ui/focus-trap.js'); // v2.2.0 a11y module (same 
 const api = window.__lyricex;
 ok('API exposed', !!api);
 ok('boot did not throw', true);
+// v3.5.0: about footer version must render from app.js APP_VERSION (locked to
+// package.json), so the update check can never read a stale version
+{
+    const pkgVersion = JSON.parse(readFileSync(join(smokeRoot, 'package.json'), 'utf8').replace(/^\uFEFF/, '')).version;
+    ok(
+        'about version rendered from APP_VERSION',
+        document.getElementById('appVersion').textContent === 'v' + pkgVersion + ' · ' + new Date().getFullYear()
+    );
+}
 ok('changelog data loaded', Array.isArray(window.__lyricexChangelog) && window.__lyricexChangelog.length > 0);
 
 // settings engine

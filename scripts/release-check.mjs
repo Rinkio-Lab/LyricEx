@@ -49,6 +49,40 @@ if (cacheMatch && headMatch) {
     }
 }
 
+// ---- 1.5 app.js APP_VERSION vs package.json / sw CACHE / CHANGELOG -------
+// v3.5.0: the about footer version is rendered from this constant, so it must
+// stay in lockstep with the other version carriers — a missed bump would show
+// a stale version in 关于 and make the update check falsely report a release.
+const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8').replace(/^\uFEFF/, ''));
+const appjs = readFileSync(join(root, 'assets', 'scripts', 'app.js'), 'utf8');
+const appVerMatch = /APP_VERSION\s*=\s*'([\d.]+(?:-[a-z0-9]+)?)'/.exec(appjs);
+ok(!!appVerMatch, 'app.js APP_VERSION found');
+if (appVerMatch && cacheMatch && headMatch) {
+    const appV = parseVersion(appVerMatch[1]);
+    const pkgV = parseVersion(pkg.version);
+    const cacheV = parseVersion(cacheMatch[1]);
+    const headV = parseVersion(headMatch[1]);
+    ok(!!appV && !!pkgV && !!cacheV && !!headV, 'app/package/CACHE/CHANGELOG versions parse');
+    if (appV && pkgV) {
+        ok(
+            cmpVersion(appV, pkgV) === 0,
+            `app.js APP_VERSION ${appVerMatch[1]} === package.json ${pkg.version} (keep in lockstep)`
+        );
+    }
+    if (appV && cacheV) {
+        ok(
+            cmpVersion(appV, cacheV) === 0,
+            `app.js APP_VERSION ${appVerMatch[1]} === sw CACHE ${cacheMatch[1]} (keep in lockstep)`
+        );
+    }
+    if (appV && headV) {
+        ok(
+            cmpVersion(appV, headV) === 0,
+            `app.js APP_VERSION ${appVerMatch[1]} === CHANGELOG ${headMatch[1]} (keep in lockstep)`
+        );
+    }
+}
+
 // ---- 2. full self-check (5 suites) -----------------------------------------
 try {
     execFileSync(process.execPath, [join(root, 'tests', 'run-tests.mjs')], { stdio: 'inherit', cwd: root });

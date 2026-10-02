@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.5.1（待发布 · 版本号机制修复）
+
+### Fixed
+- **关于页版本号不再写死在 index.html**：此前 index.html 硬编码 `v3.4.3 · 2026`，v3.5.0 发版时漏改导致关于页显示旧版本、更新检查从 changelog 通道误报「有新版本 3.5.0」。现在版本号唯一手写来源是 app.js 顶部 `APP_VERSION` 常量，关于页由 about.js 自动渲染（`v{APP_VERSION} · 当前年份`），updates.js 读取同一 DOM，不会再滞后。
+
+### Changed
+- **版本号五处锁步由 release-check 强制校验**：`npm run release-check` 新增检查 app.js `APP_VERSION` === package.json === sw.js CACHE === CHANGELOG 头，任一处漏 bump 直接失败。
+- 版本 3.5.0 → **3.5.1**；Service Worker 缓存名同步 bump（`lyricex-v3.5.1`）。
+
+### Test
+- boot-smoke 新增断言：关于页版本元素渲染结果 === `v{package.json 版本} · 当年`，防止版本号渲染回归。
+
+### Notes
+- AGENTS.md 新增「版本号唯一手写来源」规则：任何版本 bump 必须同步 app.js `APP_VERSION`（曾因漏改翻车）；README 三语发布流程的版本锚点列表同步更新。
+
 ## v3.5.0（待发布 · 多语言补齐与 AI 翻译声明）
 
 ### Added
