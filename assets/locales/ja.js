@@ -397,6 +397,12 @@
         exportPdf: 'PDF（印刷）',
         pdfPrintHint: 'ブラウザー標準の印刷ダイアログで PDF を出力します（「PDF に保存」を選択）。スマホでは正常に動作しない場合があります。',
 
+        /* v3.3.5: package export options */
+        pkgHint: 'LyricEx パッケージ（.lxp.zip）を書き出します。メディアを含めるか選択できます。歌詞のみなら小さく高速に読み込めます。',
+        pkgIncludeAudio: '音声を含める',
+        pkgIncludeInstrumental: 'カラオケ音源を含める',
+        pkgIncludeCover: 'ジャケットを含める',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

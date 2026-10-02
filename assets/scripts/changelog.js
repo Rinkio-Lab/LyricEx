@@ -10,6 +10,20 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.5',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: 'LyricEx 包导出配置：可选是否附带音频 / 伴奏 / 封面（不附媒体时包更小、加载更快），预览窗显示包内容清单'
+                },
+                {
+                    type: 'changed',
+                    text: 'exportPackageZip(opts) 支持媒体包含开关，无参调用保持默认全包含'
+                }
+            ]
+        },
+        {
             version: '3.3.4',
             date: '2026-10-02',
             changes: [

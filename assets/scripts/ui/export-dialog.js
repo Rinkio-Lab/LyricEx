@@ -282,9 +282,30 @@
             group: 'lyrics',
             icon: 'fas fa-archive',
             labelKey: 'exportPackage',
-            kind: 'action',
+            kind: 'form',
+            describe: 'pkgHint',
+            defaults: { includeAudio: true, includeInstrumental: true, includeCover: true },
+            renderForm: function (container) {
+                var d = optsStore.package || (optsStore.package = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgCheckbox('includeAudio', 'pkgIncludeAudio', d.includeAudio) +
+                    cfgCheckbox('includeInstrumental', 'pkgIncludeInstrumental', d.includeInstrumental) +
+                    cfgCheckbox('includeCover', 'pkgIncludeCover', d.includeCover);
+            },
+            renderPreview: function () {
+                var d = optsStore.package || {};
+                var sd = appCtx.songData || {};
+                var lines = ['# ' + (sd.title || '')];
+                if (sd.artist) lines.push('artist: ' + sd.artist);
+                lines.push('format: lyricex-package · version 2', '', '包含：', '- manifest.json', '- lyrics.json（' + appCtx.lyrics.length + ' 行）');
+                if (d.includeAudio && appCtx.audioUrl) lines.push('- assets/audio.mp3');
+                if (d.includeInstrumental && appCtx.instrumentalUrl) lines.push('- assets/instrumental.mp3');
+                if (d.includeCover && appCtx.coverUrl) lines.push('- assets/cover.jpg');
+                return textPreview(lines.join('\n'));
+            },
             doExport: function () {
-                actions.exportPackage();
+                var d = optsStore.package || {};
+                actions.exportPackage(d);
             }
         });
         register({

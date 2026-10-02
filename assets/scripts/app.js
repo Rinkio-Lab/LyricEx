@@ -3174,8 +3174,13 @@
         }, 5000);
     }
 
-    async function exportPackageZip() {
+    async function exportPackageZip(opts) {
         if (!lyrics.length) return;
+        opts = opts || {};
+        // v3.3.5: export options — let users ship a lean lyrics-only package
+        const wantAudio = audioUrl && opts.includeAudio !== false;
+        const wantInst = instrumentalUrl && opts.includeInstrumental !== false;
+        const wantCover = coverUrl && opts.includeCover !== false;
         try {
             const zip = new JSZip();
             const baked = lyrics.map(function (l) {
@@ -3189,22 +3194,22 @@
                 title: (songData && songData.title) || t('unknownSong'),
                 artist: (songData && songData.artist) || '',
                 album: (songData && songData.album) || '',
-                audio: audioUrl ? 'assets/audio.mp3' : null,
-                instrumental: instrumentalUrl ? 'assets/instrumental.mp3' : null,
-                cover: coverUrl ? 'assets/cover.jpg' : null,
+                audio: wantAudio ? 'assets/audio.mp3' : null,
+                instrumental: wantInst ? 'assets/instrumental.mp3' : null,
+                cover: wantCover ? 'assets/cover.jpg' : null,
                 lyricsFile: 'lyrics.json',
                 config: { lyricOffset: 0 },
                 convertedFrom: (songData && songData.sourceFormat) || null
             };
             zip.file('manifest.json', JSON.stringify(manifest, null, 2));
             zip.file('lyrics.json', JSON.stringify({ lyrics: baked }, null, 2));
-            if (audioUrl) {
+            if (wantAudio) {
                 const resp = await fetch(audioUrl);
                 if (!resp.ok) throw new Error('audio fetch failed');
                 zip.file('assets/audio.mp3', await resp.blob());
             }
-            if (instrumentalUrl) zip.file('assets/instrumental.mp3', await (await fetch(instrumentalUrl)).blob());
-            if (coverUrl) zip.file('assets/cover.jpg', await (await fetch(coverUrl)).blob());
+            if (wantInst) zip.file('assets/instrumental.mp3', await (await fetch(instrumentalUrl)).blob());
+            if (wantCover) zip.file('assets/cover.jpg', await (await fetch(coverUrl)).blob());
             const out = await zip.generateAsync({ type: 'blob' });
             downloadBlob(out, safePackageName() + '.lxp.zip');
             editorApi.setDirty(false);
@@ -4033,6 +4038,15 @@
         },
         get songData() {
             return songData;
+        },
+        get audioUrl() {
+            return audioUrl;
+        },
+        get instrumentalUrl() {
+            return instrumentalUrl;
+        },
+        get coverUrl() {
+            return coverUrl;
         },
         downloadBlob: downloadBlob,
         safePackageName: safePackageName,

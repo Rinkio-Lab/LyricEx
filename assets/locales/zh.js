@@ -397,6 +397,12 @@
         exportPdf: 'PDF（打印）',
         pdfPrintHint: '使用浏览器自带的打印功能导出 PDF（调用打印对话框后选择「另存为 PDF」）。手机浏览器可能无法正常使用此功能。',
 
+        /* v3.3.5: package export options */
+        pkgHint: '导出 LyricEx 包（.lxp.zip），可选是否附带媒体文件；不附媒体时包更小、加载更快。',
+        pkgIncludeAudio: '附带音频',
+        pkgIncludeInstrumental: '附带伴奏',
+        pkgIncludeCover: '附带封面',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

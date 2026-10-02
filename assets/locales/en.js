@@ -400,6 +400,12 @@
         exportPdf: 'PDF (print)',
         pdfPrintHint: 'Exports via the browser\u2019s own print dialog (choose \u201cSave as PDF\u201d). Mobile browsers may not support this properly.',
 
+        /* v3.3.5: package export options */
+        pkgHint: 'Exports a LyricEx package (.lxp.zip); optionally ship media files. Lyrics-only packages are smaller and load faster.',
+        pkgIncludeAudio: 'Include audio',
+        pkgIncludeInstrumental: 'Include instrumental',
+        pkgIncludeCover: 'Include cover',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',
