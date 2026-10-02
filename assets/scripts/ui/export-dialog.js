@@ -103,6 +103,33 @@
             var more = lines.length > slice.length ? '\n…（' + (lines.length - slice.length) + ' 行已省略）' : '';
             return '<pre class="export-text-preview">' + esc(slice.join('\n')) + esc(more) + '</pre>';
         }
+        // rendered preview for full documents (PDF print view): the generated
+        // HTML is fed into a sandboxed iframe via srcdoc — no popup, no leak
+        function htmlPreview(html) {
+            return '<iframe class="export-html-preview" title="preview" srcdoc="' + esc(html) + '"></iframe>';
+        }
+        // PDF export relies on the browser's own print dialog: render the
+        // document into a hidden iframe and call print() on it, so the current
+        // page never changes. Mobile browsers may block or mangle iframe
+        // printing — surfaced to the user via pdfPrintHint.
+        function printHtml(html) {
+            var f = document.createElement('iframe');
+            f.setAttribute('aria-hidden', 'true');
+            f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+            f.srcdoc = html;
+            document.body.appendChild(f);
+            f.onload = function () {
+                try {
+                    f.contentWindow.focus();
+                    f.contentWindow.print();
+                } catch (_) {
+                    /* some mobile browsers block iframe printing */
+                }
+                setTimeout(function () {
+                    f.remove();
+                }, 60000);
+            };
+        }
 
         // ---- subnav ----
         function renderNav() {
@@ -138,6 +165,7 @@
             }
             if (item.kind === 'form') {
                 var html =
+                    (item.describe ? '<p class="export-action-desc"><i class="' + item.icon + '"></i> ' + t(item.describe) + '</p>' : '') +
                     '<div class="export-config" id="exportConfig"></div>' +
                     '<div class="export-preview">' +
                     '<div class="export-preview-head"><span>' +
@@ -424,6 +452,54 @@
                         { type: 'text/html;charset=utf-8' }
                     ),
                     appCtx.safePackageName() + '.html'
+                );
+            }
+        });
+        register({
+            id: 'pdf',
+            group: 'lyrics',
+            icon: 'fas fa-print',
+            labelKey: 'exportPdf',
+            kind: 'form',
+            describe: 'pdfPrintHint',
+            defaults: { includeTranslation: true, ruby: true, theme: 'light' },
+            renderForm: function (container) {
+                var d = optsStore.pdf || (optsStore.pdf = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgCheckbox('includeTranslation', 'mdInTr', d.includeTranslation) +
+                    cfgCheckbox('ruby', 'mdRuby', d.ruby) +
+                    cfgSelect(
+                        'theme',
+                        'htmlTheme',
+                        [
+                            { v: 'light', k: 'htmlThemeLight' },
+                            { v: 'dark', k: 'htmlThemeDark' }
+                        ],
+                        d.theme
+                    );
+            },
+            renderPreview: function () {
+                var d = optsStore.pdf || {};
+                return htmlPreview(
+                    u.buildLyricsHtml(appCtx.lyrics, appCtx.offset, {
+                        title: appCtx.songData && appCtx.songData.title,
+                        artist: appCtx.songData && appCtx.songData.artist,
+                        includeTranslation: d.includeTranslation,
+                        ruby: d.ruby,
+                        theme: d.theme
+                    })
+                );
+            },
+            doExport: function () {
+                var d = optsStore.pdf || {};
+                printHtml(
+                    u.buildLyricsHtml(appCtx.lyrics, appCtx.offset, {
+                        title: appCtx.songData && appCtx.songData.title,
+                        artist: appCtx.songData && appCtx.songData.artist,
+                        includeTranslation: d.includeTranslation,
+                        ruby: d.ruby,
+                        theme: d.theme
+                    })
                 );
             }
         });

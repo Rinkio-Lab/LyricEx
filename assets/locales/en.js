@@ -396,6 +396,10 @@
         htmlThemeLight: 'Light',
         htmlThemeDark: 'Dark',
 
+        /* v3.3.4: PDF print export */
+        exportPdf: 'PDF (print)',
+        pdfPrintHint: 'Exports via the browser\u2019s own print dialog (choose \u201cSave as PDF\u201d). Mobile browsers may not support this properly.',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

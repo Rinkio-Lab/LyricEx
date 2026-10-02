@@ -393,6 +393,10 @@
         htmlThemeLight: 'ライト',
         htmlThemeDark: 'ダーク',
 
+        /* v3.3.4: PDF print export */
+        exportPdf: 'PDF（印刷）',
+        pdfPrintHint: 'ブラウザー標準の印刷ダイアログで PDF を出力します（「PDF に保存」を選択）。スマホでは正常に動作しない場合があります。',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

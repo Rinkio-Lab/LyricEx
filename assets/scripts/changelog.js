@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.4',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: 'PDF（打印）导出：导出歌词组新增 PDF 条目，样式同 HTML 歌词（翻译/假名标注/浅深配色），实时渲染预览；点击导出调用浏览器自带打印对话框，选择「另存为 PDF」即得 PDF'
+                },
+                {
+                    type: 'added',
+                    text: 'PDF 条目使用打印机图标，面板顶部提示需浏览器自带打印、手机可能无法使用'
+                },
+                {
+                    type: 'changed',
+                    text: '导出弹窗 form 条目支持 describe 提示行（图标 + 文案）'
+                }
+            ]
+        },
+        {
             version: '3.3.3',
             date: '2026-10-02',
             changes: [

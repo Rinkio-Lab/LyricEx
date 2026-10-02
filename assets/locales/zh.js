@@ -393,6 +393,10 @@
         htmlThemeLight: '浅色',
         htmlThemeDark: '深色',
 
+        /* v3.3.4: PDF print export */
+        exportPdf: 'PDF（打印）',
+        pdfPrintHint: '使用浏览器自带的打印功能导出 PDF（调用打印对话框后选择「另存为 PDF」）。手机浏览器可能无法正常使用此功能。',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',
