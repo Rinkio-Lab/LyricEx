@@ -579,10 +579,34 @@
             group: 'lyrics',
             icon: 'fas fa-video',
             labelKey: 'exportVideo',
-            kind: 'action',
+            kind: 'form',
             describe: 'videoHint',
+            defaults: { template: 'karaoke', includeTranslation: true },
+            renderForm: function (container) {
+                var d = optsStore.video || (optsStore.video = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgSelect(
+                        'template',
+                        'videoTemplate',
+                        [
+                            { v: 'karaoke', k: 'videoTplKaraoke' },
+                            { v: 'simple', k: 'videoTplSimple' }
+                        ],
+                        d.template
+                    ) + cfgCheckbox('includeTranslation', 'videoInTr', d.includeTranslation);
+            },
+            renderPreview: function () {
+                var d = optsStore.video || {};
+                var c = document.createElement('canvas');
+                c.className = 'export-video-preview';
+                c.width = 480;
+                c.height = 270;
+                if (actions.renderVideoPreview) actions.renderVideoPreview(c, d.template, d.includeTranslation);
+                return c.outerHTML;
+            },
             doExport: function () {
-                actions.openVideo();
+                var d = optsStore.video || {};
+                actions.openVideo({ template: d.template, includeTranslation: d.includeTranslation });
             }
         });
         register({

@@ -403,6 +403,13 @@
         pkgIncludeInstrumental: 'カラオケ音源を含める',
         pkgIncludeCover: 'ジャケットを含める',
 
+        /* v3.3.6: lyric video templates */
+        videoHint: '歌詞ビデオを録画します（音声が必要）。カラオケ単語モードはパッケージ内の単語タイミングを使います。無い場合は行全体ハイライトに自動フォールバック。',
+        videoTemplate: 'テンプレート',
+        videoTplKaraoke: 'カラオケ単語',
+        videoTplSimple: 'シンプル歌詞',
+        videoInTr: '訳詞を表示',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

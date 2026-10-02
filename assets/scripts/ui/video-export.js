@@ -13,6 +13,7 @@
 
     root.__lyricexVideoExport = function (appCtx) {
         var t = appCtx.t;
+        var u = root.__lyricexUtils || {};
         var videoOverlay = appCtx.videoOverlay,
             videoStatus = appCtx.videoStatus,
             videoProgressFill = appCtx.videoProgressFill,
@@ -23,8 +24,13 @@
         var videoHandle = null;
         var videoCanvas = null;
         var videoDiscard = false;
+        var videoTemplate = 'karaoke'; // 'karaoke' | 'simple' | 'study'
+        var videoIncludeTr = true;
 
-        function openVideoOverlay() {
+        function openVideoOverlay(opts) {
+            opts = opts || {};
+            if (opts.template) videoTemplate = opts.template;
+            if (opts.includeTranslation !== undefined) videoIncludeTr = opts.includeTranslation;
             if (!appCtx.lyrics.length) return;
             if (!window.__lyricexVideo.supported()) {
                 window.__lyricexDialog.alert(t('videoUnsupported'));
@@ -160,9 +166,11 @@
 
         // Draw one video frame (study-table lyric video). `g` is the 2D context,
         // `rawTime` the audio time WITHOUT the offset (findLyricIndex adds it).
-        function drawVideoFrame(g, rawTime) {
-            const W = videoCanvas.width,
-                H = videoCanvas.height;
+        // v3.3.6: canvas size reads from g.canvas so preview canvases can reuse
+        // the same painters; translation block honors videoIncludeTr.
+        function drawStudyFrame(g, rawTime) {
+            const W = g.canvas.width,
+                H = g.canvas.height;
             const bg = getComputedStyle(appCtx.app).getPropertyValue('--bg-primary').trim() || '#f6f4f0';
             const accent = getComputedStyle(appCtx.app).getPropertyValue('--accent').trim() || '#8a7a6a';
             g.textAlign = 'left';
@@ -193,7 +201,7 @@
             });
             // wrapped translation (up to 2 lines)
             let ty = cy + 6;
-            if (line.translation) {
+            if (videoIncludeTr && line.translation) {
                 g.fillStyle = '#5a524a';
                 g.font = '26px "Noto Sans SC", "PingFang SC", sans-serif';
                 ellipsize(wrapLines(g, line.translation, contentW), 2).forEach(function (l) {
@@ -209,6 +217,88 @@
             g.textAlign = 'right';
             g.fillText('Powered by LyricEx', W - 56, H - 44);
             g.textAlign = 'left';
+        }
+
+        // v3.3.6: frame dispatcher — karaoke/simple lyric templates vs study.
+        function drawVideoFrame(g, rawTime) {
+            if (videoTemplate === 'study') drawStudyFrame(g, rawTime);
+            else drawLyricFrame(g, rawTime, videoTemplate);
+        }
+
+        // Centered lyric frame used by the karaoke and simple templates. Karaoke
+        // highlights each word while it is sung (needs per-word timings); without
+        // them, or in simple mode, the whole current line is drawn in accent and
+        // its translation (if enabled) below.
+        function drawLyricFrame(g, rawTime, tpl) {
+            const W = g.canvas.width,
+                H = g.canvas.height;
+            const bg = getComputedStyle(appCtx.app).getPropertyValue('--bg-primary').trim() || '#f6f4f0';
+            const accent = getComputedStyle(appCtx.app).getPropertyValue('--accent').trim() || '#8a7a6a';
+            g.textAlign = 'left';
+            g.textBaseline = 'middle';
+            g.fillStyle = bg;
+            g.fillRect(0, 0, W, H);
+            const idx = appCtx.findLyricIndex(rawTime + appCtx.offset);
+            g.fillStyle = '#8a827a';
+            g.font = Math.max(14, Math.round(H * 0.033)) + 'px "Noto Sans SC", "PingFang SC", sans-serif';
+            const head = appCtx.songData
+                ? (appCtx.songData.title || '') + (appCtx.songData.artist ? '  \u00b7  ' + appCtx.songData.artist : '')
+                : '';
+            g.fillText(head || '\u2013', Math.round(W * 0.06), Math.round(H * 0.07));
+            if (idx < 0) return;
+            const line = appCtx.lyrics[idx];
+            const size = Math.round(H * 0.075);
+            g.font = size + 'px "M PLUS Rounded 1c", "Noto Sans SC", sans-serif';
+            const cy = Math.round(H * 0.42);
+            const maxW = W * 0.86;
+            const words = tpl === 'karaoke' ? u.wordSpansForAss(line) : null;
+            if (words && words.length >= 2) {
+                // per-word karaoke highlight (word timings exist)
+                let total = 0;
+                words.forEach(function (w) {
+                    total += g.measureText(w.text).width;
+                });
+                total += (words.length - 1) * size * 0.25;
+                let x = (W - Math.min(total, maxW)) / 2;
+                const at = rawTime + appCtx.offset;
+                words.forEach(function (w) {
+                    g.fillStyle = at >= w.start && at < w.end ? accent : '#1e1a16';
+                    g.fillText(w.text, x, cy);
+                    x += g.measureText(w.text).width + size * 0.25;
+                });
+            } else {
+                // whole-line karaoke / simple: current line in accent, centered
+                const lines = ellipsize(wrapLines(g, line.text || '', maxW), 3);
+                g.fillStyle = accent;
+                lines.forEach(function (ln, i) {
+                    g.textAlign = 'center';
+                    g.fillText(ln, W / 2, cy + i * size * 1.25);
+                });
+                g.textAlign = 'left';
+            }
+            if (videoIncludeTr && line.translation) {
+                g.font = Math.round(H * 0.045) + 'px "Noto Sans SC", "PingFang SC", sans-serif';
+                const trLines = ellipsize(wrapLines(g, line.translation, maxW), 2);
+                g.fillStyle = '#5a524a';
+                trLines.forEach(function (ln, i) {
+                    g.textAlign = 'center';
+                    g.fillText(ln, W / 2, cy + Math.round(H * 0.13) + i * Math.round(H * 0.055));
+                });
+                g.textAlign = 'left';
+            }
+            g.fillStyle = '#b0a898';
+            g.font = Math.max(12, Math.round(H * 0.021)) + 'px "Noto Sans SC", sans-serif';
+            g.textAlign = 'right';
+            g.fillText('Powered by LyricEx', W - Math.round(W * 0.04), H - Math.round(H * 0.06));
+            g.textAlign = 'left';
+        }
+
+        // Paint one static preview frame into `canvas` for the given template;
+        // used by the unified export dialog's preview pane (cheap, single frame).
+        function renderVideoPreview(canvas, tpl, includeTr) {
+            videoTemplate = tpl || 'karaoke';
+            videoIncludeTr = includeTr !== false;
+            drawVideoFrame(canvas.getContext('2d'), 0);
         }
 
         function startVideoExport() {
@@ -290,7 +380,11 @@
             open: openVideoOverlay,
             close: closeVideoOverlay,
             bind: bind,
-            start: startVideoExport
+            start: startVideoExport,
+            setTemplate: function (tpl) {
+                videoTemplate = tpl;
+            },
+            renderPreview: renderVideoPreview
         };
     };
 })(typeof window !== 'undefined' ? window : globalThis);

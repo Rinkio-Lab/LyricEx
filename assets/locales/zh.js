@@ -403,6 +403,13 @@
         pkgIncludeInstrumental: '附带伴奏',
         pkgIncludeCover: '附带封面',
 
+        /* v3.3.6: lyric video templates */
+        videoHint: '录制歌词视频（需已加载音频）。卡拉OK逐字需要包内逐词时间数据；无逐字数据时自动回退为整行高亮。',
+        videoTemplate: '画面模板',
+        videoTplKaraoke: '卡拉OK逐字',
+        videoTplSimple: '简约歌词',
+        videoInTr: '画面内附带翻译',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

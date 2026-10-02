@@ -4056,6 +4056,7 @@
             exportSrt: exportSrt,
             exportAss: exportAss,
             openVideo: videoApi.open,
+            renderVideoPreview: videoApi.renderPreview,
             exportPoster: exportPoster,
             exportNotes: exportNotes,
             printStudy: printStudySheet

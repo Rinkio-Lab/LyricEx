@@ -2211,6 +2211,14 @@
     border-radius: 8px;
     background: #fff;
 }
+.export-video-preview {
+    width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-primary);
+}
 .export-empty {
     flex: 1;
     display: flex;

@@ -406,6 +406,13 @@
         pkgIncludeInstrumental: 'Include instrumental',
         pkgIncludeCover: 'Include cover',
 
+        /* v3.3.6: lyric video templates */
+        videoHint: 'Records a lyric video (audio required). Karaoke word mode needs per-word timings in the package; without them it falls back to whole-line highlighting.',
+        videoTemplate: 'Template',
+        videoTplKaraoke: 'Karaoke word',
+        videoTplSimple: 'Simple lyrics',
+        videoInTr: 'Show translation',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',
