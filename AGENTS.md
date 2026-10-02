@@ -86,6 +86,7 @@ Not lazy about: understanding the problem (read it fully and trace the real flow
 - **code 必须是 BCP 47 全小写标签**（`pt-br`，不要 `pt-BR`）：languages.js code、字典文件名 `<code>.js`、文件内 `i18n.register('<code>')` 三者必须一字不差一致。浏览器语言检测支持完整标签 → 小写 → 逐级去尾前缀回退（pt-BR → pt-br → pt → zh）。
 - **maintainedBy: 'ai'（zh / ja / en）**：三语由 AI 维护。**每新增一个 i18n 键，必须在同一次改动中同步补齐 zh.js / ja.js / en.js 三个文件**；不得只加一个语言。
 - **maintainedBy: 'user'（用户自加的其他语言）**：AI 只允许搭骨架（复制 zh.js 的键结构、值留空），**翻译由用户自己填，AI 不得代填内容**。
+- **例外（v3.5.0，一次性破例）**：经用户明确指示，AI 在 v3.5.0 将 ko/fr/es/de/pt-br/ru/ar 七门用户语言全量翻译至 553 键、与三语完全对齐（guide 1-10 按新引导结构逐门重译）。**此为例外，不改变默认规则**：此后 AI 仍只维护 zh/ja/en 三语；未获用户明确指示，不得再代填或改译用户语言。
 - **fallback 语义**：某语言缺键时按 `fallback` 递归回退（A→B→…），始终以 zh 为最终兜底，zh 也没有才返回键名本身。用户语言建议 fallback 到 'en'（再自然落到 zh）；循环 fallback 由 `_resolveFallback` 的 seen 保护，不会死循环。
 - **新增一种用户语言的两步，无需改 index.html**：① 在 languages.js 追加一行条目（maintainedBy:'user'，fallback 如 'en'）；② 新建 `assets/locales/<code>.js`（照 zh.js 键结构，值自填；**文件名必须等于 code**，index.html 的 locale 自动加载器会按 `assets/locales/<code>.js` 动态加载并在设置里出现语言按钮）；③ 跑 `node tests/i18n-check.mjs`（该测试会自动 import 注册表里全部语言文件，检查用户语言键对齐、fallback 链、BCP 47 检测与 RTL dir）。
 - 新键写法示例：zh `'navCinema': '影院'` / en `'navCinema': 'Cinema'` / ja `'navCinema': 'シアター'`（ja 键值用日文，不用中文）。
