@@ -64,6 +64,35 @@ $r | ConvertTo-Json -Depth 5 | Out-File lyric.json -Encoding utf8
 - `.lrc` **文件导入**：同样支持，上传文件即可；增强内联格式与交替中日的 LRC 都会自动处理。
 - **逐字时间怎么用**：粘贴含 `klyric` 的网易云 JSON 后逐字时间自动附加（卡拉OK高亮）；也可以把 `.yrc` / `.klyric` 文件在编辑视图「导入逐字时间」导入。
 
+## 方法 C：一键脚本（推荐，v3.4.1 起）
+
+仓库内置 `scripts/fetch-netease-lyrics.mjs`（Node ≥ 18，零额外依赖），把「搜歌 → 拉取歌词 → 处理为逐字歌词」整个流程封装成一条命令：
+
+```
+node scripts/fetch-netease-lyrics.mjs "歌名 歌手"
+```
+
+常用组合：
+
+```
+# 搜索结果里选第 2 个版本，并把原始 JSON 存到指定目录
+node scripts/fetch-netease-lyrics.mjs "歌名 歌手" --pick 2 --out 某目录
+
+# 已知歌曲 ID，直接拉取（跳过搜索）
+node scripts/fetch-netease-lyrics.mjs --id 123456 --out 某目录
+
+# 把逐字时间合并进现有 LyricEx 包歌词文件（生成 lyrics.words.json，不改原文件）
+node scripts/fetch-netease-lyrics.mjs "歌名 歌手" --merge 某包\lyrics.json
+
+# 校验现有包文本 / 翻译与网易云是否一致（按行时间容差匹配）
+node scripts/fetch-netease-lyrics.mjs "歌名 歌手" --verify 某包\lyrics.json
+
+# 运行内置自检（验证 YRC 解析 / 合并链路未退化）
+node scripts/fetch-netease-lyrics.mjs --selftest
+```
+
+输出说明：脚本打印找到的歌曲、歌词行数 / 翻译行数 / 逐字行数；**「0 with per-word timings」表示该曲网易云未收录逐字歌词（`klyric` / `yrc` 为空）**，属正常情况，换有逐字收录的歌曲即可。逐字数据存在时自动解析为 `words`（秒级起止），`--merge` 可直接写回 LyricEx 包。
+
 ## 应用内帮助页
 
 LyricEx v2.8.4 起侧边栏「系统」组新增**帮助**视图，内嵌本指南要点 + 30 秒演示 GIF；完整指南保留在 `docs/netease-lyrics-guide.md`。

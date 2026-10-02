@@ -10,6 +10,20 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.4.1',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '新增 scripts/fetch-netease-lyrics.mjs：搜歌 → 拉取歌词 → 逐字处理一条命令完成，支持 --pick/--id/--out/--merge/--verify/--selftest，复用应用自身解析器'
+                },
+                {
+                    type: 'changed',
+                    text: 'docs/netease-lyrics-guide.md 新增「方法 C：一键脚本」章节'
+                }
+            ]
+        },
+        {
             version: '3.4.0',
             date: '2026-10-02',
             changes: [

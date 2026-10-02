@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.4.1（待发布 · 网易云逐字歌词脚本）
+
+### Added
+- **新增 `scripts/fetch-netease-lyrics.mjs` 可复用工具链**：搜歌 → 拉取歌词 → 处理为逐字歌词一条命令完成。复用应用自身解析器（`parseLRC` / `parseYrcLines` / `parseNeteaseLyrics`），支持 `--pick` / `--id` / `--out` / `--merge`（合并逐字进现有包）/ `--verify`（校验包文本与网易云一致）/ `--selftest`（内置自检）。Node ≥ 18，零额外依赖。
+
+### Changed
+- **docs/netease-lyrics-guide.md 新增「方法 C：一键脚本」**：脚本用法、参数与输出说明（含「0 with per-word timings = 该曲网易云未收录逐字」的解释）。
+- 版本 3.4.0 → **3.4.1**；Service Worker 缓存名同步 bump（`lyricex-v3.4.1`）。
+
 ## v3.4.0（待发布 · 引导扩充与反标注文档化）
 
 ### Added
