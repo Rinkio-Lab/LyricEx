@@ -13,7 +13,8 @@
 
     root.__lyricexAbout = function (ctx) {
         var t = ctx.t,
-            esc = ctx.esc;
+            esc = ctx.esc,
+            L = ctx.L;
         var aboutBtn = ctx.aboutBtn,
             aboutOverlay = ctx.aboutOverlay,
             aboutCloseBtn = ctx.aboutCloseBtn,
@@ -25,6 +26,9 @@
             changelogOverlay = ctx.changelogOverlay,
             changelogBody = ctx.changelogBody,
             changelogCloseBtn = ctx.changelogCloseBtn,
+            // v3.5.2: changelog lazy-loading + version filter
+            changelogInput = ctx.changelogInput,
+            changelogMore = ctx.changelogMore,
             guideOverlay = ctx.guideOverlay,
             guideBody = ctx.guideBody,
             guideDots = ctx.guideDots,
@@ -90,10 +94,23 @@
             breaking: 'clBreaking'
         };
 
+        // v3.5.2: lazy-load the changelog (CHANGELOG_PAGE entries per page) and
+        // filter by version via lib.changelogMatch — a filter shows every match
+        // (the list is then short), no filter paginates through the history.
+        const CHANGELOG_PAGE = 12;
+        let changelogShown = CHANGELOG_PAGE;
+        let changelogQuery = '';
+
         function renderChangelog() {
             const entries = window.__lyricexChangelog || [];
+            const filtered = changelogQuery
+                ? entries.filter(function (e) {
+                      return L.changelogMatch(changelogQuery, e.version);
+                  })
+                : entries;
+            const shown = changelogQuery ? filtered.length : Math.min(changelogShown, filtered.length);
             let html = '';
-            entries.forEach(function (entry) {
+            filtered.slice(0, shown).forEach(function (entry) {
                 html +=
                     '<div class="cl-entry">' +
                     '<div class="cl-head"><span class="cl-version">' +
@@ -116,10 +133,28 @@
                 });
                 html += '</ul></div>';
             });
-            changelogBody.innerHTML = html || '<div class="cl-empty">' + t('changelogEmpty') + '</div>';
+            changelogBody.innerHTML =
+                html ||
+                '<div class="cl-empty">' + (changelogQuery ? t('changelogNoMatch') : t('changelogEmpty')) + '</div>';
+            if (changelogMore) {
+                changelogMore.classList.toggle('hidden', !!changelogQuery || shown >= filtered.length);
+            }
+        }
+
+        function showMoreChangelog() {
+            changelogShown += CHANGELOG_PAGE;
+            renderChangelog();
+        }
+
+        function onChangelogInput() {
+            changelogQuery = (changelogInput.value || '').trim().toLowerCase().replace(/^v/, '');
+            renderChangelog();
         }
 
         function openChangelog() {
+            changelogQuery = '';
+            changelogShown = CHANGELOG_PAGE;
+            if (changelogInput) changelogInput.value = '';
             renderChangelog();
             changelogOverlay.classList.add('open');
         }
@@ -209,6 +244,8 @@
             aboutBody.addEventListener('scroll', updateAboutSubnavActive, { passive: true });
             changelogBtn.addEventListener('click', openChangelog);
             changelogCloseBtn.addEventListener('click', closeChangelog);
+            if (changelogInput) changelogInput.addEventListener('input', onChangelogInput);
+            if (changelogMore) changelogMore.addEventListener('click', showMoreChangelog);
             changelogOverlay.addEventListener('click', function (e) {
                 if (e.target === changelogOverlay) closeChangelog();
             });

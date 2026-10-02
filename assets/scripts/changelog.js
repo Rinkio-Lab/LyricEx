@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.5.2',
+            date: '2026-10-03',
+            changes: [
+                {
+                    type: 'added',
+                    text: '更新日志支持按版本筛选（3.5 命中整条 3.5.x、3.5.1 精确、2.0.0-alpha 匹配 pre-release；v 前缀与大小写均可）'
+                },
+                {
+                    type: 'added',
+                    text: '更新日志懒加载：默认渲染最近 12 个版本，「显示更多」分批展开'
+                },
+                {
+                    type: 'test',
+                    text: 'utils-test 新增 changelogMatch 断言组；boot-smoke 新增懒加载与筛选集成断言（分页/显示更多/筛选/无匹配提示/重开重置）'
+                }
+            ]
+        },
+        {
             version: '3.5.1',
             date: '2026-10-02',
             changes: [

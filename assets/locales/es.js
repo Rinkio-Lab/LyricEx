@@ -362,6 +362,10 @@
         clRemoved: 'Eliminado',
         clBreaking: 'Cambio incompatible',
         changelogEmpty: 'No hay registro de cambios',
+        /* v3.5.2: changelog lazy-loading + version filter */
+        changelogSearchPh: 'Filtrar por versión, p. ej. 3.5 o 2.0.0-alpha',
+        changelogShowMore: 'Ver más',
+        changelogNoMatch: 'No hay versiones coincidentes',
 
         /* v2.0.0: transpose + loop bookmarks + instrumental + recent/queue */
         transpose: 'Transporte (subir/bajar tono)',

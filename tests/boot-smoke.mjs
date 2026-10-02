@@ -58,6 +58,27 @@ function gid(id) {
     if (!byId.has(id)) byId.set(id, makeEl());
     return byId.get(id);
 }
+// v3.5.2: changelog lazy-loading + filter tests need real events — give the
+// changelog controls a shim that stores handlers and lets the test dispatch.
+function makeEventEl() {
+    const el = makeEl();
+    const handlers = {};
+    el.addEventListener = function (type, fn) {
+        (handlers[type] = handlers[type] || []).push(fn);
+    };
+    el.dispatch = function (type) {
+        (handlers[type] || []).forEach(function (fn) {
+            fn();
+        });
+    };
+    el.click = function () {
+        el.dispatch('click');
+    };
+    return el;
+}
+byId.set('changelogBtn', makeEventEl());
+byId.set('changelogInput', makeEventEl());
+byId.set('changelogMore', makeEventEl());
 globalThis.window = globalThis;
 globalThis.document = {
     getElementById: gid,
@@ -156,6 +177,32 @@ ok('boot did not throw', true);
     );
 }
 ok('changelog data loaded', Array.isArray(window.__lyricexChangelog) && window.__lyricexChangelog.length > 0);
+
+// v3.5.2: changelog lazy-loading + version filter (event-capable shim elements)
+{
+    const clLatest = window.__lyricexChangelog[0].version;
+    document.getElementById('changelogBtn').click();
+    let clHtml = document.getElementById('changelogBody').innerHTML;
+    ok('changelog lazy-load shows newest version', clHtml.indexOf(clLatest) >= 0);
+    ok('changelog lazy-load hides old versions', clHtml.indexOf('1.5.0') < 0);
+    const pageLen = clHtml.length;
+    document.getElementById('changelogMore').click();
+    clHtml = document.getElementById('changelogBody').innerHTML;
+    ok('changelog show-more extends the list', clHtml.length > pageLen);
+    ok('changelog show-more still paginated', clHtml.indexOf('1.5.0') < 0);
+    const clInput = document.getElementById('changelogInput');
+    clInput.value = 'alpha';
+    clInput.dispatch('input');
+    clHtml = document.getElementById('changelogBody').innerHTML;
+    ok('changelog filter narrows to pre-releases', clHtml.indexOf('2.0.0-alpha') >= 0 && clHtml.indexOf(clLatest) < 0);
+    clInput.value = '9.9.9';
+    clInput.dispatch('input');
+    clHtml = document.getElementById('changelogBody').innerHTML;
+    ok('changelog filter no-match shows hint', clHtml.indexOf('cl-empty') >= 0);
+    document.getElementById('changelogBtn').click();
+    clHtml = document.getElementById('changelogBody').innerHTML;
+    ok('changelog reopen resets filter', clHtml.indexOf(clLatest) >= 0 && clHtml.indexOf('cl-empty') < 0);
+}
 
 // settings engine
 api.setSetting('lyricSize', 32);

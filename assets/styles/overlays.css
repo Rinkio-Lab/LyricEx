@@ -224,6 +224,48 @@
     border: 1px solid var(--border-color);
     padding: 0 6px;
 }
+/* v3.5.2: changelog version filter row + "show more" button */
+.cl-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 30px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 13px;
+}
+.cl-filter input {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg-input, var(--bg-secondary));
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    outline: none;
+}
+.cl-filter input:focus {
+    border-color: var(--accent);
+}
+.cl-more {
+    display: block;
+    margin: 4px auto 14px;
+    padding: 6px 18px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+}
+.cl-more:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.cl-more.hidden {
+    display: none;
+}
 .changelog-body {
     flex: 1;
     overflow-y: auto;

@@ -358,6 +358,10 @@
         clRemoved: '제거',
         clBreaking: '호환성 깨짐',
         changelogEmpty: '변경 내역이 없습니다',
+        /* v3.5.2: changelog lazy-loading + version filter */
+        changelogSearchPh: '버전으로 필터링, 예: 3.5 또는 2.0.0-alpha',
+        changelogShowMore: '더 보기',
+        changelogNoMatch: '일치하는 버전이 없습니다',
 
         /* v2.0.0: transpose + loop bookmarks + instrumental + recent/queue */
         transpose: '조옮김 (키 올리기/내리기)',

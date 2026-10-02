@@ -353,6 +353,10 @@
         clRemoved: '移除',
         clBreaking: '破坏性',
         changelogEmpty: '暂无更新日志',
+        /* v3.5.2: changelog lazy-loading + version filter */
+        changelogSearchPh: '按版本筛选，如 3.5 或 2.0.0-alpha',
+        changelogShowMore: '显示更多',
+        changelogNoMatch: '没有匹配的版本',
 
         /* v2.0.0: transpose + loop bookmarks + instrumental + recent/queue */
         transpose: '移调（升降 key）',

@@ -357,6 +357,10 @@
         clRemoved: 'Removed',
         clBreaking: 'Breaking',
         changelogEmpty: 'No changelog yet',
+        /* v3.5.2: changelog lazy-loading + version filter */
+        changelogSearchPh: 'Filter by version, e.g. 3.5 or 2.0.0-alpha',
+        changelogShowMore: 'Show more',
+        changelogNoMatch: 'No matching versions',
 
         /* v2.0.0: transpose + loop bookmarks + instrumental + recent/queue */
         transpose: 'Transpose (key)',

@@ -94,7 +94,10 @@ ok('ass karaoke off strips \\k tags', !assPlain.includes('\\k'));
 const lrc = u.buildLrc(lyrics, 0, { title: 'T', artist: 'A', includeTranslation: true });
 ok('lrc has ti/ar headers', lrc.includes('[ti:T]') && lrc.includes('[ar:A]'));
 ok('lrc has timestamp lines', /\[\d{2}:\d{2}\.\d{2}\]/.test(lrc));
-const lrcTr = u.buildLrc([{ time: 61, text: '本気', translation: '认真' }], 0, { meta: false, includeTranslation: true });
+const lrcTr = u.buildLrc([{ time: 61, text: '本気', translation: '认真' }], 0, {
+    meta: false,
+    includeTranslation: true
+});
 ok('lrc appends translation on same timestamp', lrcTr.includes('[01:01.00]本気') && lrcTr.includes('[01:01.00]认真'));
 const lrcNoMeta = u.buildLrc(lyrics, 0, { meta: false });
 ok('lrc meta off drops headers', !lrcNoMeta.includes('[ti:') && !lrcNoMeta.includes('[ar:'));
@@ -214,7 +217,10 @@ const leanNotes = u.buildStudyNotes(noteLyrics, {
     includeNote: false,
     includeTable: false
 });
-ok('notes toggles drop content', !leanNotes.includes('翻译：') && !leanNotes.includes('tokei') && !leanNotes.includes('| romaji'));
+ok(
+    'notes toggles drop content',
+    !leanNotes.includes('翻译：') && !leanNotes.includes('tokei') && !leanNotes.includes('| romaji')
+);
 
 // ---- reverse ruby (v3.3.10) ----
 const rev = globalThis.__lyricexLib.annotateReverseRuby('書き連ねても', [
@@ -408,8 +414,22 @@ eq('wt no calibrate when aligned', matchedWt.calibrated, false);
 eq('wt keeps line time aligned', matchedWt.lyrics[0].time, 5);
 // drift: audio base +2s vs LRC times → offset ≈2 → line times recalibrated
 const driftResults = [
-    { time: 7.0, text: '夢ならば どれほど よかったでしょう', words: [{ text: '夢', start: 7.0, end: 7.4 }, { text: 'ならば', start: 7.4, end: 8.0 }] },
-    { time: 12.0, text: '未だに あなたのことを 夢にみる', words: [{ text: '未だに', start: 12.0, end: 12.7 }, { text: ' あなた', start: 12.7, end: 13.2 }] }
+    {
+        time: 7.0,
+        text: '夢ならば どれほど よかったでしょう',
+        words: [
+            { text: '夢', start: 7.0, end: 7.4 },
+            { text: 'ならば', start: 7.4, end: 8.0 }
+        ]
+    },
+    {
+        time: 12.0,
+        text: '未だに あなたのことを 夢にみる',
+        words: [
+            { text: '未だに', start: 12.0, end: 12.7 },
+            { text: ' あなた', start: 12.7, end: 13.2 }
+        ]
+    }
 ];
 const calibrated = u.matchWordsToLyrics(wtLyrics, driftResults);
 eq('wt detects offset', Math.round(calibrated.offset * 10) / 10, 2);
@@ -429,7 +449,9 @@ eq('wt repeated chorus both matched', repMatched.unmatched, []);
 eq('wt repeated nearest first', repMatched.lyrics[0].words[0].start, 21);
 eq('wt repeated nearest second', repMatched.lyrics[1].words[0].start, 61);
 // mismatch: no guess
-const wrongWt = u.matchWordsToLyrics(wtLyrics, [{ time: 5, text: '完全不同的歌词', words: [{ text: 'x', start: 1, end: 2 }] }]);
+const wrongWt = u.matchWordsToLyrics(wtLyrics, [
+    { time: 5, text: '完全不同的歌词', words: [{ text: 'x', start: 1, end: 2 }] }
+]);
 eq('wt text mismatch unmatched', wrongWt.unmatched, [0, 1]);
 eq('wt text mismatch no attach', wrongWt.lyrics[0].words, undefined);
 // parse errors
@@ -574,6 +596,20 @@ const sanOk = lib.sanitizeSettings({ theme: 'dark', volume: 55 }, dflt);
 eq('sanitize keeps valid values', sanOk.theme, 'dark');
 eq('sanitize keeps valid volume', sanOk.volume, 55);
 eq('sanitize defaults remain intact', sanOk.lyricSize, dflt.lyricSize);
+
+// ---- lib.changelogMatch (v3.5.2) ----
+ok('changelogMatch empty query matches all', lib.changelogMatch('', '3.5.1'));
+ok('changelogMatch minor prefix', lib.changelogMatch('3.5', '3.5.1'));
+ok('changelogMatch minor prefix across patches', lib.changelogMatch('3.5', '3.5.0'));
+ok('changelogMatch exact version', lib.changelogMatch('3.5.1', '3.5.1'));
+ok('changelogMatch drops v prefix', lib.changelogMatch('v3.5', '3.5.1'));
+ok('changelogMatch trims whitespace', lib.changelogMatch('  3.5  ', '3.5.1'));
+ok('changelogMatch pre-release suffix', lib.changelogMatch('alpha', '2.0.0-alpha'));
+ok('changelogMatch pre-release case-insensitive', lib.changelogMatch('ALPHA', '2.0.0-alpha'));
+ok('changelogMatch pre-release whole version', lib.changelogMatch('2.0', '2.0.0-alpha'));
+ok('changelogMatch rejects other line', !lib.changelogMatch('3.5.1', '3.5.0'));
+ok('changelogMatch rejects other minor', !lib.changelogMatch('3.5', '2.0.0-alpha'));
+ok('changelogMatch null version', !lib.changelogMatch('3.5', null));
 
 console.log(failures === 0 ? 'UTILS TESTS PASSED' : `${failures} FAILURES`);
 process.exit(failures === 0 ? 0 : 1);

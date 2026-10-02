@@ -211,7 +211,13 @@
     <div class="about-overlay" id="changelogOverlay" role="dialog" aria-modal="true" data-i18n-title="viewChangelog">
         <div class="about-modal changelog-modal">
             <div class="changelog-title"><i class="fas fa-scroll"></i> <span data-i18n="viewChangelog">更新日志</span><span class="cl-only-zh" data-i18n="clOnlyZh">仅中文</span></div>
+            <!-- v3.5.2: version filter + lazy-loading (12 entries per page, "show more" reveals the rest) -->
+            <div class="cl-filter">
+                <i class="fas fa-filter"></i>
+                <input type="text" id="changelogInput" data-i18n-placeholder="changelogSearchPh" placeholder="按版本筛选，如 3.5 或 2.0.0-alpha" />
+            </div>
             <div class="changelog-body" id="changelogBody"></div>
+            <button class="cl-more hidden" id="changelogMore" data-i18n="changelogShowMore">显示更多</button>
             <div class="about-footer">
                 <button class="close-btn" id="changelogCloseBtn" data-i18n="close">关闭</button>
             </div>

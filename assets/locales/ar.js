@@ -356,6 +356,10 @@
         clRemoved: 'أُزيل',
         clBreaking: 'تغيير كاسر',
         changelogEmpty: 'لا يوجد سجل تغييرات',
+        /* v3.5.2: changelog lazy-loading + version filter */
+        changelogSearchPh: 'تصفية حسب الإصدار، مثل 3.5 أو 2.0.0-alpha',
+        changelogShowMore: 'عرض المزيد',
+        changelogNoMatch: 'لا توجد إصدارات مطابقة',
 
         /* v2.0.0: transpose + loop bookmarks + instrumental + recent/queue */
         transpose: 'نقل النغمة (رفع/خفض المفتاح)',

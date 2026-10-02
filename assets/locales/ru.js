@@ -357,6 +357,10 @@
         clRemoved: 'Удалено',
         clBreaking: 'Несовместимо',
         changelogEmpty: 'Журнал изменений пуст',
+        /* v3.5.2: changelog lazy-loading + version filter */
+        changelogSearchPh: 'Фильтр по версии, напр. 3.5 или 2.0.0-alpha',
+        changelogShowMore: 'Показать ещё',
+        changelogNoMatch: 'Нет подходящих версий',
 
         /* v2.0.0: transpose + loop bookmarks + instrumental + recent/queue */
         transpose: 'Транспонирование (изменение тональности)',

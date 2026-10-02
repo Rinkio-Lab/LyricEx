@@ -612,5 +612,23 @@
         );
     };
 
+    // =========================== CHANGELOG FILTER ===========================
+    // v3.5.2: in-app changelog version filter. The query is normalized (trim,
+    // lowercase, drop a leading 'v') and matched as a substring, so '3.5' hits
+    // every 3.5.x, '3.5.1' one exact version, and 'alpha' the pre-releases
+    // (e.g. 2.0.0-alpha). Empty query matches everything.
+    lib.changelogMatch = function (query, version) {
+        var q = String(query || '')
+            .trim()
+            .toLowerCase()
+            .replace(/^v/, '');
+        if (!q) return true;
+        return (
+            String(version || '')
+                .toLowerCase()
+                .indexOf(q) >= 0
+        );
+    };
+
     root.__lyricexLib = lib;
 })(typeof window !== 'undefined' ? window : globalThis);

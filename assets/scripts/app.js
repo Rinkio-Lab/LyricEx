@@ -6,7 +6,7 @@
     // rendered from this by js/ui/about.js, and updates.js parses the same DOM
     // element. Bump together with sw.js CACHE / package.json / CHANGELOG head
     // (release-check.mjs enforces the lockstep).
-    var APP_VERSION = '3.5.1';
+    var APP_VERSION = '3.5.2';
 
     var L = window.__lyricexLib;
     var esc = L.esc,
@@ -93,6 +93,9 @@
     const changelogOverlay = document.getElementById('changelogOverlay');
     const changelogBody = document.getElementById('changelogBody');
     const changelogCloseBtn = document.getElementById('changelogCloseBtn');
+    // v3.5.2: changelog lazy-loading + version filter
+    const changelogInput = document.getElementById('changelogInput');
+    const changelogMore = document.getElementById('changelogMore');
     // v3.2.0: update check button (about footer)
     const checkUpdateBtn = document.getElementById('checkUpdateBtn');
 
@@ -4031,6 +4034,8 @@
         changelogOverlay: changelogOverlay,
         changelogBody: changelogBody,
         changelogCloseBtn: changelogCloseBtn,
+        changelogInput: changelogInput,
+        changelogMore: changelogMore,
         checkUpdateBtn: checkUpdateBtn,
         guideOverlay: guideOverlay,
         guideBody: guideBody,

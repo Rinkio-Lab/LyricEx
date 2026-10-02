@@ -354,6 +354,10 @@
         clRemoved: '削除',
         clBreaking: '破壊的変更',
         changelogEmpty: '更新履歴はありません',
+        /* v3.5.2: changelog lazy-loading + version filter */
+        changelogSearchPh: 'バージョンで絞り込み（例: 3.5、2.0.0-alpha）',
+        changelogShowMore: 'もっと見る',
+        changelogNoMatch: '一致するバージョンがありません',
 
         /* v2.0.0: transpose + loop bookmarks + instrumental + recent/queue */
         transpose: '移調（キー変更）',
