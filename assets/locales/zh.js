@@ -304,16 +304,29 @@
         guide2Title: '四种视图',
         guide2Desc:
             '桌面端在侧边栏切换 歌词 / 学习 / 混合 / 编辑 视图，移动端使用底部导航；编辑视图可校准时间轴、编辑内容并导出。',
-        guide3Title: '影院与迷你模式',
-        guide3Desc: '按 F 进入全屏影院，按 V 缩成悬浮迷你条，随时随地跟唱。',
-        guide4Title: '键盘快捷键',
-        guide4Desc: '空格播放、←/→ 快退快进、数字键跳转进度、G 跟随；全部可在 设置 → 快捷键 中自定义。',
-        guide5Title: '外观与语言',
-        guide5Desc:
-            '主题色、字体、字号与 亮色 / 暗色 / 跟随系统 主题在 设置 → 外观 中调整；界面语言可随时切换——引导左下角的地球按钮即可选择。',
-        guide6Title: '导出 / 分享',
+        /* v3.3.15: onboarding expanded 6 → 10 steps */
+        guide3Title: '学习视图',
+        guide3Desc:
+            '学习视图逐行展示 原词 + 翻译 + 罗马音 + 备注 + 学习表格（假名 / 罗马音 / 汉字 / 词性 / 释义），可打印或导出为学习笔记。',
+        guide4Title: '反标注',
+        guide4Desc:
+            '想跟纯假名学唱？设置 → 歌词显示 开启「反标注」：歌词变为纯假名，原汉字以小字标在假名上方（需要包内逐词分析）。',
+        guide5Title: '影院与迷你模式',
+        guide5Desc: '按 F 进入全屏影院，按 V 缩成悬浮迷你条，随时随地跟唱。',
+        guide6Title: '本地歌曲库',
         guide6Desc:
-            '编辑视图一键打印学习表（PDF）、导出笔记（Markdown / HTML）与竖版手机海报；播放器分享卡片支持主题模板，可 JSON 导入 / 导出。',
+            '侧边栏「我的曲库」：添加文件夹建立本地曲库，搜索 / 筛选 / 歌单 / 收藏，数据只存浏览器、不上传。',
+        guide7Title: '制包工作区',
+        guide7Desc:
+            '编辑 → 制包：上传原声 / 伴奏、粘贴 LRC 或网易云歌词 JSON、AI 逐词分析，导出 LyricEx 包（.lxp.zip）。',
+        guide8Title: '统一导出',
+        guide8Desc:
+            '编辑页「导出」一个按钮涵盖全部：LyricEx 包、字幕（LRC/ASS/SRT）、歌词与学习笔记（TXT/MD/HTML/PDF）、视频（mp4）、分享卡片与竖版海报，均带实时预览。',
+        guide9Title: '键盘快捷键',
+        guide9Desc: '空格播放、←/→ 快退快进、数字键跳转进度、G 跟随；全部可在 设置 → 快捷键 中自定义。',
+        guide10Title: '外观与语言',
+        guide10Desc:
+            '主题色、字体、字号与 亮色 / 暗色 / 跟随系统 主题在 设置 → 外观 中调整；界面语言可随时切换——引导左下角的地球按钮即可选择。',
         /* v2.0.0: about sub-nav + in-app changelog */
         navAboutOverview: '概览',
         viewChangelog: '更新日志',

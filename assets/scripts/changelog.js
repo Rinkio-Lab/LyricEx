@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.4.0',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '首次引导 6 → 10 步：新增 学习视图 / 反标注 / 本地歌曲库 / 制包工作区 / 统一导出，覆盖全部主要功能'
+                },
+                {
+                    type: 'added',
+                    text: '帮助 FAQ 新增「反标注」条目（中 / 日 / 英）'
+                },
+                {
+                    type: 'changed',
+                    text: 'README 三语功能清单补充 反标注、统一导出弹窗；逐字卡拉OK 支持格式补充 .yrc / .klyric'
+                }
+            ]
+        },
+        {
             version: '3.3.14',
             date: '2026-10-02',
             changes: [

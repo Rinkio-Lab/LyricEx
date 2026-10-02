@@ -128,13 +128,18 @@
         // Shown once on the first load; reopenable anytime from 关于 → 观看指引.
         // Each step is a (icon, title key, desc key) triple rendered with the live
         // locale, so switching language re-localizes an open guide too.
+        // v3.4.0: 10 steps covering every major feature (was 6).
         const GUIDE_STEPS = [
             { icon: 'fa-file-import', titleKey: 'guide1Title', descKey: 'guide1Desc' },
             { icon: 'fa-th-large', titleKey: 'guide2Title', descKey: 'guide2Desc' },
-            { icon: 'fa-tv', titleKey: 'guide3Title', descKey: 'guide3Desc' },
-            { icon: 'fa-keyboard', titleKey: 'guide4Title', descKey: 'guide4Desc' },
-            { icon: 'fa-palette', titleKey: 'guide5Title', descKey: 'guide5Desc' },
-            { icon: 'fa-share-alt', titleKey: 'guide6Title', descKey: 'guide6Desc' }
+            { icon: 'fa-book-open', titleKey: 'guide3Title', descKey: 'guide3Desc' },
+            { icon: 'fa-exchange-alt', titleKey: 'guide4Title', descKey: 'guide4Desc' },
+            { icon: 'fa-tv', titleKey: 'guide5Title', descKey: 'guide5Desc' },
+            { icon: 'fa-music', titleKey: 'guide6Title', descKey: 'guide6Desc' },
+            { icon: 'fa-tools', titleKey: 'guide7Title', descKey: 'guide7Desc' },
+            { icon: 'fa-share-alt', titleKey: 'guide8Title', descKey: 'guide8Desc' },
+            { icon: 'fa-keyboard', titleKey: 'guide9Title', descKey: 'guide9Desc' },
+            { icon: 'fa-palette', titleKey: 'guide10Title', descKey: 'guide10Desc' }
         ];
         let guideStep = 0;
 

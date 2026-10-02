@@ -306,17 +306,29 @@
         guide2Title: 'Four views',
         guide2Desc:
             'Switch Lyrics / Study / Mixed / Editor from the sidebar on desktop; mobile uses the bottom navigation. The editor lets you fix timing, edit content and export.',
-        guide3Title: 'Cinema & mini mode',
-        guide3Desc: 'Press F for full-screen cinema, V for a floating mini bar.',
-        guide4Title: 'Keyboard shortcuts',
+        guide3Title: 'Study view',
+        guide3Desc:
+            'The Study view walks each line through original + translation + romaji + note + a study table (kana / romaji / kanji / POS / meaning) — printable or exportable as notes.',
+        guide4Title: 'Reverse annotation',
         guide4Desc:
-            'Space to play, ←/→ to seek, digits to jump, G to follow — all customizable in Settings → Shortcuts.',
-        guide5Title: 'Appearance & language',
-        guide5Desc:
-            'Theme color, fonts, sizes, and Light / Dark / System themes live in Settings → Appearance. Switch the interface language anytime — the globe button at the bottom-left of this guide opens the language picker.',
-        guide6Title: 'Export & share',
+            'Want pure-kana lyrics to follow along? Settings → Lyrics → enable 反标注: text renders as pure kana with the original kanji riding above (needs per-word analysis in the pack).',
+        guide5Title: 'Cinema & mini mode',
+        guide5Desc: 'Press F for full-screen cinema, V for a floating mini bar.',
+        guide6Title: 'Local song library',
         guide6Desc:
-            'From the editor: print a study sheet (PDF), export notes (Markdown / HTML), or a vertical poster. The player share card supports themes — import / export templates as JSON.',
+            'Sidebar "My Library": add folders to build a local library — search / filter / playlists / favorites. Data stays in the browser and is never uploaded.',
+        guide7Title: 'Build workspace',
+        guide7Desc:
+            'Editor → Build tab: upload vocal / instrumental, paste LRC or a NetEase lyrics JSON, run AI word analysis, then export a LyricEx pack (.lxp.zip).',
+        guide8Title: 'Unified export',
+        guide8Desc:
+            'One "Export" button in the editor covers everything: LyricEx pack, subtitles (LRC/ASS/SRT), lyric & study-note docs (TXT/MD/HTML/PDF), video (mp4), share cards and vertical posters — all with live preview.',
+        guide9Title: 'Keyboard shortcuts',
+        guide9Desc:
+            'Space to play, ←/→ to seek, digits to jump, G to follow — all customizable in Settings → Shortcuts.',
+        guide10Title: 'Appearance & language',
+        guide10Desc:
+            'Theme color, fonts, sizes, and Light / Dark / System themes live in Settings → Appearance. Switch the interface language anytime — the globe button at the bottom-left of this guide opens the language picker.',
         /* v2.0.0: about sub-nav + in-app changelog */
         navAboutOverview: 'Overview',
         viewChangelog: 'Changelog',
