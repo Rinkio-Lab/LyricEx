@@ -410,6 +410,10 @@
         videoTplSimple: 'シンプル歌詞',
         videoInTr: '訳詞を表示',
 
+        /* v3.3.7: study notes video */
+        studyVideo: '学習表ビデオ',
+        studyVideoHint: '学習ノートビデオを録画します（音声が必要）：上部に現在の歌詞行と訳詞、下部にその行の学習表（仮名 / ローマ字 / 漢字 / 品詞 / 意味）。',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

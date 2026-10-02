@@ -413,6 +413,10 @@
         videoTplSimple: 'Simple lyrics',
         videoInTr: 'Show translation',
 
+        /* v3.3.7: study notes video */
+        studyVideo: 'Study table video',
+        studyVideoHint: 'Records a study-notes video (audio required): current lyric + translation on top, that line\u2019s study table (kana / romaji / kanji / POS / meaning) below.',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

@@ -640,6 +640,32 @@
             }
         });
         register({
+            id: 'study-video',
+            group: 'notes',
+            icon: 'fas fa-table',
+            labelKey: 'studyVideo',
+            kind: 'form',
+            describe: 'studyVideoHint',
+            defaults: { includeTranslation: true },
+            renderForm: function (container) {
+                var d = optsStore['study-video'] || (optsStore['study-video'] = Object.assign({}, this.defaults));
+                container.innerHTML = cfgCheckbox('includeTranslation', 'videoInTr', d.includeTranslation);
+            },
+            renderPreview: function () {
+                var d = optsStore['study-video'] || {};
+                var c = document.createElement('canvas');
+                c.className = 'export-video-preview';
+                c.width = 480;
+                c.height = 270;
+                if (actions.renderVideoPreview) actions.renderVideoPreview(c, 'study', d.includeTranslation);
+                return c.outerHTML;
+            },
+            doExport: function () {
+                var d = optsStore['study-video'] || {};
+                actions.openVideo({ template: 'study', includeTranslation: d.includeTranslation });
+            }
+        });
+        register({
             id: 'print',
             group: 'notes',
             icon: 'fas fa-print',

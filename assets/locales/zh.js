@@ -410,6 +410,10 @@
         videoTplSimple: '简约歌词',
         videoInTr: '画面内附带翻译',
 
+        /* v3.3.7: study notes video */
+        studyVideo: '学习表格视频',
+        studyVideoHint: '录制学习笔记视频（需已加载音频）：上方当前歌词行与翻译，下方该行的学习表格（假名 / 罗马音 / 汉字 / 词性 / 释义）。',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

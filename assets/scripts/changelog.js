@@ -10,6 +10,16 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.7',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '学习表格视频：导出学习笔记组新增「学习表格视频」条目——上方歌词行与翻译、下方该行学习表格，可开关翻译，实时预览静态首帧'
+                }
+            ]
+        },
+        {
             version: '3.3.6',
             date: '2026-10-02',
             changes: [
