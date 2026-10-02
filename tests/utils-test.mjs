@@ -296,6 +296,15 @@ eq('netease klyric line0 words', neK.lines[0].words.length, 4);
 eq('netease klyric first word text', neK.lines[0].words[0].text, 'こ');
 eq('netease klyric line1 words', neK.lines[1].words.length, 3);
 eq('netease klyric translation kept', neK.lines[0].translation, '你好世界');
+// v3.4.2: some songs carry word timing only under yrc.lyric (klyric empty) —
+// parseNeteaseLyrics must fall back to yrc.
+const neYrc = u.parseNeteaseLyrics({
+    lrc: { lyric: '[00:01.00]こんにちは世界\n' },
+    yrc: { lyric: '[1000,1000](1000,300,0)こ(1300,200,0)ん(1500,200,0)にちは(1700,200,0)世界\n' },
+    klyric: { lyric: '' }
+});
+eq('netease yrc fallback words', neYrc.lines[0].words.length, 4);
+eq('netease yrc fallback klyric empty tolerated', neYrc.lines[0].words[0].text, 'こ');
 
 // ---- NetEase JSON import (v2.6.0) ----
 const ne = u.parseNeteaseLyrics({

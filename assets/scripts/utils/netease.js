@@ -57,7 +57,9 @@
         // klyric (NetEase 逐字歌词, YRC grammar) → per-word timings for the
         // karaoke highlight. Line stamps are emitted in lockstep with lrc, so
         // a tight tolerance is enough; unmatched klyric lines are ignored.
-        var klyric = lyricText(data, 'klyric');
+        // v3.4.2: some songs only ship the word timing under yrc.lyric (the
+        // newer field) while klyric stays empty — try yrc as the fallback.
+        var klyric = lyricText(data, 'klyric') || lyricText(data, 'yrc');
         if (klyric.trim() && u.parseYrcLines) {
             var klines = u.parseYrcLines(klyric);
             if (klines.length) u.mergeWordTimings(out.lines, klines, 0.1);

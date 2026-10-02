@@ -10,6 +10,20 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.4.2',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'fixed',
+                    text: '网易云逐字歌词支持 yrc 字段兜底：klyric 为空时自动尝试 yrc.lyric（部分歌曲逐字只在 yrc）'
+                },
+                {
+                    type: 'test',
+                    text: 'utils-test 新增 yrc fallback 断言（仅 yrc 字段时逐字仍正确附加）'
+                }
+            ]
+        },
+        {
             version: '3.4.1',
             date: '2026-10-02',
             changes: [

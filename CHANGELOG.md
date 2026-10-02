@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.4.2（待发布 · 网易云 yrc 逐字兜底）
+
+### Fixed
+- **网易云逐字歌词支持 `yrc` 字段兜底**：部分歌曲的逐字时间只存在于 `yrc.lyric`（`klyric` 为空），此前 `parseNeteaseLyrics` 只读取 `klyric` 导致这类歌词粘贴进制包页后卡拉OK逐字不生效；现在 `klyric` 为空时自动尝试 `yrc`。基于真实歌词数据实测发现的缺口。
+
+### Test
+- utils-test 新增「yrc fallback」断言：仅 `yrc` 字段（`klyric` 空）时逐字仍正确附加。
+
+### Changed
+- 版本 3.4.1 → **3.4.2**；Service Worker 缓存名同步 bump（`lyricex-v3.4.2`）。
+
 ## v3.4.1（待发布 · 网易云逐字歌词脚本）
 
 ### Added
