@@ -2219,6 +2219,15 @@
     border-radius: 8px;
     background: var(--bg-primary);
 }
+.export-card-preview {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #fff;
+}
 .export-empty {
     flex: 1;
     display: flex;

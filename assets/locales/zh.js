@@ -414,6 +414,16 @@
         studyVideo: '学习表格视频',
         studyVideoHint: '录制学习笔记视频（需已加载音频）：上方当前歌词行与翻译，下方该行的学习表格（假名 / 罗马音 / 汉字 / 词性 / 释义）。',
 
+        /* v3.3.8: share card / poster export config */
+        shareCard: '分享卡片',
+        shareCardHint: '将当前歌词行导出为横向分享卡片（PNG），样式与分享面板一致。',
+        posterHint: '将当前歌词行导出为竖版海报（PNG），适合手机壁纸 / 竖屏分享。',
+        cardTemplate: '卡片模板',
+        cardTplMinimal: '简约',
+        cardTplGradient: '渐变',
+        cardTranslation: '显示翻译',
+        cardRomaji: '显示罗马音',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

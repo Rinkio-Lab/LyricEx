@@ -202,7 +202,9 @@
 
         // Debounced + deferred preview: config changes call schedulePreview();
         // the render is pushed to a later macrotask so the browser can paint the
-        // new controls before the (possibly heavy) preview work starts.
+        // new controls before the (possibly heavy) preview work starts. Items may
+        // return a string synchronously (text docs) or a Promise<string> (canvas
+        // renders like cards/posters/videos) — both are awaited the same way.
         function schedulePreview() {
             if (previewTimer) clearTimeout(previewTimer);
             previewTimer = setTimeout(function () {
@@ -214,10 +216,16 @@
                 setTimeout(function () {
                     try {
                         var out = item.renderPreview();
-                        content.innerHTML =
-                            out == null || out === ''
-                                ? '<div class="export-preview-empty">' + t('exportNoPreview') + '</div>'
-                                : out;
+                        var apply = function (html) {
+                            content.innerHTML =
+                                html == null || html === ''
+                                    ? '<div class="export-preview-empty">' + t('exportNoPreview') + '</div>'
+                                    : html;
+                        };
+                        if (out && typeof out.then === 'function') out.then(apply).catch(function () {
+                            content.innerHTML = '<div class="export-preview-empty">' + t('exportNoPreview') + '</div>';
+                        });
+                        else apply(out);
                     } finally {
                         content.classList.remove('export-preview-loading');
                     }
@@ -609,14 +617,118 @@
                 actions.openVideo({ template: d.template, includeTranslation: d.includeTranslation });
             }
         });
+        // Shared card/poster options: current line, song meta, export-config
+        // overrides. accent follows the theme's --accent so exported art matches
+        // what the user sees.
+        function cardOpts(d) {
+            var sd = appCtx.songData || {};
+            var line = appCtx.lyrics[appCtx.activeLineIndex] || {};
+            var accent =
+                getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#8a7a6a';
+            return {
+                title: sd.title || '',
+                artist: sd.artist || '',
+                lyricHtml: actions.cardLyricHtml ? actions.cardLyricHtml() : esc(line.text || ''),
+                lyricText: line.text || '',
+                translation: line.translation || '',
+                romaji: actions.cardRomaji ? actions.cardRomaji() : '',
+                index: appCtx.activeLineIndex + 1,
+                total: appCtx.lyrics.length,
+                accent: accent,
+                template: d.template,
+                showTranslation: d.showTranslation,
+                showRomaji: d.showRomaji
+            };
+        }
+        function cardPreviewHTML(renderer, d) {
+            return renderer(cardOpts(d))
+                .then(function (canvas) {
+                    var img = document.createElement('img');
+                    img.className = 'export-card-preview';
+                    img.alt = '';
+                    img.src = canvas.toDataURL('image/png');
+                    return img.outerHTML;
+                })
+                .catch(function () {
+                    return '<div class="export-preview-empty">' + t('exportNoPreview') + '</div>';
+                });
+        }
+        register({
+            id: 'share-card',
+            group: 'lyrics',
+            icon: 'fas fa-share-alt',
+            labelKey: 'shareCard',
+            kind: 'form',
+            describe: 'shareCardHint',
+            defaults: { template: 'minimal', showTranslation: true, showRomaji: true },
+            renderForm: function (container) {
+                var d = optsStore['share-card'] || (optsStore['share-card'] = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgSelect(
+                        'template',
+                        'cardTemplate',
+                        [
+                            { v: 'minimal', k: 'cardTplMinimal' },
+                            { v: 'gradient', k: 'cardTplGradient' }
+                        ],
+                        d.template
+                    ) +
+                    cfgCheckbox('showTranslation', 'cardTranslation', d.showTranslation) +
+                    cfgCheckbox('showRomaji', 'cardRomaji', d.showRomaji);
+            },
+            renderPreview: function () {
+                var d = optsStore['share-card'] || {};
+                return cardPreviewHTML(u.renderShareCard, d);
+            },
+            doExport: function () {
+                var d = optsStore['share-card'] || {};
+                u.renderShareCard(cardOpts(d))
+                    .then(function (canvas) {
+                        return u.canvasToPngBlob(canvas);
+                    })
+                    .then(function (blob) {
+                        appCtx.downloadBlob(blob, appCtx.safePackageName() + '-card.png');
+                    })
+                    .catch(function () {});
+            }
+        });
         register({
             id: 'poster',
             group: 'lyrics',
             icon: 'fas fa-mobile-alt',
             labelKey: 'exportPoster',
-            kind: 'action',
+            kind: 'form',
+            describe: 'posterHint',
+            defaults: { template: 'gradient', showTranslation: true, showRomaji: true },
+            renderForm: function (container) {
+                var d = optsStore.poster || (optsStore.poster = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgSelect(
+                        'template',
+                        'cardTemplate',
+                        [
+                            { v: 'minimal', k: 'cardTplMinimal' },
+                            { v: 'gradient', k: 'cardTplGradient' }
+                        ],
+                        d.template
+                    ) +
+                    cfgCheckbox('showTranslation', 'cardTranslation', d.showTranslation) +
+                    cfgCheckbox('showRomaji', 'cardRomaji', d.showRomaji);
+            },
+            renderPreview: function () {
+                var d = optsStore.poster || {};
+                return cardPreviewHTML(u.renderPoster, d);
+            },
             doExport: function () {
-                actions.exportPoster();
+                var d = optsStore.poster || {};
+                u.renderPoster(cardOpts(d))
+                    .then(function (canvas) {
+                        return u.canvasToPngBlob(canvas);
+                    })
+                    .then(function (blob) {
+                        appCtx.downloadBlob(blob, appCtx.safePackageName() + '-poster.png');
+                    })
+                    .catch(function () {});
             }
         });
         register({

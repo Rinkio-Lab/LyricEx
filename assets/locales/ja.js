@@ -414,6 +414,16 @@
         studyVideo: '学習表ビデオ',
         studyVideoHint: '学習ノートビデオを録画します（音声が必要）：上部に現在の歌詞行と訳詞、下部にその行の学習表（仮名 / ローマ字 / 漢字 / 品詞 / 意味）。',
 
+        /* v3.3.8: share card / poster export config */
+        shareCard: 'シェアカード',
+        shareCardHint: '現在の歌詞行を横長のシェアカード（PNG）として書き出します。シェアパネルと同じ見た目。',
+        posterHint: '現在の歌詞行を縦長ポスター（PNG）として書き出します。壁紙・縦型シェア向け。',
+        cardTemplate: 'カードテンプレート',
+        cardTplMinimal: 'ミニマル',
+        cardTplGradient: 'グラデーション',
+        cardTranslation: '訳詞を表示',
+        cardRomaji: 'ローマ字を表示',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',

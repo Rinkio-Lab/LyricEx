@@ -417,6 +417,16 @@
         studyVideo: 'Study table video',
         studyVideoHint: 'Records a study-notes video (audio required): current lyric + translation on top, that line\u2019s study table (kana / romaji / kanji / POS / meaning) below.',
 
+        /* v3.3.8: share card / poster export config */
+        shareCard: 'Share card',
+        shareCardHint: 'Exports the current lyric line as a horizontal share card (PNG), same look as the share panel.',
+        posterHint: 'Exports the current lyric line as a vertical poster (PNG) for phone wallpapers / vertical sharing.',
+        cardTemplate: 'Card template',
+        cardTplMinimal: 'Minimal',
+        cardTplGradient: 'Gradient',
+        cardTranslation: 'Show translation',
+        cardRomaji: 'Show romaji',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

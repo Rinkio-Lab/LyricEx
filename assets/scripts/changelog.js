@@ -10,6 +10,24 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.8',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '分享卡片导出：导出歌词组新增分享卡片条目（当前行 → 横向 PNG），可选简约/渐变模板、开关翻译与罗马音，实时预览'
+                },
+                {
+                    type: 'added',
+                    text: '竖版海报导出升级为可配置（模板/翻译/罗马音），实时预览渲染效果'
+                },
+                {
+                    type: 'changed',
+                    text: '预览基础设施支持异步渲染（Promise<string>），canvas 类预览与文本预览共用流程'
+                }
+            ]
+        },
+        {
             version: '3.3.7',
             date: '2026-10-02',
             changes: [

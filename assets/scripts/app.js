@@ -4048,6 +4048,9 @@
         get coverUrl() {
             return coverUrl;
         },
+        get activeLineIndex() {
+            return activeLineIndex;
+        },
         downloadBlob: downloadBlob,
         safePackageName: safePackageName,
         actions: {
@@ -4057,6 +4060,8 @@
             exportAss: exportAss,
             openVideo: videoApi.open,
             renderVideoPreview: videoApi.renderPreview,
+            cardLyricHtml: shareApi.cardLyricHtml,
+            cardRomaji: shareApi.cardRomaji,
             exportPoster: exportPoster,
             exportNotes: exportNotes,
             printStudy: printStudySheet
