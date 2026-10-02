@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { join, dirname } from 'node:path';
 
 const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
-const PKG_VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
+const PKG_VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8').replace(/^\uFEFF/, '')).version;
 
 /** collect page errors + console errors; assert clean at test end */
 function watchErrors(page) {
