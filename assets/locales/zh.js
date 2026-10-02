@@ -368,6 +368,13 @@
         exportEmpty: '暂无可导出的格式',
         exportNoPreview: '此格式暂无预览',
 
+        /* v3.3.1: subtitle export options */
+        lrcMeta: '含元数据头（标题/歌手）',
+        lrcTranslation: '附带翻译行（相同时间戳）',
+        subTranslation: '附带翻译',
+        srtEndPad: '结尾空余时长（秒）',
+        assKaraoke: '卡拉OK逐字高亮（\k 标签）',
+
         /* v2.0.0: export / share */
         printStudy: '打印学习表',
         exportNotesMd: '导出笔记 MD',

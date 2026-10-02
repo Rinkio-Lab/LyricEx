@@ -88,6 +88,16 @@ const ass = u.buildAss(lyrics, 0, { includeTranslation: true });
 ok('ass has script info', ass.includes('[Script Info]'));
 ok('ass has styles', ass.includes('[V4+ Styles]') && ass.includes('Style: Lyric'));
 ok('ass has dialogue', ass.includes('Dialogue: 0,'));
+const assPlain = u.buildAss(lyrics, 0, { includeTranslation: false, karaoke: false });
+ok('ass karaoke off strips \\k tags', !assPlain.includes('\\k'));
+// v3.3.1: LRC builder
+const lrc = u.buildLrc(lyrics, 0, { title: 'T', artist: 'A', includeTranslation: true });
+ok('lrc has ti/ar headers', lrc.includes('[ti:T]') && lrc.includes('[ar:A]'));
+ok('lrc has timestamp lines', /\[\d{2}:\d{2}\.\d{2}\]/.test(lrc));
+const lrcTr = u.buildLrc([{ time: 61, text: '本気', translation: '认真' }], 0, { meta: false, includeTranslation: true });
+ok('lrc appends translation on same timestamp', lrcTr.includes('[01:01.00]本気') && lrcTr.includes('[01:01.00]认真'));
+const lrcNoMeta = u.buildLrc(lyrics, 0, { meta: false });
+ok('lrc meta off drops headers', !lrcNoMeta.includes('[ti:') && !lrcNoMeta.includes('[ar:'));
 
 // ---- multi-bookmark loop (v2.0.0 #15) ----
 const marks = [

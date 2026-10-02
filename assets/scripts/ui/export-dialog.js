@@ -15,6 +15,14 @@
 
     root.__lyricexExportDialog = function (appCtx) {
         var t = appCtx.t;
+        var u = root.__lyricexUtils || {};
+        var esc =
+            (root.__lyricexLib && root.__lyricexLib.esc) ||
+            function (s) {
+                return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+                });
+            };
         var overlay = document.getElementById('exportOverlay');
         var subnav = document.getElementById('exportSubnav');
         var body = document.getElementById('exportBody');
@@ -22,6 +30,7 @@
         var items = [];
         var activeId = null;
         var previewTimer = null;
+        var optsStore = {}; // per-item export options (form items), in-memory
 
         // group order defines the subnav layout (lyrics first, notes second)
         var groups = [
@@ -38,6 +47,43 @@
             for (var i = 0; i < items.length; i++)
                 if (items[i].id === activeId) return items[i];
             return items[0] || null;
+        }
+
+        // ---- form helpers (config controls + text preview) ----
+        function cfgCheckbox(id, labelKey, checked) {
+            return (
+                '<label class="export-cfg-row"><input type="checkbox" data-cfg="' +
+                id +
+                '"' +
+                (checked ? ' checked' : '') +
+                '> <span>' +
+                t(labelKey) +
+                '</span></label>'
+            );
+        }
+        function cfgNumber(id, labelKey, value, min, max, step) {
+            return (
+                '<label class="export-cfg-row"><span>' +
+                t(labelKey) +
+                '</span><input type="number" data-cfg="' +
+                id +
+                '" value="' +
+                value +
+                '" min="' +
+                min +
+                '" max="' +
+                max +
+                '" step="' +
+                (step || 1) +
+                '" style="width:64px"></label>'
+            );
+        }
+        // first N lines of generated text; big lyrics never flood the preview
+        function textPreview(text, maxLines) {
+            var lines = String(text || '').split('\n');
+            var slice = lines.slice(0, maxLines || 40);
+            var more = lines.length > slice.length ? '\n…（' + (lines.length - slice.length) + ' 行已省略）' : '';
+            return '<pre class="export-text-preview">' + esc(slice.join('\n')) + esc(more) + '</pre>';
         }
 
         // ---- subnav ----
@@ -80,7 +126,12 @@
                     t('exportPreview') +
                     '</span></div>' +
                     '<div class="export-preview-content" id="exportPreviewContent"></div>' +
-                    '</div>';
+                    '</div>' +
+                    '<div class="export-form-foot"><button class="close-btn export-run-btn" data-export-run="' +
+                    item.id +
+                    '"><i class="fas fa-download"></i> ' +
+                    t('exportRun') +
+                    '</button></div>';
                 body.innerHTML = html;
                 if (item.renderForm) item.renderForm(document.getElementById('exportConfig'));
                 schedulePreview();
@@ -162,6 +213,19 @@
                 var item = currentItem();
                 if (item && item.doExport) item.doExport();
             });
+            // v3.3.1: config controls — keep the per-item options store in sync
+            // and re-render the preview (debounced) without touching other state.
+            body.addEventListener('change', function (e) {
+                var el = e.target;
+                if (!el || !el.dataset || !el.dataset.cfg) return;
+                var item = currentItem();
+                if (!item) return;
+                var store = optsStore[item.id] || (optsStore[item.id] = {});
+                if (el.type === 'checkbox') store[el.dataset.cfg] = el.checked;
+                else if (el.type === 'number') store[el.dataset.cfg] = Number(el.value);
+                else store[el.dataset.cfg] = el.value;
+                schedulePreview();
+            });
         }
 
         // ---- default registry (v3.3.0: action-only items; later versions
@@ -182,9 +246,36 @@
             group: 'lyrics',
             icon: 'fas fa-file-alt',
             labelKey: 'exportLrc',
-            kind: 'action',
+            kind: 'form',
+            defaults: { meta: true, includeTranslation: false },
+            renderForm: function (container) {
+                var d = optsStore.lrc || (optsStore.lrc = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgCheckbox('meta', 'lrcMeta', d.meta) + cfgCheckbox('includeTranslation', 'lrcTranslation', d.includeTranslation);
+            },
+            renderPreview: function () {
+                var d = optsStore.lrc || {};
+                return textPreview(
+                    u.buildLrc(appCtx.lyrics, appCtx.offset, {
+                        title: appCtx.songData && appCtx.songData.title,
+                        artist: appCtx.songData && appCtx.songData.artist,
+                        meta: d.meta,
+                        includeTranslation: d.includeTranslation
+                    })
+                );
+            },
             doExport: function () {
-                actions.exportLrc();
+                var d = optsStore.lrc || {};
+                var text = u.buildLrc(appCtx.lyrics, appCtx.offset, {
+                    title: appCtx.songData && appCtx.songData.title,
+                    artist: appCtx.songData && appCtx.songData.artist,
+                    meta: d.meta,
+                    includeTranslation: d.includeTranslation
+                });
+                appCtx.downloadBlob(
+                    new Blob([text], { type: 'text/plain;charset=utf-8' }),
+                    appCtx.safePackageName() + '.lrc'
+                );
             }
         });
         register({
@@ -192,9 +283,24 @@
             group: 'lyrics',
             icon: 'fas fa-closed-captioning',
             labelKey: 'exportSrt',
-            kind: 'action',
+            kind: 'form',
+            defaults: { includeTranslation: true, endPad: 3 },
+            renderForm: function (container) {
+                var d = optsStore.srt || (optsStore.srt = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgCheckbox('includeTranslation', 'subTranslation', d.includeTranslation) +
+                    cfgNumber('endPad', 'srtEndPad', d.endPad, 0, 10, 0.5);
+            },
+            renderPreview: function () {
+                var d = optsStore.srt || {};
+                return textPreview(u.buildSrt(appCtx.lyrics, appCtx.offset, d));
+            },
             doExport: function () {
-                actions.exportSrt();
+                var d = optsStore.srt || {};
+                appCtx.downloadBlob(
+                    new Blob([u.buildSrt(appCtx.lyrics, appCtx.offset, d)], { type: 'text/plain;charset=utf-8' }),
+                    appCtx.safePackageName() + '.srt'
+                );
             }
         });
         register({
@@ -202,9 +308,24 @@
             group: 'lyrics',
             icon: 'fas fa-closed-captioning',
             labelKey: 'exportAss',
-            kind: 'action',
+            kind: 'form',
+            defaults: { includeTranslation: true, karaoke: true },
+            renderForm: function (container) {
+                var d = optsStore.ass || (optsStore.ass = Object.assign({}, this.defaults));
+                container.innerHTML =
+                    cfgCheckbox('includeTranslation', 'subTranslation', d.includeTranslation) +
+                    cfgCheckbox('karaoke', 'assKaraoke', d.karaoke);
+            },
+            renderPreview: function () {
+                var d = optsStore.ass || {};
+                return textPreview(u.buildAss(appCtx.lyrics, appCtx.offset, d));
+            },
             doExport: function () {
-                actions.exportAss();
+                var d = optsStore.ass || {};
+                appCtx.downloadBlob(
+                    new Blob([u.buildAss(appCtx.lyrics, appCtx.offset, d)], { type: 'text/plain;charset=utf-8' }),
+                    appCtx.safePackageName() + '.ass'
+                );
             }
         });
         register({

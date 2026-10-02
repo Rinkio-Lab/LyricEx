@@ -4028,6 +4028,14 @@
         get lyrics() {
             return lyrics;
         },
+        get offset() {
+            return offset;
+        },
+        get songData() {
+            return songData;
+        },
+        downloadBlob: downloadBlob,
+        safePackageName: safePackageName,
         actions: {
             exportPackage: exportPackageZip,
             exportLrc: exportLrc,

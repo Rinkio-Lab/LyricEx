@@ -10,6 +10,28 @@
 
     root.__lyricexChangelog = [
         {
+            version: '3.3.1',
+            date: '2026-10-02',
+            changes: [
+                {
+                    type: 'added',
+                    text: '字幕导出配置（LRC / SRT / ASS）：三种字幕格式在导出弹窗内可配置并实时预览——LRC 可开关元数据头与翻译行；SRT 可开关翻译、调整结尾空余时长；ASS 可开关翻译与卡拉OK逐字高亮'
+                },
+                {
+                    type: 'added',
+                    text: 'LRC 构建器入 utils（buildLrc），配置、预览与导出共用同一生成路径'
+                },
+                {
+                    type: 'changed',
+                    text: '导出弹窗 form 条目新增底部「导出」按钮'
+                },
+                {
+                    type: 'test',
+                    text: 'utils-test 新增 buildLrc 与 ASS 卡拉OK开关断言'
+                }
+            ]
+        },
+        {
             version: '3.3.0',
             date: '2026-10-02',
             changes: [

@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.3.1（待发布 · 字幕导出配置）
+
+### Added
+- **字幕导出配置（LRC / SRT / ASS）**：三种字幕格式在导出弹窗内可配置并实时预览——LRC 可开关元数据头（标题/歌手）与翻译行；SRT 可开关翻译、调整结尾空余时长；ASS 可开关翻译与卡拉OK逐字高亮（关闭后输出纯文本行）。预览窗以等宽字体展示前 40 行生成的文本。
+- **LRC 构建器入 utils**：`buildLrc(lyrics, offset, opts)` 纯函数，配置、预览与导出共用同一生成路径，可单元测试。
+
+### Changed
+- 版本号 3.3.0 → 3.3.1；Service Worker 缓存名同步 bump（`lyricex-v3.3.1`）。
+- 导出弹窗 form 条目新增底部「导出」按钮（配置区 + 预览窗 + 导出按钮三段布局）。
+
+### Test
+- utils-test 新增 buildLrc 断言（元数据头 / 时间戳 / 翻译行同时间戳 / meta 关闭）与 ASS `karaoke:false` 断言。
+
 ## v3.3.0（待发布 · 统一导出弹窗）
 
 ### Added

@@ -371,6 +371,13 @@
         exportEmpty: 'No formats available',
         exportNoPreview: 'No preview for this format',
 
+        /* v3.3.1: subtitle export options */
+        lrcMeta: 'Include metadata header (title/artist)',
+        lrcTranslation: 'Attach translation lines (same timestamp)',
+        subTranslation: 'Include translation',
+        srtEndPad: 'Trailing duration (seconds)',
+        assKaraoke: 'Karaoke word highlighting (\\k tags)',
+
         /* v2.0.0: export / share */
         printStudy: 'Print study sheet',
         exportNotesMd: 'Export notes MD',

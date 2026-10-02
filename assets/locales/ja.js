@@ -368,6 +368,13 @@
         exportEmpty: 'エクスポートできる形式はありません',
         exportNoPreview: 'この形式にはプレビューがありません',
 
+        /* v3.3.1: subtitle export options */
+        lrcMeta: 'メタデータヘッダーを含める（タイトル/アーティスト）',
+        lrcTranslation: '訳詞を付ける（同じタイムスタンプ）',
+        subTranslation: '訳詞を含める',
+        srtEndPad: '末尾の余白（秒）',
+        assKaraoke: 'カラオケ単語ハイライト（\\k タグ）',
+
         /* v2.0.0: export / share */
         printStudy: '学習表を印刷',
         exportNotesMd: 'ノートを MD 出力',
